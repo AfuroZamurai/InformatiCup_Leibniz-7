@@ -31,8 +31,8 @@ https://drive.google.com/drive/folders/1-UmkzRuruliVL-Lcth8oA45BX50bo2Ir?usp=sha
 Meistertask-Projektmanagement:
 https://www.meistertask.com/projects/qhmu7a6hpk/join/
 
-
-
+Code-Conventions:
+http://google.github.io/styleguide/javaguide.html
 
 Lösungsansätze:
 
