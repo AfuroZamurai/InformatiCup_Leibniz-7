@@ -18,7 +18,7 @@ public class ImageSaver {
 	// Constants for the supported Image formats
 	public static final String PNG = "png";
 	public static final String GIF = "gif";
-	public static final String jpg = "jpg";
+	public static final String JPG = "jpg";
 
 	/**
 	 * This method saves an given BufferedImage as an image file in the filesystem
