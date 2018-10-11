@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-import main.ImageLoader;
+import main.io.ImageLoader;
 
 /**
  * This class contains JUnit Tests
