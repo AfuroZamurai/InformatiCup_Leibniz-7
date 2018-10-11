@@ -20,31 +20,31 @@ public class Tester {
 	{
 		// Try every image format
 		try {
-			ImageLoader.loadImage("data/images/00000.png");
+			ImageLoader.loadImage("src/data/images/00000.png");
 		} catch (IOException e) {
 			Assert.assertTrue(false);
 		}
 		
 		try {
-			ImageLoader.loadImage("data/images/00000.jpeg");
+			ImageLoader.loadImage("src/data/images/00000.jpeg");
 		} catch (IOException e) {
 			Assert.assertTrue(false);
 		}
 		
 		try {
-			ImageLoader.loadImage("data/images/00000.png");
+			ImageLoader.loadImage("src/data/images/00000.png");
 		} catch (IOException e) {
 			Assert.assertTrue(false);
 		}
 		
 		try {
-			ImageLoader.loadImage("data/images/00000.wbmp");
+			ImageLoader.loadImage("src/data/images/00000.wbmp");
 		} catch (IOException e) {
 			Assert.assertTrue(false);
 		}
 		
 		try {
-			ImageLoader.loadImage("data/images/00000.jpg");
+			ImageLoader.loadImage("src/data/images/00000.jpg");
 		} catch (IOException e) {
 			Assert.assertTrue(false);
 		}
