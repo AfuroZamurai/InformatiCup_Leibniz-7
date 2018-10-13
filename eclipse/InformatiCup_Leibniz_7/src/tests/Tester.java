@@ -1,62 +1,92 @@
 package tests;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import main.io.ImageLoader;
+import main.io.ImageSaver;
 
 /**
  * This class contains JUnit Tests
+ * 
  * @author Jannik
  *
  */
 public class Tester {
-	
-	
+
 	@Test
-	public void testImageLoading() 
-	{
-		// Try every image format
+	public void testImageLoading() {
+
+		BufferedImage img;
+
+		// Test each of the supported image formats
 		try {
-			ImageLoader.loadImage("src/data/images/00000.png");
+			img = ImageLoader.loadImage("src/data/images/00000.png");
+
+			Assert.assertNotNull(img);
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			Assert.assertTrue(false);
 		}
-		
+
 		try {
-			ImageLoader.loadImage("src/data/images/00000.jpeg");
+			img = ImageLoader.loadImage("src/data/images/00000.jpeg");
+
+			Assert.assertNotNull(img);
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			Assert.assertTrue(false);
 		}
-		
+
 		try {
-			ImageLoader.loadImage("src/data/images/00000.png");
+			img = ImageLoader.loadImage("src/data/images/00000.png");
+
+			Assert.assertNotNull(img);
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			Assert.assertTrue(false);
 		}
-		
+
 		try {
-			ImageLoader.loadImage("src/data/images/00000.wbmp");
+			img = ImageLoader.loadImage("src/data/images/00000.wbmp");
+
+			Assert.assertNotNull(img);
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			Assert.assertTrue(false);
 		}
-		
+
 		try {
-			ImageLoader.loadImage("src/data/images/00000.jpg");
+			img = ImageLoader.loadImage("src/data/images/00000.jpg");
+
+			Assert.assertNotNull(img);
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			Assert.assertTrue(false);
 		}
-		
-		
+
+		try {
+			img = ImageLoader.loadImage("src/data/images/00000.ppm");
+
+			Assert.assertNotNull(img);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			Assert.assertTrue(false);
+		}
 	}
-	
+
 	@Test
-	public void testImageSaving() 
-	{
-		//TODO Implement Tests
-		
-		
+	public void testImageSaving() {
+		// TODO Implement Tests
+
 	}
 }
