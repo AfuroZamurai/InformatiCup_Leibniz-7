@@ -21,7 +21,7 @@
       <RadioButton fx:id="radioButton3" layoutX="215.0" layoutY="222.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
       <RadioButton fx:id="radioButton4" layoutX="215.0" layoutY="248.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
       <Button fx:id="SaveImageButton" layoutX="222.0" layoutY="422.0" mnemonicParsing="false" onAction="#saveImage" prefHeight="39.0" prefWidth="87.0" text="Save" />
-      <ListView fx:id="listeView" layoutX="38.0" layoutY="172.0" onEditStart="#fillListView" onMouseClicked="#ClickedListView" prefHeight="217.0" prefWidth="158.0" />
+      <ListView fx:id="listView" layoutX="38.0" layoutY="172.0" onEditStart="#fillListView" onMouseClicked="#ClickedListView" prefHeight="217.0" prefWidth="158.0" />
       <ProgressIndicator fx:id="progressIndicator" layoutX="147.0" layoutY="422.0" prefHeight="39.0" prefWidth="50.0" visible="false" />
       <ImageView fx:id="inputImage" fitHeight="89.0" fitWidth="87.0" layoutX="38.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="konfidenzeLabel" layoutX="222.0" layoutY="359.0" prefHeight="30.0" prefWidth="87.0" text="Konfidenz: " />

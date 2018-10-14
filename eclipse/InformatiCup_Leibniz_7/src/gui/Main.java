@@ -1,5 +1,4 @@
 package gui;
-import java.nio.charset.MalformedInputException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,8 +17,7 @@ public class Main extends Application{
 		
 		Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("MainScene.fxml"));
 		stage.setScene(new Scene(mainPane));
-		
-		stage.show();
+		stage.show();	
 	}
 
 }
