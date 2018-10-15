@@ -3,8 +3,11 @@ package picture;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
+import main.io.ImageSaver;
 import picture.actions.PAction;
 
 public class FantasyPicture {
@@ -18,9 +21,16 @@ public class FantasyPicture {
 	private final int PADDING = 1;
 
 	private Shape shape; // shape of the sign
-	private Color bg_color; // background color of the sign
+	private Color bgColor; // background color of the sign
 	private Layout layout; // layout of the sign containing the features
 	private Border border; // border of the sign
+
+	public FantasyPicture(Shape shape, Color bgColor, Layout layout, Border border) {
+		this.shape = shape;
+		this.bgColor = bgColor;
+		this.layout = layout;
+		this.border = border;
+	}
 
 	public List<PAction> getAvailableActions() {
 		return null;
@@ -33,13 +43,16 @@ public class FantasyPicture {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
+		//drawing the border
 		switch (shape) {
 		case CIRCLE:
 			g.setColor(border.getColor());
 			g.fillOval(PADDING, PADDING, WIDTH - 2 * PADDING, HEIGHT - 2 * PADDING);
-			g.setColor(bg_color);
+			g.setColor(bgColor);
 			g.fillOval(PADDING + border.getWidth(), PADDING + border.getWidth(),
 					WIDTH - 2 * (PADDING + border.getWidth()), HEIGHT - 2 * (PADDING + border.getWidth()));
+			g.setColor(Color.BLACK);
+			g.drawOval(PADDING, PADDING, WIDTH - 2 * PADDING, HEIGHT - 2 * PADDING);
 			break;
 		case OCTAGON:
 			break;
@@ -53,7 +66,24 @@ public class FantasyPicture {
 			break;
 		}
 
-		return null;
+		//drawing the features
+		layout.drawFeatures(g);
+		
+		return image;
+	}
+
+	// testing purpose
+	public static void main(String[] args) {
+		Layout layout = new Layout();
+		Border border = new Border(Color.RED, 6);
+		FantasyPicture pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
+		BufferedImage img = pic.createImage();
+		String path = Paths.get(".").toAbsolutePath().normalize().toString();
+		try {
+			ImageSaver.saveImage(img, path);
+		} catch (IOException e) {
+			System.out.println("could not save image");
+		}
 	}
 
 }

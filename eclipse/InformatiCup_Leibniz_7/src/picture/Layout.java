@@ -1,5 +1,6 @@
 package picture;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import picture.features.Feature;
@@ -13,4 +14,10 @@ public class Layout {
 	
 	private LayoutType type;
 	private ArrayList<Feature> features;
+	
+	public void drawFeatures(Graphics2D g) {
+		for (Feature feature : features) {
+			feature.draw(g);
+		}
+	}
 }
