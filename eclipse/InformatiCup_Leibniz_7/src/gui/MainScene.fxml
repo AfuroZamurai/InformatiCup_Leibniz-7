@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="343.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+   <children>
+      <RadioButton fx:id="radioButton1" layoutX="215.0" layoutY="172.0" mnemonicParsing="false" text="RadioButton">
+         <toggleGroup>
+            <ToggleGroup fx:id="group1" />
+         </toggleGroup></RadioButton>
+      <Button fx:id="generateButton" layoutX="38.0" layoutY="422.0" mnemonicParsing="false" onAction="#generateImage" prefHeight="39.0" prefWidth="87.0" text="Generate" />
+      <ImageView fx:id="outputImage" fitHeight="89.0" fitWidth="87.0" layoutX="215.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" />
+      <RadioButton fx:id="radioButton2" layoutX="215.0" layoutY="196.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
+      <RadioButton fx:id="radioButton3" layoutX="215.0" layoutY="222.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
+      <RadioButton fx:id="radioButton4" layoutX="215.0" layoutY="248.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
+      <Button fx:id="SaveImageButton" layoutX="222.0" layoutY="422.0" mnemonicParsing="false" onAction="#saveImage" prefHeight="39.0" prefWidth="87.0" text="Save" />
+      <ListView fx:id="listView" layoutX="38.0" layoutY="172.0" onEditStart="#fillListView" onMouseClicked="#ClickedListView" prefHeight="217.0" prefWidth="158.0" />
+      <ProgressIndicator fx:id="progressIndicator" layoutX="147.0" layoutY="422.0" prefHeight="39.0" prefWidth="50.0" visible="false" />
+      <ImageView fx:id="inputImage" fitHeight="89.0" fitWidth="87.0" layoutX="38.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="konfidenzeLabel" layoutX="222.0" layoutY="359.0" prefHeight="30.0" prefWidth="87.0" text="Konfidenz: " />
+      <Label fx:id="inputImageLabel" layoutX="38.0" layoutY="132.0" prefHeight="17.0" prefWidth="73.0" text="Eingabebild" />
+      <Label fx:id="outputImageLabel" layoutX="215.0" layoutY="132.0" prefHeight="17.0" prefWidth="73.0" text="Ausgabebild" />
+   </children>
+</Pane>

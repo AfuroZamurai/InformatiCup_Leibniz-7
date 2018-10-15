@@ -1,8 +1,9 @@
-package main;
+package main.io;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -21,6 +22,7 @@ public class ImageSaver {
 	public static final String JPG = "jpg";
 
 	/**
+	 *
 	 * This method saves an given BufferedImage as an image file in the filesystem
 	 * 
 	 * @param img
@@ -30,11 +32,13 @@ public class ImageSaver {
 	 * @param format
 	 *            The format in which the file will be saved(use the constants of
 	 *            this class)
+	 * @return File handle for the newly created file
 	 * @throws IOException
 	 *             When image could not be saved(path does not exist, no write
 	 *             permissions)
+	 *
 	 */
-	public static void saveImage(BufferedImage img, String savePath, String format) throws IOException {
+	public static File saveImage(BufferedImage img, String savePath, String format) throws IOException {
 
 		File outputfile = new File(savePath + "." + format);
 
@@ -44,6 +48,8 @@ public class ImageSaver {
 		if (!success) {
 			throw new IOException("Could not save Image!");
 		}
+		
+		return outputfile;
 	}
 
 	/**
@@ -54,11 +60,12 @@ public class ImageSaver {
 	 *            The Image to be saved
 	 * @param savePath
 	 *            Path where it will be saved(including filename but no extension!)
+	 * @return File handle for the newly created file
 	 * @throws IOException
 	 *             When image could not be saved(path does not exist, no write
 	 *             permissions)
 	 */
-	public static void saveImage(BufferedImage img, String savePath) throws IOException {
+	public static File saveImage(BufferedImage img, String savePath) throws IOException {
 
 		File outputFile = new File(savePath + "." + PNG);
 
@@ -68,6 +75,8 @@ public class ImageSaver {
 		if (!success) {
 			throw new IOException("Could not save Image!");
 		}
+		
+		return outputFile;
 	}
 
 	/**
@@ -81,23 +90,30 @@ public class ImageSaver {
 	 * @param format
 	 *            Format in which the images will be saved, use the constants of
 	 *            this class.
+	 * @return List of file handles for the newly created Files
 	 * @throws IOException
 	 *             When images could not be saved(path does not exist, no write
 	 *             permissions)
 	 */
-	public static void saveImagesFromList(List<BufferedImage> list, String savePath, String format) throws IOException {
-
+	public static List<File> saveImagesFromList(List<BufferedImage> list, String savePath, String format) throws IOException {
+		
+		List<File> fileList = new ArrayList<File>();
+		
 		for (int i = 0; i < list.size(); i++) {
 			BufferedImage img = list.get(i);
 			File outputFile = new File(savePath + i + "." + format);
-
+			
 			// ImageIO write returns false when image could not be saved
 			boolean success = ImageIO.write(img, format, outputFile);
 
 			if (!success) {
 				throw new IOException("Could not save Image(" + i + ")!");
 			}
+			
+			fileList.add(outputFile);
 		}
+		
+		return fileList;
 	}
 
 }
