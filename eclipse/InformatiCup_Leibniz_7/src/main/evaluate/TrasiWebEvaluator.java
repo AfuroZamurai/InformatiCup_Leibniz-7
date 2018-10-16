@@ -142,6 +142,11 @@ public class TrasiWebEvaluator implements IEvaluator {
 			loadKey();
 		}
 
+		
+		
+		//Create tmp folder
+		new File("data/tmp").mkdirs();
+		
 		// Image must be present in file format to upload it TODO: Find workaround
 		File imageFile = ImageSaver.saveImage(image, "data/tmp/image");
 
