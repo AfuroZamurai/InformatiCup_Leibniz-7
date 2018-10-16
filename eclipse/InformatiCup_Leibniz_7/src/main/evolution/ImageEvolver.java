@@ -18,9 +18,11 @@ import main.evolution.network.Config;
  */
 public class ImageEvolver implements IModule {
 	
-	private GeneticAlgorithm ga;
+	private final int POPULATION_SIZE = 300;
+	private final int GENERATION_CAP = 50;
+	private final float TARGET_FITNESS = 0.9f;
+	
 	private CPPN net;
-	private CuckooSearch searcher;
 	
 	/**
 	 * Constructor which instantiates the encoding network for a given image size.
@@ -29,15 +31,14 @@ public class ImageEvolver implements IModule {
 	 * @param imageHeight height of the input image
 	 */
 	public ImageEvolver(int imageWidth, int imageHeight) {
-		this.ga = new GeneticAlgorithm();
 		this.net = new CPPN(0, 0, new Config(imageWidth, imageHeight, 0, 50));
-		this.searcher = new CuckooSearch();
 	}
 
 	@Override
 	public BufferedImage generateImage(BufferedImage input) {
 		String classLabel = "Zulässige Höchstgeschwindigkeit (100)";
-		return this.searcher.searchForImage(classLabel);
+		CuckooSearch searcher = new CuckooSearch(this.net, POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP);
+		return searcher.searchForImage(classLabel);
 	}
 	
 }
