@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
@@ -23,7 +24,10 @@
       <Button fx:id="SaveImageButton" layoutX="222.0" layoutY="422.0" mnemonicParsing="false" onAction="#saveImage" prefHeight="39.0" prefWidth="87.0" text="Save" />
       <ListView fx:id="listView" layoutX="38.0" layoutY="172.0" onEditStart="#fillListView" onMouseClicked="#ClickedListView" prefHeight="217.0" prefWidth="158.0" />
       <ProgressIndicator fx:id="progressIndicator" layoutX="147.0" layoutY="422.0" prefHeight="39.0" prefWidth="50.0" visible="false" />
-      <ImageView fx:id="inputImage" fitHeight="89.0" fitWidth="87.0" layoutX="38.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="inputImage" fitHeight="89.0" fitWidth="87.0" layoutX="38.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../data/images/00000.png" />
+         </image></ImageView>
       <Label fx:id="konfidenzeLabel" layoutX="222.0" layoutY="359.0" prefHeight="30.0" prefWidth="87.0" text="Konfidenz: " />
       <Label fx:id="inputImageLabel" layoutX="38.0" layoutY="132.0" prefHeight="17.0" prefWidth="73.0" text="Eingabebild" />
       <Label fx:id="outputImageLabel" layoutX="215.0" layoutY="132.0" prefHeight="17.0" prefWidth="73.0" text="Ausgabebild" />

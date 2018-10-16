@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.sun.javafx.fxml.builder.JavaFXImageBuilder;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -17,13 +20,18 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.IModule;
+import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
 
 public class Controller implements Initializable {
+	
+	boolean generationLocked = false;
 
 	@FXML
 	private RadioButton radioButton1;
@@ -80,10 +88,10 @@ public class Controller implements Initializable {
 	@FXML
 	void generateImage(ActionEvent event) {
 
-		progressIndicator.setVisible(true);
-
 		if (radioButton1.isSelected()) {
 			System.out.println("RadioButton 1 wurde angeclicket");
+			
+			startAlgorithm(new TestModule());
 			// TODO
 		} else if (radioButton2.isSelected()) {
 			System.out.println("RadioButton 2 wurde angeclicket");
@@ -96,10 +104,46 @@ public class Controller implements Initializable {
 			// TODO
 		} else {
 			System.out.println("Es wurde kein Verfahren ausgewählt");
-		}
-
-		// progressIndicator.setVisible(false);
+		}		
 	}
+	
+	void startAlgorithm(IModule module) {
+		
+		generationLocked = true;
+		
+		BufferedImage img = SwingFXUtils.fromFXImage( inputImage.getImage(), null);
+		
+		progressIndicator.setVisible(true);
+		
+		Thread t  = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
+				
+				System.out.println("FINISHED");
+				progressIndicator.setVisible(false);
+				
+				outputImage.setImage(output);
+				
+				TrasiWebEvaluator twb = new TrasiWebEvaluator();
+				try {
+					twb.evaluate( SwingFXUtils.fromFXImage(output, null));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				float konfidenz = 1;
+				konfidenzeLabel.setText("Konfidenz:" + konfidenz);
+				generationLocked = false;				
+			}
+			
+		});		
+		t.start();	
+	}
+	
 
 	@FXML
 	void saveImage(ActionEvent event) {
