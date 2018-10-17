@@ -32,6 +32,22 @@ public class FantasyPicture {
 		this.border = border;
 	}
 
+	public Shape getShape() {
+		return shape;
+	}
+
+	public Color getBgColor() {
+		return bgColor;
+	}
+
+	public Layout getLayout() {
+		return layout;
+	}
+
+	public Border getBorder() {
+		return border;
+	}
+
 	public List<PAction> getAvailableActions() {
 		return null;
 	}
