@@ -5,6 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.sun.javafx.fxml.builder.JavaFXImageBuilder;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -17,13 +21,18 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.IModule;
+import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
 
 public class Controller implements Initializable {
+
+	boolean generationLocked = false;
 
 	@FXML
 	private RadioButton radioButton1;
@@ -80,25 +89,57 @@ public class Controller implements Initializable {
 	@FXML
 	void generateImage(ActionEvent event) {
 
-		progressIndicator.setVisible(true);
-
 		if (radioButton1.isSelected()) {
-			System.out.println("RadioButton 1 wurde angeclicket");
+			System.out.println("RadioButton 1 wurde angeklickt");
+
+			startAlgorithm(new TestModule());
 			// TODO
 		} else if (radioButton2.isSelected()) {
-			System.out.println("RadioButton 2 wurde angeclicket");
+			System.out.println("RadioButton 2 wurde angeklickt");
 			// TODO
 		} else if (radioButton3.isSelected()) {
-			System.out.println("RadioButton 3 wurde angeclicket");
+			System.out.println("RadioButton 3 wurde angeklickt");
 			// TODO
 		} else if (radioButton4.isSelected()) {
-			System.out.println("RadioButton 4 wurde angeclicket");
+			System.out.println("RadioButton 4 wurde angeklickt");
 			// TODO
 		} else {
 			System.out.println("Es wurde kein Verfahren ausgewählt");
 		}
+	}
 
-		// progressIndicator.setVisible(false);
+	void startAlgorithm(IModule module) {
+
+		generationLocked = true;
+
+		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);
+
+		progressIndicator.setVisible(true);
+
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
+				float confidence = 0;
+				System.out.println("FINISHED");
+
+				outputImage.setImage(output);
+
+				TrasiWebEvaluator twb = new TrasiWebEvaluator();
+				try {
+					confidence = twb.evaluate(SwingFXUtils.fromFXImage(output, null));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				konfidenzeLabel.setText("Konfidenz:" + confidence);
+				progressIndicator.setVisible(false);
+				generationLocked = false;
+			}
+		});
+
 	}
 
 	@FXML
@@ -116,12 +157,11 @@ public class Controller implements Initializable {
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
 		File file = fileChooser.showSaveDialog(stage);
-		ImageSaver imageSaver = new ImageSaver();
 
 		configuringFileChooser(fileChooser);
 
 		try {
-			imageSaver.saveImage(image, file + " ", null);
+			ImageSaver.saveImage(image, file + " ", null);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Es hat einen Fehler beim speichern des Bildes gegeben");
@@ -140,9 +180,12 @@ public class Controller implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		ObservableList<String> obsList = FXCollections.observableArrayList("Test1", "Test2", "Test3");
-		listView.setItems(obsList);
+		ObservableList<String> obsList = FXCollections.observableArrayList();
+		for (int i = 1; i < 43; i++) {
+			obsList.add("Test" + i);
+		}
 
+		listView.setItems(obsList);
 	}
 
 }
