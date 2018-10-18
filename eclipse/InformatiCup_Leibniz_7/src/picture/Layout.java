@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import picture.features.Feature;
 
 /**
- * The Layout specifies which features are shown on the sign and how they are
+ * The layout specifies which features are shown on the sign and how they are
  * laid out.
  * 
  * @author Fredo
@@ -24,6 +24,19 @@ public class Layout {
 
 	private LayoutType type;
 	private ArrayList<Feature> features = new ArrayList<>();
+
+	/**
+	 * Creates a new layout.
+	 * 
+	 * @param type
+	 *            The layout type
+	 * @param features
+	 *            The list of features on the sign
+	 */
+	public Layout(LayoutType type, ArrayList<Feature> features) {
+		this.type = type;
+		this.features = features;
+	}
 
 	/**
 	 * Draws the features on the sign using the Graphics2D object.

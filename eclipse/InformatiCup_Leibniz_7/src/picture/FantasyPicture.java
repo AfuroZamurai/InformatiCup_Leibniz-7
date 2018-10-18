@@ -5,10 +5,13 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import main.io.ImageSaver;
 import picture.actions.PAction;
+import picture.features.Feature;
+import picture.features.PedestrianFeature;
 
 public class FantasyPicture {
 
@@ -90,7 +93,9 @@ public class FantasyPicture {
 
 	// testing purpose
 	public static void main(String[] args) {
-		Layout layout = new Layout();
+		ArrayList<Feature> features = new ArrayList<>();
+		features.add(new PedestrianFeature());
+		Layout layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 		Border border = new Border(Color.RED, 6);
 		FantasyPicture pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 		BufferedImage img = pic.createImage();
