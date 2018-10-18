@@ -5,9 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import com.sun.javafx.fxml.builder.JavaFXImageBuilder;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +21,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.IModule;
@@ -68,13 +66,16 @@ public class Controller implements Initializable {
 	private ImageView inputImage;
 
 	@FXML
-	private Label konfidenzeLabel;
+	private Label confidenceLabel;
 
 	@FXML
 	private Label inputImageLabel;
 
 	@FXML
 	private Label outputImageLabel;
+
+	@FXML
+	private Label explanationLabel;
 
 	@FXML
 	void ClickedListView(MouseEvent event) {
@@ -110,6 +111,11 @@ public class Controller implements Initializable {
 
 	void startAlgorithm(IModule module) {
 
+		if (generationLocked == true) {
+			System.out.println("Es läuft bereits ein Algorithmus");
+			return;
+		}
+
 		generationLocked = true;
 
 		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);
@@ -120,7 +126,7 @@ public class Controller implements Initializable {
 
 			@Override
 			public void run() {
-				
+
 				Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
 				float confidence = 0;
 				System.out.println("FINISHED");
@@ -133,8 +139,16 @@ public class Controller implements Initializable {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
-				konfidenzeLabel.setText("Konfidenz:" + confidence);
+
+				// confidenceLabel.setText("Konfidenz: " + (int)(confidence * 100) +"%");
+
+				if (confidence >= 0.9) {
+					confidenceLabel.setTextFill(Color.web("#00ff00"));
+					confidenceLabel.setText("Konfidenz: " + (int) (confidence * 100) + "%");
+				} else {
+					confidenceLabel.setTextFill(Color.web("#ff0000"));
+					confidenceLabel.setText("Konfidenz: " + (int) (confidence * 100) + "%");
+				}
 				progressIndicator.setVisible(false);
 				generationLocked = false;
 			}
@@ -161,7 +175,7 @@ public class Controller implements Initializable {
 		configuringFileChooser(fileChooser);
 
 		try {
-			ImageSaver.saveImage(image, file + " ", null);
+			ImageSaver.saveImage(image, file + " ");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Es hat einen Fehler beim speichern des Bildes gegeben");

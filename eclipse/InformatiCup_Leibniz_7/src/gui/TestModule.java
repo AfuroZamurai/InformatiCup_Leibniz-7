@@ -8,7 +8,7 @@ public class TestModule implements IModule {
 
 	@Override
 	public BufferedImage generateImage(BufferedImage input) {
-		
+
 		return input;
 	}
 
