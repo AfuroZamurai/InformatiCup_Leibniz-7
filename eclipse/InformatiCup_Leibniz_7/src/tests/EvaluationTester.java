@@ -6,6 +6,8 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.IEvaluator;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
@@ -29,6 +31,17 @@ public class EvaluationTester {
 			Assert.assertTrue(false);
 		}
 
+	}
+	
+	@Test
+	public void testEvaluationResult() throws Exception {
+		
+		BufferedImage img = EvaluationResult.getExampleImage(Sign.ENDE_UEBERHOLVERBOT_LKW);
+		
+		IEvaluator evaluator = new TrasiWebEvaluator();
+
+		float result = evaluator.evaluate(img);
+		
 	}
 
 }
