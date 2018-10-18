@@ -1,8 +1,6 @@
 package tests;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,16 +30,26 @@ public class EvaluationTester {
 		}
 
 	}
-	
+
 	@Test
 	public void testEvaluationResult() throws Exception {
-		
-		BufferedImage img = EvaluationResult.getExampleImage(Sign.ENDE_UEBERHOLVERBOT_LKW);
-		
-		IEvaluator evaluator = new TrasiWebEvaluator();
 
-		float result = evaluator.evaluate(img);
-		
+		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
+
+		for (int i = 0; i < Sign.values().length; i++) {
+			BufferedImage img = EvaluationResult.getExampleImage(Sign.values()[i]);
+
+			EvaluationResult result = evaluator.evaluateImage(img);
+
+			System.out.print("\n");
+			for (float f : result.scores) {
+
+				System.out.print((int) (f * 100) + ",");
+
+			}
+			System.out.print("\n");
+		}
+
 	}
 
 }
