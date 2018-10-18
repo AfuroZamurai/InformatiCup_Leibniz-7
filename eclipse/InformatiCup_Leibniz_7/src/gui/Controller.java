@@ -25,6 +25,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.IModule;
+import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
 
@@ -57,7 +59,7 @@ public class Controller implements Initializable {
 	private Button SaveImageButton;
 
 	@FXML
-	private ListView<String> listView;
+	private ListView<Sign> listView;
 
 	@FXML
 	private ProgressIndicator progressIndicator;
@@ -79,8 +81,17 @@ public class Controller implements Initializable {
 
 	@FXML
 	void ClickedListView(MouseEvent event) {
-		System.out.println("clicked");
+		System.out.println(""+ listView.getSelectionModel().getSelectedItem());	
+		Sign s = listView.getSelectionModel().getSelectedItem();
+
+		try {
+			inputImage.setImage(SwingFXUtils.toFXImage(EvaluationResult.getExampleImage(s), null));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
 
 	@FXML
 	void fillListView(ActionEvent event) {
@@ -175,7 +186,7 @@ public class Controller implements Initializable {
 		configuringFileChooser(fileChooser);
 
 		try {
-			ImageSaver.saveImage(image, file + " ");
+			ImageSaver.saveImage(image, file + "");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Es hat einen Fehler beim speichern des Bildes gegeben");
@@ -193,10 +204,17 @@ public class Controller implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		
+		
+		Sign[] test = Sign.values();
+		
+		
+		
 
-		ObservableList<String> obsList = FXCollections.observableArrayList();
+		ObservableList<Sign> obsList = FXCollections.observableArrayList();
 		for (int i = 1; i < 43; i++) {
-			obsList.add("Test" + i);
+			obsList.add(test[i]);
 		}
 
 		listView.setItems(obsList);

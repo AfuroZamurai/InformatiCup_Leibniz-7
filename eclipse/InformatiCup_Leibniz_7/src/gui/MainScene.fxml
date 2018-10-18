@@ -27,7 +27,7 @@
          <image>
             <Image url="@../../data/images/00000.png" />
          </image></ImageView>
-      <Label fx:id="confidenceLabel" layoutX="405.0" layoutY="14.0" prefHeight="30.0" prefWidth="126.0" text="Konfidenze:" />
+      <Label fx:id="confidenceLabel" layoutX="405.0" layoutY="14.0" prefHeight="30.0" prefWidth="126.0" text="Konfidenz:" />
       <Label fx:id="inputImageLabel" layoutX="74.0" layoutY="133.0" prefHeight="17.0" prefWidth="126.0" text="Eingabebild" />
       <Label fx:id="outputImageLabel" layoutX="405.0" layoutY="133.0" prefHeight="17.0" prefWidth="111.0" text="Ausgabebild" />
       <ProgressIndicator fx:id="progressIndicator" layoutX="362.0" layoutY="373.0" prefHeight="30.0" prefWidth="50.0" visible="false" />
