@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.lang.Math;
 
-import main.evolution.ga.Gene;
+import main.evolution.ga.GeneticAlgorithm;
+import main.evolution.ga.Genom;
+import main.utils.Evolutionhelper;
 
 /**
  * Implementation of a compositional pattern producing network (CPPN) which will indirectly encode an image.
@@ -38,7 +40,7 @@ public class CPPN {
 	 * @param gene
 	 * @return the created image
 	 */
-	public BufferedImage createImage(Gene gene) {
+	public BufferedImage createImage(Genom gene) {
 		int width = config.getWidth();
 		int height = config.getHeight();
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -72,5 +74,38 @@ public class CPPN {
 		}
 		
 		return image;
+	}
+	
+	private double applyFunction(double argument, int geneValue) {
+		switch (geneValue) {
+		case 0:
+			return Math.cos(argument);
+		case 1:
+			return Math.sin(argument);
+		case 2:
+			return Math.tanh(argument);
+		case 3:
+			return boundedIdentity(0.0, 1.0, argument);
+		case 4:
+			return gaussian(argument);
+		case 5:
+		case 6:
+			return Evolutionhelper.sigmoid(argument);
+		default:
+			// should never happen
+			return argument;
+		}
+	}
+	
+	private double boundedIdentity(double lower, double upper, double value) {
+		return Math.max(lower, Math.min(value, upper));
+	}
+	
+	private double gaussian(double value) {
+		return Math.exp(-1 * (Math.pow(value, 2)) / 0.5);
+	}
+	
+	private int transformGene(int geneValue, double range) {
+		return (int) Math.floor(geneValue / GeneticAlgorithm.MAX_GENE_VALUE * range);
 	}
 }
