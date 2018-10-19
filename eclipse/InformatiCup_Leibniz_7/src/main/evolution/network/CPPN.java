@@ -3,7 +3,9 @@ package main.evolution.network;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.lang.Math;
+import java.util.List;
 
+import main.evolution.ga.Gene;
 import main.evolution.ga.GeneticAlgorithm;
 import main.evolution.ga.Genom;
 import main.utils.Evolutionhelper;
@@ -15,6 +17,8 @@ import main.utils.Evolutionhelper;
  *
  */
 public class CPPN {
+	private final int NUM_INPUT = 4;
+	
 	private final int inlen;
 	private final int outlen;
 	private final Config config;
@@ -40,7 +44,7 @@ public class CPPN {
 	 * @param gene
 	 * @return the created image
 	 */
-	public BufferedImage createImage(Genom gene) {
+	public BufferedImage createImage(Genom genom) {
 		int width = config.getWidth();
 		int height = config.getHeight();
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -48,8 +52,10 @@ public class CPPN {
 		int centerY = config.getHeight() / 2;
 		double maxCenterDist = Math.sqrt((Math.pow(width - centerX, 2) + Math.pow(height -centerY, 2)));
 		
-		//TODO: calculate network size from gene
-		int networkSize = 0;
+		List<Gene> genes = genom.getGenes();
+		
+		//calculate network size from genom
+		int networkSize = NUM_INPUT + genes.size();
 		
 		//set each pixel
 		for(int x = 0; x < width; x++) {
@@ -63,11 +69,22 @@ public class CPPN {
 				network[2] = y / height; // normalized y position
 				network[3] = centerDist; // normalized distance to center
 				
-				//TODO: activate network and set the r, g and b values
+				// activate network
+				for(int neuron = 0; neuron < genes.size(); neuron++) {
+					double value = 0.0;
+					for(int in = 0; in < neuron + 4; in++) {
+						double even = GeneToDoubleRange(genes.get(neuron).getValues().get(1 + (2 * in)), 1);
+						if(even > 0) {
+							double odd = GeneToDoubleRange(genes.get(neuron).getValues().get(1 + (2 * in) + 1), 1);
+							value += network[in] + odd;
+						}
+					}
+					network[neuron + 4] = applyFunction(value, genes.get(neuron).getValues().get(0));
+				}
 				
-				int r = 0;
-				int g = 0;
-				int b = 0;
+				int r = (int) Math.floor(boundedIdentity(0.0, 255.0, network[networkSize - 3] * 255));
+				int g = (int) Math.floor(boundedIdentity(0.0, 255.0, network[networkSize - 2] * 255));
+				int b = (int) Math.floor(boundedIdentity(0.0, 255.0, network[networkSize - 1] * 255));
 				int rgb = new Color(r, g, b).getRGB();
 				image.setRGB(x, y, rgb);
 			}
@@ -105,7 +122,15 @@ public class CPPN {
 		return Math.exp(-1 * (Math.pow(value, 2)) / 0.5);
 	}
 	
-	private int transformGene(int geneValue, double range) {
+	private int GeneToIntegerRange(int geneValue, double range) {
 		return (int) Math.floor(geneValue / GeneticAlgorithm.MAX_GENE_VALUE * range);
+	}
+	
+	private double GeneToDoubleRange(int geneValue, double range) {
+		return ((geneValue - GeneticAlgorithm.MAX_GENE_VALUE / 2.0) * 2.0 / GeneticAlgorithm.MAX_GENE_VALUE) * range;
+	}
+	
+	private void saveNetwork() {
+		
 	}
 }
