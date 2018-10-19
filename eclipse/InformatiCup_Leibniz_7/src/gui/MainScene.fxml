@@ -10,27 +10,27 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="428.0" prefWidth="574.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
    <children>
-      <RadioButton fx:id="radioButton1" layoutX="218.0" layoutY="41.0" mnemonicParsing="false" text="RadioButton">
+      <RadioButton fx:id="radioButton1" layoutX="216.0" layoutY="41.0" mnemonicParsing="false" text="RadioButton">
          <toggleGroup>
             <ToggleGroup fx:id="group1" />
          </toggleGroup></RadioButton>
-      <Button fx:id="generateButton" layoutX="218.0" layoutY="369.0" mnemonicParsing="false" onAction="#generateImage" prefHeight="39.0" prefWidth="126.0" text="Generate" />
-      <ImageView fx:id="outputImage" fitHeight="89.0" fitWidth="87.0" layoutX="405.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true" />
-      <RadioButton fx:id="radioButton2" layoutX="218.0" layoutY="65.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
-      <RadioButton fx:id="radioButton3" layoutX="218.0" layoutY="91.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
-      <RadioButton fx:id="radioButton4" layoutX="218.0" layoutY="117.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
-      <Button fx:id="SaveImageButton" layoutX="429.0" layoutY="368.0" mnemonicParsing="false" onAction="#saveImage" prefHeight="39.0" prefWidth="126.0" text="Save Result" />
-      <ListView fx:id="listView" layoutX="38.0" layoutY="172.0" onEditStart="#fillListView" onMouseClicked="#ClickedListView" prefHeight="217.0" prefWidth="158.0" />
-      <ImageView fx:id="inputImage" fitHeight="89.0" fitWidth="87.0" layoutX="74.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true">
+      <Button fx:id="generateButton" layoutX="312.0" layoutY="484.0" mnemonicParsing="false" onAction="#generateImage" prefHeight="39.0" prefWidth="126.0" text="Generate" />
+      <ImageView fx:id="outputImage" fitHeight="89.0" fitWidth="87.0" layoutX="555.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true" />
+      <RadioButton fx:id="radioButton2" layoutX="216.0" layoutY="65.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
+      <RadioButton fx:id="radioButton3" layoutX="216.0" layoutY="91.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
+      <RadioButton fx:id="radioButton4" layoutX="216.0" layoutY="117.0" mnemonicParsing="false" text="RadioButton" toggleGroup="$group1" />
+      <Button fx:id="SaveImageButton" layoutX="555.0" layoutY="484.0" mnemonicParsing="false" onAction="#saveImage" prefHeight="39.0" prefWidth="126.0" text="Save Result" />
+      <ListView fx:id="listView" layoutX="38.0" layoutY="172.0" onMouseClicked="#ClickedListView" prefHeight="352.0" prefWidth="245.0" />
+      <ImageView fx:id="inputImage" fitHeight="89.0" fitWidth="87.0" layoutX="38.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../data/images/00000.png" />
          </image></ImageView>
-      <Label fx:id="confidenceLabel" layoutX="405.0" layoutY="14.0" prefHeight="30.0" prefWidth="126.0" text="Konfidenz:" />
-      <Label fx:id="inputImageLabel" layoutX="74.0" layoutY="133.0" prefHeight="17.0" prefWidth="126.0" text="Eingabebild" />
-      <Label fx:id="outputImageLabel" layoutX="405.0" layoutY="133.0" prefHeight="17.0" prefWidth="111.0" text="Ausgabebild" />
-      <ProgressIndicator fx:id="progressIndicator" layoutX="362.0" layoutY="373.0" prefHeight="30.0" prefWidth="50.0" visible="false" />
-      <Label fx:id="explanationLabel" alignment="TOP_LEFT" layoutX="218.0" layoutY="172.0" prefHeight="184.0" prefWidth="337.0" text="Erklärungstext zu dem ausgewählten Algorithmus:" />
+      <Label fx:id="confidenceLabel" layoutX="375.0" layoutY="35.0" prefHeight="30.0" prefWidth="126.0" text="Konfidenz:" />
+      <Label fx:id="inputImageLabel" layoutX="38.0" layoutY="142.0" prefHeight="17.0" prefWidth="126.0" text="Eingabebild" />
+      <Label fx:id="outputImageLabel" layoutX="555.0" layoutY="142.0" prefHeight="17.0" prefWidth="111.0" text="Ausgabebild" />
+      <ProgressIndicator fx:id="progressIndicator" layoutX="467.0" layoutY="484.0" prefHeight="39.0" prefWidth="56.0" visible="false" />
+      <Label fx:id="explanationLabel" alignment="TOP_LEFT" layoutX="312.0" layoutY="255.0" prefHeight="204.0" prefWidth="369.0" text="Erklärungstext zu dem ausgewählten Algorithmus:" />
    </children>
 </Pane>
