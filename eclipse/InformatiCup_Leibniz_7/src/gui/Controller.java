@@ -15,6 +15,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -42,11 +44,15 @@ import main.io.ImageSaver;
 
 public class Controller implements Initializable {
 
-	boolean generationLocked = false; // true, when a picture is generated
-
 	float confidence; // recognition value of an image
-
 	final float LIMIT_CONFIDENCE = 0.9f; // smallest value needed to pass the task
+	
+	boolean generationLocked = false; // true, when a picture is generated
+	boolean disableStop = true;
+	boolean disableGenerate = true;
+	boolean disableSave = true;
+	
+	Sign sign;	// Selected Sign
 
 	@FXML
 	private RadioButton radioButton1;
@@ -56,6 +62,9 @@ public class Controller implements Initializable {
 
 	@FXML
 	private Button generateButton;
+	
+	@FXML
+	private Button cancellationButton;
 
 	@FXML
 	private ImageView outputImage;
@@ -94,6 +103,21 @@ public class Controller implements Initializable {
 	private Label explanationLabel;
 
 	/**
+	 * This method is an ActionEvent of the Radio Buttons. If a Sign is selected 
+	 * the Generation Button gets enabled
+	 * @param event
+	 *            a ActionEvent, when you click on a Radio Button
+	 * @see RadioButton
+	 * @see ActionEvent
+	 */
+	@FXML
+	void radioButtonClicked(ActionEvent event) {
+		if(sign != null) {
+			enabelButton(generateButton);
+		}
+	}
+
+	/**
 	 * This method is an MouseEvent of the ListView. Select a Sign in the ListView
 	 * and this Sign appear as an input image in the GUI
 	 * 
@@ -105,12 +129,16 @@ public class Controller implements Initializable {
 	@FXML
 	void ClickedListView(MouseEvent event) {
 		System.out.println("" + listView.getSelectionModel().getSelectedItem());
-		Sign s = listView.getSelectionModel().getSelectedItem();
+		sign = listView.getSelectionModel().getSelectedItem();
 
 		try {
-			inputImage.setImage(SwingFXUtils.toFXImage(EvaluationResult.getExampleImage(s), null));
+			inputImage.setImage(SwingFXUtils.toFXImage(EvaluationResult.getExampleImage(sign), null));
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		
+		if(group1.getSelectedToggle() != null) {
+			enabelButton(generateButton);
 		}
 	}
 
@@ -126,6 +154,8 @@ public class Controller implements Initializable {
 	@FXML
 	void generateImage(ActionEvent event) {
 
+		enabelButton(cancellationButton);
+		disabelButton(generateButton);
 		if (radioButton1.isSelected()) {
 			System.out.println("RadioButton 1 wurde angeklickt");
 
@@ -133,6 +163,7 @@ public class Controller implements Initializable {
 			// TODO
 		} else if (radioButton2.isSelected()) {
 			System.out.println("RadioButton 2 wurde angeklickt");
+			startAlgorithm(new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem()));
 			// TODO
 		} else if (radioButton3.isSelected()) {
 			System.out.println("RadioButton 3 wurde angeklickt");
@@ -141,8 +172,63 @@ public class Controller implements Initializable {
 			System.out.println("RadioButton 4 wurde angeklickt");
 			// TODO
 		} else {
-			System.out.println("Es wurde kein Verfahren ausgewählt");
+
+			showAlertError("Es wurde kein Verfahren ausgewählt");
+			disabelButton(cancellationButton);
+			return;
 		}
+
+	}
+
+	/**
+	 * This method is an ActionEvent of the "Cancellation" Button. Stopps the
+	 * generation of an image
+	 * 
+	 * @param event
+	 *            the click on the button
+	 * @see Button
+	 * @see ActionEvent
+	 */
+	@FXML
+	void cancellation(ActionEvent event) {
+		// TODO
+	}
+
+	/**
+	 * This method is an ActionEvent of the "Save" Button. Takes the output Image
+	 * and start a FileChooser
+	 * 
+	 * @param event
+	 *            the click on the button
+	 * @see Button
+	 * @see ActionEvent
+	 * @see FileChooser
+	 */
+	@FXML
+	void saveImage(ActionEvent event) {
+
+		progressIndicator.setVisible(true);
+
+		if (outputImage.getImage() == null) {
+			showAlertError("Es wurde noch kein Bild generiert, dass gespeichert werden kann.");
+			progressIndicator.setVisible(false);
+			return;
+		}
+
+		BufferedImage image = SwingFXUtils.fromFXImage(outputImage.getImage(), null);
+		Stage stage = new Stage();
+		FileChooser fileChooser = new FileChooser();
+		File file = fileChooser.showSaveDialog(stage);
+
+		configuringFileChooser(fileChooser);
+
+		try {
+			ImageSaver.saveImage(image, file + "");
+		} catch (IOException e) {
+			e.printStackTrace();
+			showAlertError("Es hat einen Fehler beim speichern des Bildes gegeben.");
+		}
+		progressIndicator.setVisible(false);
 	}
 
 	/**
@@ -159,7 +245,7 @@ public class Controller implements Initializable {
 	void startAlgorithm(IModule module) {
 
 		if (generationLocked == true) {
-			System.out.println("Es läuft bereits ein Algorithmus");
+			showAlertError("Es läuft bereits ein Algorithmus");
 			return;
 		}
 
@@ -179,14 +265,22 @@ public class Controller implements Initializable {
 						Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
 						outputImage.setImage(output);
 						TrasiWebEvaluator twb = new TrasiWebEvaluator();
+						EvaluationResult er;
 						try {
-							confidence = twb.evaluate(SwingFXUtils.fromFXImage(output, null));
+							// get confidence from outputImage for the selected sign
+
+							er = twb.evaluateImage(SwingFXUtils.fromFXImage(output, null));
+							confidence = er.getConfidenceForSign(listView.getSelectionModel().getSelectedItem());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 
 						progressIndicator.setVisible(false);
 						generationLocked = false;
+						
+						enabelButton(generateButton);
+						disabelButton(cancellationButton);
+						enabelButton(SaveImageButton);
 
 						final CountDownLatch latch = new CountDownLatch(1);
 						Platform.runLater(new Runnable() {
@@ -220,43 +314,6 @@ public class Controller implements Initializable {
 	}
 
 	/**
-	 * This method is an ActionEvent of the "Save" Button. Takes the output Image
-	 * and start a FileChooser
-	 * 
-	 * @param event
-	 *            the click on the button
-	 * @see Button
-	 * @see ActionEvent
-	 * @see FileChooser
-	 */
-	@FXML
-	void saveImage(ActionEvent event) {
-
-		progressIndicator.setVisible(true);
-
-		if (outputImage.getImage() == null) {
-			System.out.println("Es wurde noch kein Bild generiert, dass gespeichert werden kann.");
-			progressIndicator.setVisible(false);
-			return;
-		}
-
-		BufferedImage image = SwingFXUtils.fromFXImage(outputImage.getImage(), null);
-		Stage stage = new Stage();
-		FileChooser fileChooser = new FileChooser();
-		File file = fileChooser.showSaveDialog(stage);
-
-		configuringFileChooser(fileChooser);
-
-		try {
-			ImageSaver.saveImage(image, file + "");
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Es hat einen Fehler beim speichern des Bildes gegeben");
-		}
-		progressIndicator.setVisible(false);
-	}
-
-	/**
 	 * The method sets the setting for the file chooser Set the Initial Directory to
 	 * Home directory
 	 * 
@@ -268,6 +325,18 @@ public class Controller implements Initializable {
 
 		fileChooser.setTitle("Explorer");
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+	}
+
+	/**
+	 * The method starts an error screen and show a message
+	 * 
+	 * @param message
+	 *            text with information about the error
+	 * @see Alert
+	 */
+	public static void showAlertError(String message) {
+		Alert alert = new Alert(AlertType.ERROR, message);
+		alert.showAndWait();
 	}
 
 	/**
@@ -292,4 +361,25 @@ public class Controller implements Initializable {
 
 		listView.setItems(obsList);
 	}
+	
+	/**
+	 * @param button
+	 * @see Button
+	 */
+	private void disabelButton(Button button){
+		
+		button.setDisable(true);
+		
+	}
+	
+	/**
+	 * @param button          
+	 * @see Button
+	 */
+	private void enabelButton(Button button){
+		
+		button.setDisable(false);
+		
+	}
 }
+
