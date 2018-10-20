@@ -205,13 +205,26 @@ public class TrasiWebEvaluator implements IEvaluator {
 
 		// Image must be present in file format to upload it TODO: Find workaround
 		File imageFile = ImageSaver.saveImage(image, "data/tmp/image");
+		
+		boolean done = false;
+		String response = "";
+		
+		while(!done) {
+			System.out.println("Sending Request...");
 
-		System.out.println("Sending Request...");
+			response = sendRequest(imageFile);
 
-		String response = sendRequest(imageFile);
-
-		System.out.println("Response: " + response);
-
+			System.out.println("Response: " + response.trim());
+			
+			if(!response.startsWith("429")) {
+				done = true;
+				break;
+			}
+			
+			System.out.println("Server is overloaded, waiting 2000ms, then try again");
+			Thread.sleep(2000);
+		}
+		
 		if (!response.startsWith("200")) {
 			// Invalid response, return null
 			return null;
