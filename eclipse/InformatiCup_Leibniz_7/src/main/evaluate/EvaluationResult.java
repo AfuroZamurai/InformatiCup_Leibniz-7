@@ -114,7 +114,7 @@ public class EvaluationResult {
 			"Rechts vorbei",
 			"Links vorbei",
 			"Kreisverkehr",
-			"Ende des Überholverbotes",
+			"Ende des Überholverbotes für Kraftfahrzeuge aller Art",
 			"Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t"
 	};
 	
