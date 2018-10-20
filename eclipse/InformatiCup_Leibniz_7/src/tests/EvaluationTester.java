@@ -37,16 +37,22 @@ public class EvaluationTester {
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
 
 		for (int i = 0; i < Sign.values().length; i++) {
+			System.out.println("Testing Class: " + Sign.values()[i]);
+			
 			BufferedImage img = EvaluationResult.getExampleImage(Sign.values()[i]);
-
+			
 			EvaluationResult result = evaluator.evaluateImage(img);
-
-			System.out.print("\n");
+			
 			for (float f : result.scores) {
 
 				System.out.print((int) (f * 100) + ",");
 
 			}
+			System.out.print("\n");
+			
+			System.out.println("Confidence for this class: " + result.getConfidenceForSign(Sign.values()[i]));
+			
+			System.out.print("\n");
 			System.out.print("\n");
 		}
 
