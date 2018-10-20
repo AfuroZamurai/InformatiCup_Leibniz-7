@@ -1,7 +1,11 @@
 package main.evolution.ga;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
+import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.TrasiWebEvaluator;
 import main.evolution.network.CPPN;
 
 /**
@@ -13,9 +17,7 @@ import main.evolution.network.CPPN;
 public class CuckooSearch extends GeneticAlgorithm {
 	
 	private CPPN net;
-	private final int populationSize;
-	private final float targetFitness;
-	private final int generationCap;
+	private Sign target;
 	
 	/**
 	 * Instantiates a cuckoo search.
@@ -25,12 +27,10 @@ public class CuckooSearch extends GeneticAlgorithm {
 	 * @param targetFitness minimum fitness which must be reached for the algorithm to terminate
 	 * @param generationCap maximum number of generations the algorithm will search 
 	 */
-	public CuckooSearch(CPPN net, int populationSize, float targetFitness, int generationCap) {
-		super();
+	public CuckooSearch(CPPN net, int populationSize, float targetFitness, int generationCap, Sign target) {
+		super(populationSize, targetFitness, generationCap);
 		this.net = net;
-		this.populationSize = populationSize;
-		this.targetFitness = targetFitness;
-		this.generationCap = generationCap;
+		this.target = target;
 	}
 
 	/**
@@ -40,16 +40,30 @@ public class CuckooSearch extends GeneticAlgorithm {
 	 * @return a BufferedImage of the resulting fooling image
 	 */
 	public BufferedImage searchForImage(String inputClass) {
-		
-		return null;
+		run();
+		Genom best = getBestGenom();
+		return net.createImage(best);
 	}
 	
 	private float getFitness() {
 		return 0.0f;
 	}
 	
+	@Override
+	protected void createPopulation() {
+		for(int i = 0; i < populationSize; i++) {
+			Genom genom = new Genom(-1.0f, net.createRandomGene(), net);
+			population.addGenom(genom);
+		}
+	}
+	
 	private void createNewNests() {
 		
+	}
+	
+	@Override
+	protected void createOffspring() {
+		createNewNests();
 	}
 	
 	@Override
@@ -59,5 +73,37 @@ public class CuckooSearch extends GeneticAlgorithm {
 	
 	private void performLevyFlight( ) {
 		
+	}
+	
+	@Override
+	protected void calculateFitness( ) {
+		List<Genom> genoms = population.getGenoms();
+		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
+		for(Genom genom : genoms) {
+			BufferedImage image = net.createImage(genom);
+			EvaluationResult result;
+			try {
+				result = evaluator.evaluateImage(image);
+				if (result != null) {
+					float fitness = result.getConfidenceForSign(target);
+					genom.setFitness(fitness);
+				} else {
+					Thread.sleep(950);
+					result = evaluator.evaluateImage(image);
+					if (result != null) {
+						float fitness = result.getConfidenceForSign(target);
+						genom.setFitness(fitness);
+					} else {
+						// TODO: find a better solution
+						// prevent endless loop if service is unavailable
+						genom.setFitness(0.0f);
+						System.out.println("Evaluation currently impossible!");
+					}
+				}
+			} catch (Exception e) {
+				//wrong image size, shouldn't happen
+				genom.setFitness(0.0f);
+			}	
+		}
 	}
 }

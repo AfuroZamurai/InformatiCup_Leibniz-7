@@ -39,6 +39,10 @@ public class CPPN {
 		assert config.getMaxHlSize() >= config.getMinHlSize();
 	}
 	
+	public Gene createRandomGene() {
+		return new Gene(55);
+	}
+	
 	/**
 	 * Creates an image using the CPPN. 
 	 * @param gene
@@ -73,13 +77,13 @@ public class CPPN {
 				for(int neuron = 0; neuron < genes.size(); neuron++) {
 					double value = 0.0;
 					for(int in = 0; in < neuron + 4; in++) {
-						double even = GeneToDoubleRange(genes.get(neuron).getValues().get(1 + (2 * in)), 1);
+						double even = GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in)], 1);
 						if(even > 0) {
-							double odd = GeneToDoubleRange(genes.get(neuron).getValues().get(1 + (2 * in) + 1), 1);
+							double odd = GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in) + 1], 1);
 							value += network[in] + odd;
 						}
 					}
-					network[neuron + 4] = applyFunction(value, genes.get(neuron).getValues().get(0));
+					network[neuron + 4] = applyFunction(value, genes.get(neuron).getValues()[0]);
 				}
 				
 				int r = (int) Math.floor(boundedIdentity(0.0, 255.0, network[networkSize - 3] * 255));
@@ -94,7 +98,7 @@ public class CPPN {
 	}
 	
 	private double applyFunction(double argument, int geneValue) {
-		switch (geneValue) {
+		switch (GeneToIntegerRange(geneValue, 6)) {
 		case 0:
 			return Math.cos(argument);
 		case 1:
