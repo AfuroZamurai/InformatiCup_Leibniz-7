@@ -132,45 +132,9 @@ public class TrasiWebEvaluator implements IEvaluator {
 	@Override
 	public float evaluate(BufferedImage image) throws Exception {
 
-		// Check if image has neccessary dimensions
-		int width = image.getWidth();
-		int height = image.getHeight();
+		EvaluationResult result = evaluateImage(image);
 
-		if (width != IMAGE_WIDTH || height != IMAGE_HEIGHT) {
-			throw new Exception("Width and height need to be " + IMAGE_WIDTH + "x" + IMAGE_HEIGHT + " but are " + width
-					+ "x" + height);
-		}
-
-		// If this is first call to programm, load the api key
-		if (API_KEY == null) {
-			loadKey();
-		}
-
-		// Create tmp folder
-		new File("data/tmp").mkdirs();
-
-		// Image must be present in file format to upload it TODO: Find workaround
-		File imageFile = ImageSaver.saveImage(image, "data/tmp/image");
-
-		System.out.println("Sending Request...");
-
-		String response = sendRequest(imageFile);
-
-		System.out.println("Response: " + response);
-
-		if (!response.startsWith("200")) {
-			// Invalid response, return -1
-			return -1;
-		}
-
-		// Filter out the highest(first) confidence score of string and return as score
-		String score = response.substring(response.indexOf("confidence\":") + 12, response.indexOf("}"));
-
-		float confidence = Float.parseFloat(score);
-
-		System.out.println("Confidence: " + confidence);
-
-		return confidence;
+		return result.getMaxValue();
 	}
 
 	/**
