@@ -1,6 +1,8 @@
 package main.io;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -22,7 +24,11 @@ import javax.imageio.ImageIO;
  *
  */
 public class ImageLoader {
-
+	
+	
+	public static final int TARGET_WIDTH = 64;
+	public static final int TARGET_HEIGHT = 64;
+	
 	/**
 	 * This methods loads an image from the file system and returns a buffered Image
 	 * object
@@ -53,6 +59,8 @@ public class ImageLoader {
 		if (img == null) {
 			throw new IOException("Unsupported Image Format!");
 		}
+		
+		img = resize(img, TARGET_WIDTH, TARGET_HEIGHT);
 
 		return img;
 	}
@@ -99,7 +107,9 @@ public class ImageLoader {
 				if (img == null) {
 					throw new IOException("Unsupported Image Format!");
 				}
-
+				
+				img = resize(img, TARGET_WIDTH, TARGET_HEIGHT);
+				
 				list.add(img);
 			}
 		}
@@ -157,5 +167,22 @@ public class ImageLoader {
 
 		return output;
 	}
+	/**
+	 * Resizes a given buffered Image to the given width and heigth
+	 * @param img The image to be resized
+	 * @param width The width the image should have
+	 * @param height the height the image should have
+	 * @return The resized image
+	 */
+	private static BufferedImage resize(BufferedImage img, int width,  int height) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        
+        return resized;
+    }
 
 }

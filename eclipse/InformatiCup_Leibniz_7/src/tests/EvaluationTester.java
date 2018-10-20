@@ -1,11 +1,11 @@
 package tests;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.IEvaluator;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
@@ -27,6 +27,27 @@ public class EvaluationTester {
 
 			e.printStackTrace();
 			Assert.assertTrue(false);
+		}
+
+	}
+
+	@Test
+	public void testEvaluationResult() throws Exception {
+
+		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
+
+		for (int i = 0; i < Sign.values().length; i++) {
+			BufferedImage img = EvaluationResult.getExampleImage(Sign.values()[i]);
+
+			EvaluationResult result = evaluator.evaluateImage(img);
+
+			System.out.print("\n");
+			for (float f : result.scores) {
+
+				System.out.print((int) (f * 100) + ",");
+
+			}
+			System.out.print("\n");
 		}
 
 	}

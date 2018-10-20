@@ -5,8 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,13 +21,32 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.IModule;
+import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
 
+/**
+ * This class is the Controller for the GUI
+ * 
+ * @author Dorian
+ *
+ */
+
 public class Controller implements Initializable {
+
+	boolean generationLocked = false; // true, when a picture is generated
+
+	float confidence; // recognition value of an image
+
+	final float LIMIT_CONFIDENCE = 0.9f; // smallest value needed to pass the task
 
 	@FXML
 	private RadioButton radioButton1;
@@ -50,7 +73,7 @@ public class Controller implements Initializable {
 	private Button SaveImageButton;
 
 	@FXML
-	private ListView<String> listView;
+	private ListView<Sign> listView;
 
 	@FXML
 	private ProgressIndicator progressIndicator;
@@ -59,7 +82,7 @@ public class Controller implements Initializable {
 	private ImageView inputImage;
 
 	@FXML
-	private Label konfidenzeLabel;
+	private Label confidenceLabel;
 
 	@FXML
 	private Label inputImageLabel;
@@ -68,39 +91,144 @@ public class Controller implements Initializable {
 	private Label outputImageLabel;
 
 	@FXML
-	void ClickedListView(MouseEvent event) {
-		System.out.println("clicked");
-	}
+	private Label explanationLabel;
 
+	/**
+	 * This method is an MouseEvent of the ListView. Select a Sign in the ListView
+	 * and this Sign appear as an input image in the GUI
+	 * 
+	 * @param event
+	 *            a MouseEvent, when you click on a Sign in the listView
+	 * @see ListView
+	 * @see MouseEvent
+	 */
 	@FXML
-	void fillListView(ActionEvent event) {
-		System.out.println("Fill");
+	void ClickedListView(MouseEvent event) {
+		System.out.println("" + listView.getSelectionModel().getSelectedItem());
+		Sign s = listView.getSelectionModel().getSelectedItem();
+
+		try {
+			inputImage.setImage(SwingFXUtils.toFXImage(EvaluationResult.getExampleImage(s), null));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
+	/**
+	 * This method is an ActionEvent of the "Generate" Button. Takes the selected
+	 * algorithm (RadioButton) and start the generation of the output image
+	 * 
+	 * @param event
+	 *            the click on the button
+	 * @see Button
+	 * @see ActionEvent
+	 */
 	@FXML
 	void generateImage(ActionEvent event) {
 
-		progressIndicator.setVisible(true);
-
 		if (radioButton1.isSelected()) {
-			System.out.println("RadioButton 1 wurde angeclicket");
+			System.out.println("RadioButton 1 wurde angeklickt");
+
+			startAlgorithm(new TestModule());
 			// TODO
 		} else if (radioButton2.isSelected()) {
-			System.out.println("RadioButton 2 wurde angeclicket");
+			System.out.println("RadioButton 2 wurde angeklickt");
 			// TODO
 		} else if (radioButton3.isSelected()) {
-			System.out.println("RadioButton 3 wurde angeclicket");
+			System.out.println("RadioButton 3 wurde angeklickt");
 			// TODO
 		} else if (radioButton4.isSelected()) {
-			System.out.println("RadioButton 4 wurde angeclicket");
+			System.out.println("RadioButton 4 wurde angeklickt");
 			// TODO
 		} else {
 			System.out.println("Es wurde kein Verfahren ausgewählt");
 		}
-
-		// progressIndicator.setVisible(false);
 	}
 
+	/**
+	 * This method start the generation of an Image with an given algorithm. The
+	 * program generates only one picture at time and runs as a separate thread.
+	 * After generating the image it will be shown on the screen as well as the
+	 * confidence.
+	 * 
+	 * @param module
+	 *            algorithm for generating images
+	 * @see IModule
+	 * @see Service
+	 */
+	void startAlgorithm(IModule module) {
+
+		if (generationLocked == true) {
+			System.out.println("Es läuft bereits ein Algorithmus");
+			return;
+		}
+
+		generationLocked = true;
+
+		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);
+
+		progressIndicator.setVisible(true);
+
+		Service<Void> service = new Service<Void>() {
+			@Override
+			protected Task<Void> createTask() {
+				return new Task<Void>() {
+					@Override
+					protected Void call() throws Exception {
+						// Background work
+						Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
+						outputImage.setImage(output);
+						TrasiWebEvaluator twb = new TrasiWebEvaluator();
+						try {
+							confidence = twb.evaluate(SwingFXUtils.fromFXImage(output, null));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						progressIndicator.setVisible(false);
+						generationLocked = false;
+
+						final CountDownLatch latch = new CountDownLatch(1);
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									// FX Stuff done here
+									// Set the confidence value in the Gui, coloured red if the value is less than a
+									// given limit, else green
+									if (confidence >= LIMIT_CONFIDENCE) {
+										confidenceLabel.setTextFill(Color.web("#00ff00"));
+										confidenceLabel.setText("Konfidenz: " + (int) (confidence * 100) + "%");
+									} else {
+										confidenceLabel.setTextFill(Color.web("#ff0000"));
+										confidenceLabel.setText("Konfidenz: " + (int) (confidence * 100) + "%");
+									}
+
+								} finally {
+									latch.countDown();
+								}
+							}
+						});
+						latch.await();
+						// Keep with the background work
+						return null;
+					}
+				};
+			}
+		};
+		service.start();
+	}
+
+	/**
+	 * This method is an ActionEvent of the "Save" Button. Takes the output Image
+	 * and start a FileChooser
+	 * 
+	 * @param event
+	 *            the click on the button
+	 * @see Button
+	 * @see ActionEvent
+	 * @see FileChooser
+	 */
 	@FXML
 	void saveImage(ActionEvent event) {
 
@@ -116,33 +244,52 @@ public class Controller implements Initializable {
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
 		File file = fileChooser.showSaveDialog(stage);
-		ImageSaver imageSaver = new ImageSaver();
 
 		configuringFileChooser(fileChooser);
 
 		try {
-			imageSaver.saveImage(image, file + " ", null);
+			ImageSaver.saveImage(image, file + "");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Es hat einen Fehler beim speichern des Bildes gegeben");
 		}
-
 		progressIndicator.setVisible(false);
-
 	}
 
+	/**
+	 * The method sets the setting for the file chooser Set the Initial Directory to
+	 * Home directory
+	 * 
+	 * @param fileChooser
+	 *            file save dialogs
+	 * @see FileChooser
+	 */
 	private void configuringFileChooser(FileChooser fileChooser) {
 
 		fileChooser.setTitle("Explorer");
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); // Set Initial Directory
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 	}
 
+	/**
+	 * This method is called by starting the GUI and initializes the listView
+	 * 
+	 * @param url
+	 *            an absolute URL giving the base location of the image
+	 * @param resources
+	 *            bundles contain locale-specific objects
+	 * @see URL
+	 * @see ResourceBundle
+	 * @see ObservableList
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		ObservableList<String> obsList = FXCollections.observableArrayList("Test1", "Test2", "Test3");
+		Sign[] arrayOfSigns = Sign.values();
+		ObservableList<Sign> obsList = FXCollections.observableArrayList();
+		for (int i = 1; i < 43; i++) {
+			obsList.add(arrayOfSigns[i]);
+		}
+
 		listView.setItems(obsList);
-
 	}
-
 }
