@@ -126,7 +126,8 @@ public class EvaluationResult {
 	/**
 	 * Creates an EvaluationResult from the json String of the Response
 	 * 
-	 * @param result The JsonString returned by the response
+	 * @param result 
+	 * 		The JsonString returned by the response
 	 * @throws Exception When Json could not be parsed
 	 */
 	public EvaluationResult(String result) throws Exception	{
@@ -154,6 +155,19 @@ public class EvaluationResult {
 			}
 			
 		}
+	}
+	
+	/**
+	 * 
+	 * Returns the confidence of the given sign class
+	 * 
+	 * @param s 
+	 * 		The Sign class
+	 * @return The confidence between 0 and 1
+	 */
+	public float getConfidenceForSign(Sign s) {
+		
+		return scores[s.ordinal()];
 	}
 	
 	/**
