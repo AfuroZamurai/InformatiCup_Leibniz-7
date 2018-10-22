@@ -218,7 +218,7 @@ public class EvaluationResult {
 	 * @return The Sign it belongs to
 	 * @throws Exception name is not found in list
 	 */
-	private static Sign mapClassNameToSign(String name) throws Exception {
+	public static Sign mapClassNameToSign(String name) throws Exception {
 		
 		for(int n = 0; n < classNames.length; n++) {
 			if(classNames[n].equals(name)) {
