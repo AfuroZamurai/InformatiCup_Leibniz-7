@@ -1,17 +1,19 @@
 package picture;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
+import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IEvaluator;
+import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
 import picture.actions.PAction;
-import picture.features.Feature;
-import picture.features.PedestrianFeature;
 
 public class FantasyPicture {
 
@@ -59,10 +61,10 @@ public class FantasyPicture {
 	public BufferedImage createImage() {
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image.createGraphics();
-		g.setColor(Color.WHITE);
+		g.setColor(Color.GRAY);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
-		//drawing the border
+		// drawing the border
 		switch (shape) {
 		case CIRCLE:
 			g.setColor(border.getColor());
@@ -70,7 +72,7 @@ public class FantasyPicture {
 			g.setColor(bgColor);
 			g.fillOval(PADDING + border.getWidth(), PADDING + border.getWidth(),
 					WIDTH - 2 * (PADDING + border.getWidth()), HEIGHT - 2 * (PADDING + border.getWidth()));
-			g.setColor(Color.BLACK);
+			g.setColor(Color.WHITE);
 			g.drawOval(PADDING, PADDING, WIDTH - 2 * PADDING, HEIGHT - 2 * PADDING);
 			break;
 		case OCTAGON:
@@ -80,30 +82,45 @@ public class FantasyPicture {
 		case SQUARE:
 			break;
 		case TRIANGLE:
+			int[] xPoints = new int[] {4, 60, 32};
+			int[] yPoints = new int[] {52, 52, 6};
+			g.setColor(bgColor);
+			g.fillPolygon(xPoints, yPoints, 3);
+			g.setColor(Color.WHITE);
+			g.setStroke(new BasicStroke(border.getWidth() + 2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			g.drawPolygon(xPoints, yPoints, 3);
+			g.setColor(border.getColor());
+			g.setStroke(new BasicStroke(border.getWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			g.drawPolygon(xPoints, yPoints, 3);
 			break;
 		default:
 			break;
 		}
 
-		//drawing the features
+		// drawing the features
 		layout.drawFeatures(g);
-		
+
 		return image;
 	}
 
 	// testing purpose
 	public static void main(String[] args) {
-		ArrayList<Feature> features = new ArrayList<>();
-		features.add(new PedestrianFeature());
-		Layout layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
-		Border border = new Border(Color.RED, 6);
-		FantasyPicture pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
+		FantasyPicture pic = FantasyPictureCollection.createFantasyPictureFromSign(Sign.BAUSTELLE);
 		BufferedImage img = pic.createImage();
 		String path = Paths.get(".").toAbsolutePath().normalize().toString();
 		try {
 			ImageSaver.saveImage(img, path);
 		} catch (IOException e) {
 			System.out.println("could not save image");
+		}
+		IEvaluator evaluator = new TrasiWebEvaluator();
+		try {
+			EvaluationResult res = evaluator.evaluateImage(img);
+			System.out.println("Result: " + res.getMaxSign().toString() + " Value: " + res.getMaxValue());
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
 		}
 	}
 
