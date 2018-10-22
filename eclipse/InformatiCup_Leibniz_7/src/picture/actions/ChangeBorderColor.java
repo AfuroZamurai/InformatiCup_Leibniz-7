@@ -13,13 +13,13 @@ import picture.FantasyPicture;
  */
 public class ChangeBorderColor implements PAction {
 
+	/** New color of the border */
 	private Color newBorderColor;
 
 	/**
 	 * Creates a new Action which changes the color of the border.
 	 * 
-	 * @param newBorderColor
-	 *            The new color of the border
+	 * @param newBorderColor The new color of the border
 	 */
 	public ChangeBorderColor(Color newBorderColor) {
 		this.newBorderColor = newBorderColor;

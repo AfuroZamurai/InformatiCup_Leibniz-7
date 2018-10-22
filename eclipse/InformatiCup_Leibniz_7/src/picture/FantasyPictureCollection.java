@@ -12,14 +12,28 @@ import picture.features.UnevenGroundFeature;
 import picture.features.WarningFeature;
 import picture.features.PedestrianFeature;
 
+/**
+ * This class gives a collection of all available signs as FantasyPictures. It
+ * is used to get a FantasyPicture representation of one of the signs to then
+ * alter its appearance using the available actions.
+ * 
+ * @author Fredo
+ *
+ */
 public class FantasyPictureCollection {
 
+	/**
+	 * Creates a FantasyPicture representation from a sing.
+	 * 
+	 * @param sign The sign whose representation should be returned
+	 * @return The FantasyPicture of the sign
+	 */
 	public static FantasyPicture createFantasyPictureFromSign(Sign sign) {
 		ArrayList<Feature> features = new ArrayList<>();
 		Layout layout = null;
 		Border border = null;
 		FantasyPicture pic = null;
-		
+
 		switch (sign) {
 		case BAUSTELLE:
 			features.add(new ConstructionSiteFeature());
@@ -161,7 +175,7 @@ public class FantasyPictureCollection {
 		default:
 			break;
 		}
-		
+
 		return pic;
 	}
 }

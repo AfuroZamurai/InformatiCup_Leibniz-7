@@ -9,11 +9,25 @@ import java.io.IOException;
 
 import main.io.ImageLoader;
 
+/**
+ * This class is responsible for loading feature images. The ImageLoader class
+ * can't be used for the features since ImageLoader can't preserve transparency.
+ * 
+ * @author Fredo
+ *
+ */
 public class FeatureLoader implements ImageObserver {
 
+	/** Indicates whether the init picture is drawn */
 	private boolean imgDrawn = false;
+
+	/** Graphics object used to draw the init picture */
 	private Graphics g;
 
+	/**
+	 * Creates a new FeatureLoader and loads the init picture used for loading a
+	 * feature.
+	 */
 	public FeatureLoader() {
 		try {
 			BufferedImage img = ImageLoader.loadImage("data/images/00000.png");
@@ -24,6 +38,12 @@ public class FeatureLoader implements ImageObserver {
 		}
 	}
 
+	/**
+	 * Loads a feature while preserving its transparency.
+	 * 
+	 * @param path The file path to the image that is loaded
+	 * @return The Image that was loaded
+	 */
 	public Image loadFeature(String path) {
 		Image img = null;
 

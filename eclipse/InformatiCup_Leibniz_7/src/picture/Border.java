@@ -11,7 +11,14 @@ import java.awt.Color;
  */
 public class Border {
 
+	/**
+	 * Color of the border
+	 */
 	private Color color; // Color of the border
+	
+	/**
+	 * Width of the border
+	 */
 	private int width; // border width
 
 	/**
