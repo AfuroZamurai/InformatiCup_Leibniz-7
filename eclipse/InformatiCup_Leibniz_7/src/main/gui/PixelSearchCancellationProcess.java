@@ -1,4 +1,4 @@
-package gui;
+package main.gui;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -8,11 +8,21 @@ import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
 
+/**
+ * This class contains the implementation of an image manipulate algorithm. 
+ * From an input image, the confidence is measured. Then a group of pixels is set to
+ * black and a new confidence is measured. If the new confidence is higher, the
+ * pixels in the output image are set to black otherwise white.
+ * 
+ * @author Dorian
+ *
+ */
+
 public class PixelSearchCancellationProcess implements IModule {
 
 	final int IMAGEHEIGHT = 64;
 	final int IMAGEWIDTH = 64;
-	final int FILTER = 8;
+	final int FILTER = 4;
 	final double ERROR_TOLERANCE = 0.0000005;
 
 	Sign sign;
@@ -21,10 +31,25 @@ public class PixelSearchCancellationProcess implements IModule {
 	BufferedImage outputImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
 	float confidence;
 
-	public PixelSearchCancellationProcess(Sign selectedItem) {
-		sign = selectedItem;
+	/**
+	 * Constructor
+	 * 
+	 * @param sign
+	 *            meaning of the input image
+	 * @see Sign
+	 */
+	public PixelSearchCancellationProcess(Sign sign) {
+		this.sign = sign;
 	}
 
+	/**
+	 * This method get an Image and generate an new one.
+	 * 
+	 * @param input
+	 *            a image that get changed
+	 * @return new image
+	 * @see BufferedImage
+	 */
 	@Override
 	public BufferedImage generateImage(BufferedImage input) {
 
@@ -72,7 +97,7 @@ public class PixelSearchCancellationProcess implements IModule {
 					er = twb.evaluateImage(inputImage);
 					newConfidenceValue = er.getConfidenceForSign(sign); // get confidence from InputImage with changed Pixel
 
-					Thread.sleep(1000);
+					Thread.sleep(950);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

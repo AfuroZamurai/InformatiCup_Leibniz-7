@@ -12,13 +12,13 @@ import picture.FantasyPicture;
  */
 public class ChangeBGColor implements PAction {
 
-	/** New color of the background */
 	private Color newBGColor;
 
 	/**
 	 * Creates a new action which changes the background color of the sign.
 	 * 
-	 * @param newBGColor The new background color of the sign.
+	 * @param newBGColor
+	 *            The new background color of the sign.
 	 */
 	public ChangeBGColor(Color newBGColor) {
 		this.newBGColor = newBGColor;

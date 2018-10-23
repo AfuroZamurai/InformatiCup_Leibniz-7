@@ -22,17 +22,16 @@ public class Layout {
 		ONE_FEATURE_AND_TEXT // one feature and a text underneath
 	}
 
-	/** Type of the layout */
 	private LayoutType type;
-
-	/** List of features on this sign */
 	private ArrayList<Feature> features = new ArrayList<>();
 
 	/**
 	 * Creates a new layout.
 	 * 
-	 * @param type     The layout type
-	 * @param features The list of features on the sign
+	 * @param type
+	 *            The layout type
+	 * @param features
+	 *            The list of features on the sign
 	 */
 	public Layout(LayoutType type, ArrayList<Feature> features) {
 		this.type = type;
@@ -42,7 +41,8 @@ public class Layout {
 	/**
 	 * Draws the features on the sign using the Graphics2D object.
 	 * 
-	 * @param g The Graphics2D object used to draw on the sign
+	 * @param g
+	 *            The Graphics2D object used to draw on the sign
 	 */
 	public void drawFeatures(Graphics2D g) {
 		for (Feature feature : features) {

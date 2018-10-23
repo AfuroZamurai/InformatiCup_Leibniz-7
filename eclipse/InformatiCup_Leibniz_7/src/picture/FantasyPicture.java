@@ -15,52 +15,21 @@ import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
 import picture.actions.PAction;
 
-/**
- * This class describes the picture of a traffic sign. Its appearance can be
- * modified to create all sorts of known traffic signs and to create completely
- * new ones, so called fantasy signs.
- * 
- * @author Fredo
- *
- */
 public class FantasyPicture {
 
-	/**
-	 * This enum classifies the shape of the sign.
-	 */
 	public enum Shape {
 		SQUARE, CIRCLE, TRIANGLE, OCTAGON, REV_TRIANGLE
 	}
 
-	/** fixed width of the sign */
 	private final int WIDTH = 64;
-
-	/** fixed height of the sign */
 	private final int HEIGHT = 64;
-
-	/** fixed padding between sign and picture edge */
 	private final int PADDING = 1;
 
-	/** shape of the sign */
-	private Shape shape;
+	private Shape shape; // shape of the sign
+	private Color bgColor; // background color of the sign
+	private Layout layout; // layout of the sign containing the features
+	private Border border; // border of the sign
 
-	/** background color of the sign */
-	private Color bgColor;
-
-	/** layout of the sign containing the features */
-	private Layout layout;
-
-	/** border of the sign */
-	private Border border;
-
-	/**
-	 * Creates a new FantasyPicture.
-	 * 
-	 * @param shape   Shape of the new sign
-	 * @param bgColor background color of the new sign
-	 * @param layout  layout of the new sign
-	 * @param border  border of the new sign
-	 */
 	public FantasyPicture(Shape shape, Color bgColor, Layout layout, Border border) {
 		this.shape = shape;
 		this.bgColor = bgColor;
@@ -84,21 +53,11 @@ public class FantasyPicture {
 		return border;
 	}
 
-	/**
-	 * Returns a list of actions that can be applied to this picture to alter its
-	 * appearance.
-	 * 
-	 * @return A list of available actions
-	 */
 	public List<PAction> getAvailableActions() {
 		return null;
 	}
 
-	/**
-	 * Renders the sign into an actual picture.
-	 * 
-	 * @return A BufferedImage of this sign
-	 */
+	// renders the fantasy picture into an actual image
 	public BufferedImage createImage() {
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image.createGraphics();
@@ -123,8 +82,8 @@ public class FantasyPicture {
 		case SQUARE:
 			break;
 		case TRIANGLE:
-			int[] xPoints = new int[] { 4, 60, 32 };
-			int[] yPoints = new int[] { 52, 52, 6 };
+			int[] xPoints = new int[] {4, 60, 32};
+			int[] yPoints = new int[] {52, 52, 6};
 			g.setColor(bgColor);
 			g.fillPolygon(xPoints, yPoints, 3);
 			g.setColor(Color.WHITE);

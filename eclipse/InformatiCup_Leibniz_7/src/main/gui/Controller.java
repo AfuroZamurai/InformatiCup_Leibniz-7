@@ -1,4 +1,4 @@
-package gui;
+package main.gui;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -112,8 +112,19 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void radioButtonClicked(ActionEvent event) {
+		
+		if(event.getSource() == radioButton1) {
+			explanationLabel.setText("Erklärungstext zu dem ausgewählten Algorithmus:\nTest");
+			
+		}else if(event.getSource() == radioButton2) {
+			
+		}else if(event.getSource() == radioButton3) {
+			
+		}else if(event.getSource() == radioButton4) {
+			
+		}
 		if(sign != null) {
-			enabelButton(generateButton);
+			enableButton(generateButton);
 		}
 	}
 
@@ -138,7 +149,7 @@ public class Controller implements Initializable {
 		}
 		
 		if(group1.getSelectedToggle() != null) {
-			enabelButton(generateButton);
+			enableButton(generateButton);
 		}
 	}
 
@@ -154,8 +165,8 @@ public class Controller implements Initializable {
 	@FXML
 	void generateImage(ActionEvent event) {
 
-		enabelButton(cancellationButton);
-		disabelButton(generateButton);
+		enableButton(cancellationButton);
+		disableButton(generateButton);
 		if (radioButton1.isSelected()) {
 			System.out.println("RadioButton 1 wurde angeklickt");
 
@@ -174,10 +185,9 @@ public class Controller implements Initializable {
 		} else {
 
 			showAlertError("Es wurde kein Verfahren ausgewählt");
-			disabelButton(cancellationButton);
+			disableButton(cancellationButton);
 			return;
 		}
-
 	}
 
 	/**
@@ -250,10 +260,9 @@ public class Controller implements Initializable {
 		}
 
 		generationLocked = true;
-
-		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);
-
 		progressIndicator.setVisible(true);
+		
+		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);	
 
 		Service<Void> service = new Service<Void>() {
 			@Override
@@ -278,9 +287,9 @@ public class Controller implements Initializable {
 						progressIndicator.setVisible(false);
 						generationLocked = false;
 						
-						enabelButton(generateButton);
-						disabelButton(cancellationButton);
-						enabelButton(SaveImageButton);
+						enableButton(generateButton);
+						disableButton(cancellationButton);
+						enableButton(SaveImageButton);
 
 						final CountDownLatch latch = new CountDownLatch(1);
 						Platform.runLater(new Runnable() {
@@ -366,7 +375,7 @@ public class Controller implements Initializable {
 	 * @param button
 	 * @see Button
 	 */
-	private void disabelButton(Button button){
+	private void disableButton(Button button){
 		
 		button.setDisable(true);
 		
@@ -376,7 +385,7 @@ public class Controller implements Initializable {
 	 * @param button          
 	 * @see Button
 	 */
-	private void enabelButton(Button button){
+	private void enableButton(Button button){
 		
 		button.setDisable(false);
 		

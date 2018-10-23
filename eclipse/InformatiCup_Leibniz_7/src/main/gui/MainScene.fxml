@@ -10,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="696.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="696.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
    <children>
       <RadioButton fx:id="radioButton1" layoutX="246.0" layoutY="36.0" mnemonicParsing="false" onAction="#radioButtonClicked" text="Test">
          <toggleGroup>
@@ -25,7 +25,7 @@
       <ListView fx:id="listView" layoutX="36.0" layoutY="224.0" onMouseClicked="#ClickedListView" prefHeight="345.0" prefWidth="316.0" />
       <ImageView fx:id="inputImage" fitHeight="150.0" fitWidth="150.0" layoutX="36.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../data/images/00000.png" />
+            <Image url="@../../../data/images/00000.jpeg" />
          </image></ImageView>
       <Label fx:id="confidenceLabel" layoutX="363.0" layoutY="30.0" prefHeight="30.0" prefWidth="126.0" text="Konfidenz:" />
       <Label fx:id="inputImageLabel" layoutX="36.0" layoutY="193.0" prefHeight="17.0" prefWidth="126.0" text="Eingabebild" />
