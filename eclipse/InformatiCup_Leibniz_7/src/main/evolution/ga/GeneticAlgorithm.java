@@ -2,6 +2,13 @@ package main.evolution.ga;
 
 import java.util.List;
 
+/**
+ * Generic implementation of a genetic algoithm. It is intended to be used as a superclass.
+ * The image-specific implementation used here is CuckooSearch. 
+ * 
+ * @author Felix
+ *
+ */
 public class GeneticAlgorithm {
 	
 	protected final int populationSize;
@@ -10,13 +17,25 @@ public class GeneticAlgorithm {
 	protected Population population;
 	
 	public static final int MAX_GENE_VALUE = Integer.MAX_VALUE;
+	public static final float MUTATION_RATE = 0.03f;
 	
+	/**
+	 * Constructor to initialize a genetic algorithm with some needed parameters.
+	 * 
+	 * @param populationSize how many individuals the population will consist of
+	 * @param targetFitness threshold which will terminate the genetic algorithm if reached
+	 * @param generationCap limit of the number of iterations the genetic algorithm will run
+	 */
 	public GeneticAlgorithm(int populationSize, float targetFitness, int generationCap) {
 		this.populationSize = populationSize;
 		this.targetFitness = targetFitness;
 		this.generationCap = generationCap;
+		this.population = new Population();
 	}
 	
+	/**
+	 * Starts the genetic algorithm. It will run until either the target fitness or the generation cap was reached.
+	 */
 	public void run() {
 		createPopulation();
 		
@@ -39,15 +58,15 @@ public class GeneticAlgorithm {
 	}
 	
 	public float getAverageFitness() {
-		List<Genom> genes = population.getIndividuals();
+		List<Genom> genoms = population.getGenoms();
 		float average = 0.0f;
-		for(Genom gene : genes) {
-			average += gene.getFitness();
+		for(Genom genom : genoms) {
+			average += genom.getFitness();
 		}
-		return average / genes.size();
+		return average / genoms.size();
 	}
 	
-	public Genom getBestGene() {
+	public Genom getBestGenom() {
 		return population.getBest();
 	}
 	
@@ -65,5 +84,9 @@ public class GeneticAlgorithm {
 	
 	protected void selectSurvivors() {
 		
+	}
+	
+	protected void calculateFitness() {
+
 	}
 }
