@@ -77,18 +77,18 @@ public class CPPN {
 				for(int neuron = 0; neuron < genes.size(); neuron++) {
 					double value = 0.0;
 					for(int in = 0; in < neuron + 4; in++) {
-						double even = GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in)], 1);
+						double even = Evolutionhelper.GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in)], 1);
 						if(even > 0) {
-							double odd = GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in) + 1], 1);
+							double odd = Evolutionhelper.GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in) + 1], 1);
 							value += network[in] + odd;
 						}
 					}
 					network[neuron + 4] = applyFunction(value, genes.get(neuron).getValues()[0]);
 				}
 				
-				int r = (int) Math.floor(boundedIdentity(0.0, 255.0, network[networkSize - 3] * 255));
-				int g = (int) Math.floor(boundedIdentity(0.0, 255.0, network[networkSize - 2] * 255));
-				int b = (int) Math.floor(boundedIdentity(0.0, 255.0, network[networkSize - 1] * 255));
+				int r = (int) Math.floor(Evolutionhelper.boundedIdentity(0.0, 255.0, network[networkSize - 3] * 255));
+				int g = (int) Math.floor(Evolutionhelper.boundedIdentity(0.0, 255.0, network[networkSize - 2] * 255));
+				int b = (int) Math.floor(Evolutionhelper.boundedIdentity(0.0, 255.0, network[networkSize - 1] * 255));
 				int rgb = new Color(r, g, b).getRGB();
 				image.setRGB(x, y, rgb);
 			}
@@ -97,8 +97,17 @@ public class CPPN {
 		return image;
 	}
 	
+	/**
+	 * Compute the mapping of a gene value to a function and applies the function to the given argument.
+	 * Right now there are the following functions:
+	 * cosinus, sinus, tangens hyperbolicus, identity in the range of [0, 1], gaussian and sigmoid   
+	 * 
+	 * @param argument the argument the function will be applied to
+	 * @param geneValue the gene value which will be used to get the function
+	 * @return the value of the function applied on the argument
+	 */
 	private double applyFunction(double argument, int geneValue) {
-		switch (GeneToIntegerRange(geneValue, 6)) {
+		switch (Evolutionhelper.GeneToIntegerRange(geneValue, 6)) {
 		case 0:
 			return Math.cos(argument);
 		case 1:
@@ -106,9 +115,9 @@ public class CPPN {
 		case 2:
 			return Math.tanh(argument);
 		case 3:
-			return boundedIdentity(0.0, 1.0, argument);
+			return Evolutionhelper.boundedIdentity(0.0, 1.0, argument);
 		case 4:
-			return gaussian(argument);
+			return Evolutionhelper.gaussian(argument);
 		case 5:
 		case 6:
 			return Evolutionhelper.sigmoid(argument);
@@ -118,23 +127,10 @@ public class CPPN {
 		}
 	}
 	
-	private double boundedIdentity(double lower, double upper, double value) {
-		return Math.max(lower, Math.min(value, upper));
-	}
-	
-	private double gaussian(double value) {
-		return Math.exp(-1 * (Math.pow(value, 2)) / 0.5);
-	}
-	
-	private int GeneToIntegerRange(int geneValue, double range) {
-		return (int) Math.floor(geneValue / GeneticAlgorithm.MAX_GENE_VALUE * range);
-	}
-	
-	private double GeneToDoubleRange(int geneValue, double range) {
-		return ((geneValue - GeneticAlgorithm.MAX_GENE_VALUE / 2.0) * 2.0 / GeneticAlgorithm.MAX_GENE_VALUE) * range;
-	}
-	
+	/**
+	 * Save this network.
+	 */
 	private void saveNetwork() {
-		
+		//TODO: implement
 	}
 }
