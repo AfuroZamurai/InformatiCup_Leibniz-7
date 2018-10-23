@@ -114,7 +114,7 @@ public class EvaluationResult {
 			"Rechts vorbei",
 			"Links vorbei",
 			"Kreisverkehr",
-			"Ende des Überholverbotes",
+			"Ende des Überholverbotes für Kraftfahrzeuge aller Art",
 			"Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t"
 	};
 	
@@ -218,7 +218,7 @@ public class EvaluationResult {
 	 * @return The Sign it belongs to
 	 * @throws Exception name is not found in list
 	 */
-	private static Sign mapClassNameToSign(String name) throws Exception {
+	public static Sign mapClassNameToSign(String name) throws Exception {
 		
 		for(int n = 0; n < classNames.length; n++) {
 			if(classNames[n].equals(name)) {
