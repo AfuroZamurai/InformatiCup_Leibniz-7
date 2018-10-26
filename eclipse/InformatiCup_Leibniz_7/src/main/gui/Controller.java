@@ -11,20 +11,30 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -33,6 +43,7 @@ import main.IModule;
 import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
+import main.io.ImageLoader;
 import main.io.ImageSaver;
 
 /**
@@ -46,46 +57,37 @@ public class Controller implements Initializable {
 
 	float confidence; // recognition value of an image
 	final float LIMIT_CONFIDENCE = 0.9f; // smallest value needed to pass the task
-	
+
 	boolean generationLocked = false; // true, when a picture is generated
 	boolean disableStop = true;
 	boolean disableGenerate = true;
 	boolean disableSave = true;
-	
-	Sign sign;	// Selected Sign
+	boolean disableLoad = false;
+	int filter = 0;
+	Thread thread;
+	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
+	public Task<Void> task;
 
 	@FXML
-	private RadioButton radioButton1;
+	private LineChart<Number, Number> chart;
+	@FXML
+	private NumberAxis xAxis, yAxis;
+	private XYChart.Series<Number, Number> series;
+
+	Sign sign; // Selected Sign
+	MenuItem selectedAlgorithmn;
 
 	@FXML
-	private ToggleGroup group1;
-
-	@FXML
-	private Button generateButton;
-	
-	@FXML
-	private Button cancellationButton;
+	private Button loadImage;
 
 	@FXML
 	private ImageView outputImage;
-
-	@FXML
-	private RadioButton radioButton2;
-
-	@FXML
-	private RadioButton radioButton3;
-
-	@FXML
-	private RadioButton radioButton4;
 
 	@FXML
 	private Button SaveImageButton;
 
 	@FXML
 	private ListView<Sign> listView;
-
-	@FXML
-	private ProgressIndicator progressIndicator;
 
 	@FXML
 	private ImageView inputImage;
@@ -100,32 +102,125 @@ public class Controller implements Initializable {
 	private Label outputImageLabel;
 
 	@FXML
+	public ProgressIndicator progressIndicator;
+
+	@FXML
 	private Label explanationLabel;
 
+	@FXML
+	private Button cancellationButton;
+
+	@FXML
+	private MenuItem menuItem1;
+
+	@FXML
+	private MenuItem menuItem2;
+
+	@FXML
+	private MenuItem menuItem3;
+
+	@FXML
+	private MenuItem menuItem4;
+
+	@FXML
+	private MenuButton menuButton;
+
+	@FXML
+	private LineChart<?, ?> lineChart;
+
+	@FXML
+	private ProgressBar progressBar;
+
+	@FXML
+	private Label classLabel;
+
+	@FXML
+	private TextField textField1;
+
+	@FXML
+	private Button generateButton;
+
 	/**
-	 * This method is an ActionEvent of the Radio Buttons. If a Sign is selected 
-	 * the Generation Button gets enabled
+	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
+	 * Generation Button gets enabled
+	 * 
 	 * @param event
 	 *            a ActionEvent, when you click on a Radio Button
-	 * @see RadioButton
+	 * @see MenuItem
 	 * @see ActionEvent
 	 */
 	@FXML
-	void radioButtonClicked(ActionEvent event) {
-		
-		if(event.getSource() == radioButton1) {
-			explanationLabel.setText("Erklärungstext zu dem ausgewählten Algorithmus:\nTest");
-			
-		}else if(event.getSource() == radioButton2) {
-			
-		}else if(event.getSource() == radioButton3) {
-			
-		}else if(event.getSource() == radioButton4) {
-			
-		}
-		if(sign != null) {
+	void test1(ActionEvent event) {
+		explanationLabel.setText(
+				"Erklärungstext zu dem ausgewählten Algorithmus:\n\nDieser Algorithmus sendet das Eingabebild\nan die künstliche Inteligenz.\n"
+						+ "Das Bild ist auch wieder das Ausgabebild,\nda keine Veränderung vorgenommen wurde\n"
+						+ "und die dazugeöhrige Konfidenz wird ausgegeben.");
+		selectedAlgorithmn = menuItem1;
+		textField1.setVisible(false);
+		if (sign != null) {
 			enableButton(generateButton);
 		}
+	}
+
+	/**
+	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
+	 * Generation Button gets enabled
+	 * 
+	 * @param event
+	 *            a ActionEvent, when you click on a Radio Button
+	 * @see MenuItem
+	 * @see ActionEvent
+	 */
+	@FXML
+	void test2(ActionEvent event) {
+		explanationLabel.setText(
+				"Pixelmanipulations-Algorithmus:\n\nEs gibt eine Gruppe von Pixel,\ndie auf schwarz gesetz wird.\n"
+						+ "Steigt die Konfidenz, wird die Gruppe\nim Ausgabebild auf schwarz gesetzt, sonst weiß.\n"
+						+ "Das wird mit allen Gruppen gemacht.\nDie größe der Gruppe gibt der Filter an.\n\n"
+						+ "Filtergröße: ");
+		selectedAlgorithmn = menuItem2;
+		textField1.setVisible(true);
+		if (sign != null) {
+			enableButton(generateButton);
+		}
+	}
+
+	/**
+	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
+	 * Generation Button gets enabled
+	 * 
+	 * @param event
+	 *            a ActionEvent, when you click on a Radio Button
+	 * @see MenuItem
+	 * @see ActionEvent
+	 */
+	@FXML
+	void test3(ActionEvent event) {
+		selectedAlgorithmn = menuItem3;
+		if (sign != null) {
+			enableButton(generateButton);
+		}
+		explanationLabel.setText("leer");
+		textField1.setVisible(false);
+	}
+
+	/**
+	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
+	 * Generation Button gets enabled
+	 * 
+	 * @param event
+	 *            a ActionEvent, when you click on a Radio Button
+	 * @see MenuItem
+	 * @see ActionEvent
+	 */
+	@FXML
+	void test4(ActionEvent event) {
+		selectedAlgorithmn = menuItem4;
+		if (sign != null) {
+			enableButton(generateButton);
+		}
+		explanationLabel.setText("leer");
+		textField1.setVisible(false);
 	}
 
 	/**
@@ -147,15 +242,15 @@ public class Controller implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		if(group1.getSelectedToggle() != null) {
+
+		if (selectedAlgorithmn != null) {
 			enableButton(generateButton);
 		}
 	}
 
 	/**
 	 * This method is an ActionEvent of the "Generate" Button. Takes the selected
-	 * algorithm (RadioButton) and start the generation of the output image
+	 * algorithm (MenuItem) and start the generation of the output image
 	 * 
 	 * @param event
 	 *            the click on the button
@@ -165,33 +260,33 @@ public class Controller implements Initializable {
 	@FXML
 	void generateImage(ActionEvent event) {
 
+		listView.setDisable(true);
 		enableButton(cancellationButton);
 		disableButton(generateButton);
-		if (radioButton1.isSelected()) {
-			System.out.println("RadioButton 1 wurde angeklickt");
 
+		if (selectedAlgorithmn == menuItem1) {
 			startAlgorithm(new TestModule());
-			// TODO
-		} else if (radioButton2.isSelected()) {
-			System.out.println("RadioButton 2 wurde angeklickt");
-			startAlgorithm(new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem()));
-			// TODO
-		} else if (radioButton3.isSelected()) {
-			System.out.println("RadioButton 3 wurde angeklickt");
-			// TODO
-		} else if (radioButton4.isSelected()) {
-			System.out.println("RadioButton 4 wurde angeklickt");
-			// TODO
+		} else if (selectedAlgorithmn == menuItem2) {
+			if (filter == 0) {
+				showAlertError("Es muss eine Filtergröße angegeben werden");
+				disableButton(cancellationButton);
+				listView.setDisable(false);
+				return;
+			}
+			startAlgorithm(
+					new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem(), this, filter));
+		} else if (selectedAlgorithmn == menuItem3) {
+		} else if (selectedAlgorithmn == menuItem4) {
 		} else {
-
 			showAlertError("Es wurde kein Verfahren ausgewählt");
 			disableButton(cancellationButton);
+			listView.setDisable(false);
 			return;
 		}
 	}
 
 	/**
-	 * This method is an ActionEvent of the "Cancellation" Button. Stopps the
+	 * This method is an ActionEvent of the "Cancellation" Button. Stops the
 	 * generation of an image
 	 * 
 	 * @param event
@@ -201,9 +296,16 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void cancellation(ActionEvent event) {
-		// TODO
-		
-		
+
+		thread.stop();
+		progressIndicator.setVisible(false);
+		generationLocked = false;
+		enableButton(generateButton);
+		disableButton(cancellationButton);
+		enableButton(SaveImageButton);
+		listView.setDisable(false);
+		setConfidence(confidence);
+
 	}
 
 	/**
@@ -218,9 +320,7 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void saveImage(ActionEvent event) {
-
-		progressIndicator.setVisible(true);
-
+		
 		if (outputImage.getImage() == null) {
 			showAlertError("Es wurde noch kein Bild generiert, dass gespeichert werden kann.");
 			progressIndicator.setVisible(false);
@@ -240,7 +340,45 @@ public class Controller implements Initializable {
 			e.printStackTrace();
 			showAlertError("Es hat einen Fehler beim speichern des Bildes gegeben.");
 		}
-		progressIndicator.setVisible(false);
+	}
+
+	/**
+	 * This method is an ActionEvent of the "Load" Button. Start a FileChooser and
+	 * takes selected picture as input image
+	 * 
+	 * @param event
+	 *            the click on the button
+	 * @see Button
+	 * @see ActionEvent
+	 * @see FileChooser
+	 */
+	@FXML
+	void loadImage(ActionEvent event) {
+
+		// BufferedImage image = SwingFXUtils.fromFXImage(outputImage.getImage(), null);
+		Stage stage = new Stage();
+		FileChooser fileChooser = new FileChooser();
+		File file = fileChooser.showOpenDialog(stage);
+
+		configuringFileChooser(fileChooser);
+
+		try {
+			BufferedImage image = ImageLoader.loadImage(file + "");
+			inputImage.setImage(SwingFXUtils.toFXImage(image, null));
+		} catch (IOException e) {
+			e.printStackTrace();
+			showAlertError("Es hat einen Fehler beim laden des Bildes gegeben.");
+		}
+	}
+
+	@FXML
+	void validateInput(ActionEvent event) {
+
+		try {
+			filter = Integer.parseInt(textField1.getText());
+		} catch (Exception e) {
+			showAlertError("Es muss eine ganze Zahl zwischen 1 und 64 sein!");
+		}
 	}
 
 	/**
@@ -263,65 +401,56 @@ public class Controller implements Initializable {
 
 		generationLocked = true;
 		progressIndicator.setVisible(true);
-		
-		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);	
+		classLabel.setText("Class:" + sign);
 
-		Service<Void> service = new Service<Void>() {
+		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);
+
+		task = new Task<Void>() {
 			@Override
-			protected Task<Void> createTask() {
-				return new Task<Void>() {
-					@Override
-					protected Void call() throws Exception {
-						// Background work
-						Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
-						outputImage.setImage(output);
-						TrasiWebEvaluator twb = new TrasiWebEvaluator();
-						EvaluationResult er;
-						try {
-							// get confidence from outputImage for the selected sign
+			public Void call() {
 
-							er = twb.evaluateImage(SwingFXUtils.fromFXImage(output, null));
-							confidence = er.getConfidenceForSign(listView.getSelectionModel().getSelectedItem());
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+				// Background work
+				Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
+				outputImage.setImage(output);
+				TrasiWebEvaluator twb = new TrasiWebEvaluator();
+				EvaluationResult er;
+				try {
+					// get confidence from outputImage for the selected sign
 
-						progressIndicator.setVisible(false);
-						generationLocked = false;
-						
-						enableButton(generateButton);
-						disableButton(cancellationButton);
-						enableButton(SaveImageButton);
+					er = twb.evaluateImage(SwingFXUtils.fromFXImage(output, null));
+					confidence = er.getConfidenceForSign(listView.getSelectionModel().getSelectedItem());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-						final CountDownLatch latch = new CountDownLatch(1);
-						Platform.runLater(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									// FX Stuff done here
-									// Set the confidence value in the Gui, coloured red if the value is less than a
-									// given limit, else green
-									if (confidence >= LIMIT_CONFIDENCE) {
-										confidenceLabel.setTextFill(Color.web("#00ff00"));
-										confidenceLabel.setText("Konfidenz: " + (int) (confidence * 100) + "%");
-									} else {
-										confidenceLabel.setTextFill(Color.web("#ff0000"));
-										confidenceLabel.setText("Konfidenz: " + (int) (confidence * 100) + "%");
-									}
-
-								} finally {
-									latch.countDown();
-								}
-							}
-						});
-						latch.await();
-						// Keep with the background work
-						return null;
-					}
-				};
+				return null;
 			}
 		};
-		service.start();
+
+		ProgressBar bar = new ProgressBar();
+		bar.progressProperty().bind(task.progressProperty());
+
+		thread = new Thread(task);
+		thread.setDaemon(true);
+		thread.start();
+
+		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				progressIndicator.setProgress(progressIndicator.INDETERMINATE_PROGRESS);
+				progressIndicator.setVisible(false);
+				generationLocked = false;
+
+				enableButton(generateButton);
+				disableButton(cancellationButton);
+				enableButton(SaveImageButton);
+				listView.setDisable(false);
+				
+
+				setConfidence(confidence);
+			}
+		});
 	}
 
 	/**
@@ -369,28 +498,63 @@ public class Controller implements Initializable {
 		for (int i = 1; i < 43; i++) {
 			obsList.add(arrayOfSigns[i]);
 		}
-
 		listView.setItems(obsList);
+
 	}
-	
+
 	/**
+	 * Disable a given Button
+	 * 
 	 * @param button
 	 * @see Button
 	 */
-	private void disableButton(Button button){
-		
+	private void disableButton(Button button) {
+
 		button.setDisable(true);
-		
 	}
-	
+
 	/**
-	 * @param button          
+	 * Enable a given Button
+	 * 
+	 * @param button
 	 * @see Button
 	 */
-	private void enableButton(Button button){
-		
-		button.setDisable(false);
-		
-	}
-}
+	private void enableButton(Button button) {
 
+		button.setDisable(false);
+	}
+
+	/**
+	 * Set new Output Image in the GUI
+	 * 
+	 * @param image
+	 * @see WritableImage
+	 */
+	public void setOutputImage(WritableImage image) {
+
+		outputImage.setImage(image);
+	}
+
+	public void setConfidence(float newConfidenceValue) {
+
+		if (newConfidenceValue >= LIMIT_CONFIDENCE) {
+			confidenceLabel.setTextFill(Color.web("#00ff00"));
+			confidenceLabel.setText("Konfidenz: " + (int) (newConfidenceValue * 100) + "%");
+		} else {
+			confidenceLabel.setTextFill(Color.web("#ff0000"));
+			confidenceLabel.setText("Konfidenz: " + (int) (newConfidenceValue * 100) + "%");
+		}
+
+		confidence = newConfidenceValue;
+		progressBar.setProgress(newConfidenceValue);
+
+		// series.getData().add(new XYChart.Data(1, newConfidenceValue));
+		// series.getData().add(new XYChart.Data(newConfidenceValue, 15));
+		//
+		// lineChart.getData().add(series);
+
+		// series.getData().add(new XYChart.Data(1, 23));
+
+	}
+
+}
