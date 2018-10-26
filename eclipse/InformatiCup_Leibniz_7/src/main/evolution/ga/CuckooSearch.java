@@ -1,12 +1,15 @@
 package main.evolution.ga;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.evolution.network.CPPN;
+import main.utils.Evolutionhelper;
 
 /**
  * Implementation of the cuckoo search algorithm
@@ -58,9 +61,32 @@ public class CuckooSearch extends GeneticAlgorithm {
 	}
 	
 	private void createNewNests() {
+		//create new eggs from the old population using levy flight
+		List<Genom> newEggs = new ArrayList<>();
+		for (Iterator<Genom> iterator = population.getGenoms().iterator(); iterator.hasNext();) {
+			Genom old = iterator.next();
+			Genom cuckoo = new Genom();
+			cuckoo.setFitness(old.getFitness());
+			cuckoo.setGenes(old.getGenes());
+			cuckoo.setNet(old.getNet());
+			newEggs.add(performLevyFlight(cuckoo));
+		}
 		
+		//replace eggs with the cuckoos
+		for (Iterator<Genom> iterator = newEggs.iterator(); iterator.hasNext();) {
+			Genom egg = iterator.next();
+			int randomNest = Evolutionhelper.randomInt(0, populationSize - 1);
+			//only replace when new genom is better
+			if(egg.getFitness() > population.getGenoms().get(randomNest).getFitness()) {
+				population.getGenoms().set(randomNest, egg);
+			}
+		}
 	}
 	
+	/**
+	 * Replaces the old population with a new one. For cuckoo search this means, a levy flight will be performed
+	 * on the old population. The changed genoms can now randomly replace an older and worse solution.
+	 */
 	@Override
 	protected void createOffspring() {
 		createNewNests();
@@ -71,8 +97,8 @@ public class CuckooSearch extends GeneticAlgorithm {
 		
 	}
 	
-	private void performLevyFlight( ) {
-		
+	private Genom performLevyFlight(Genom cuckoo ) {
+		return null;
 	}
 	
 	@Override
