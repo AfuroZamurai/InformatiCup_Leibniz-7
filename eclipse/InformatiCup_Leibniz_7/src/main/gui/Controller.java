@@ -45,6 +45,8 @@ import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
 import main.io.ImageSaver;
+import main.module.ModuleFramework;
+import main.module.SimpleIterationModule;
 
 /**
  * This class is the Controller for the GUI
@@ -67,6 +69,8 @@ public class Controller implements Initializable {
 	Thread thread;
 	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
 	public Task<Void> task;
+	
+	private ModuleFramework moduleFramework = new ModuleFramework(this);
 
 	@FXML
 	private LineChart<Number, Number> chart;
@@ -276,6 +280,8 @@ public class Controller implements Initializable {
 			startAlgorithm(
 					new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem(), this, filter));
 		} else if (selectedAlgorithmn == menuItem3) {
+			//CHANGED THIS
+			moduleFramework.startModule(new SimpleIterationModule(), SwingFXUtils.fromFXImage(inputImage.getImage(), null));
 		} else if (selectedAlgorithmn == menuItem4) {
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgewählt");
@@ -297,7 +303,11 @@ public class Controller implements Initializable {
 	@FXML
 	void cancellation(ActionEvent event) {
 
-		thread.stop();
+		//thread.stop();
+		
+		//CHANGED THIS
+		moduleFramework.stopModule();
+		
 		progressIndicator.setVisible(false);
 		generationLocked = false;
 		enableButton(generateButton);
@@ -555,6 +565,12 @@ public class Controller implements Initializable {
 
 		// series.getData().add(new XYChart.Data(1, 23));
 
+	}
+
+	//CHANGED THIS
+	public void updateResultImage(BufferedImage newImg, EvaluationResult evalResult) {
+		setOutputImage(SwingFXUtils.toFXImage(newImg, null));
+		setConfidence(evalResult.getMaxValue());
 	}
 
 }
