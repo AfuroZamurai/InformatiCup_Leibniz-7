@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 import javafx.application.Platform;
 import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.IEvaluator;
 import main.evaluate.TrasiWebEvaluator;
 import main.gui.Controller;
@@ -27,9 +28,9 @@ public class ModuleFramework implements Runnable {
 		this.controller = controller;
 	}
 
-	public void startModule(IModuleIterate module, BufferedImage initImage) {
+	public void startModule(IModuleIterate module, BufferedImage initImage, Sign sign) {
 		if (!isRunning) {
-			module.setInitImage(initImage);
+			module.setInitImage(initImage, sign);
 			this.module = module;
 			this.isRunning = true;
 

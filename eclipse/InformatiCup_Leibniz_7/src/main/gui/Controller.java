@@ -281,7 +281,7 @@ public class Controller implements Initializable {
 					new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem(), this, filter));
 		} else if (selectedAlgorithmn == menuItem3) {
 			//CHANGED THIS
-			moduleFramework.startModule(new SimpleIterationModule(), SwingFXUtils.fromFXImage(inputImage.getImage(), null));
+			moduleFramework.startModule(new SimpleIterationModule(), SwingFXUtils.fromFXImage(inputImage.getImage(), null), listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem4) {
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgewählt");
@@ -570,7 +570,7 @@ public class Controller implements Initializable {
 	//CHANGED THIS
 	public void updateResultImage(BufferedImage newImg, EvaluationResult evalResult) {
 		setOutputImage(SwingFXUtils.toFXImage(newImg, null));
-		setConfidence(evalResult.getMaxValue());
+		setConfidence(evalResult.getConfidenceForSign(listView.getSelectionModel().getSelectedItem()));
 	}
 
 }

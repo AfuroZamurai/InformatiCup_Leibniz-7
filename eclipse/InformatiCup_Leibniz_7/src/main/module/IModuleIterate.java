@@ -3,6 +3,7 @@ package main.module;
 import java.awt.image.BufferedImage;
 
 import main.evaluate.EvaluationResult;
+import main.evaluate.EvaluationResult.Sign;
 
 /**
  * This interface describes a module that generates new images given an initial
@@ -18,5 +19,5 @@ public interface IModuleIterate {
 
 	public void setEvalResult(EvaluationResult result);
 
-	public void setInitImage(BufferedImage img);
+	public void setInitImage(BufferedImage img, Sign sign);
 }
