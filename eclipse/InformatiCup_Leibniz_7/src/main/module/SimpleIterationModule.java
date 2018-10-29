@@ -19,52 +19,62 @@ import main.evaluate.EvaluationResult.Sign;
  */
 public class SimpleIterationModule implements IModuleIterate {
 
+	/** The image that is generated in the current step */
 	private BufferedImage currentImage;
+
+	/** The result of the evaluation of the image generated in the last step */
 	private EvaluationResult lastResult;
+
+	/** The image that was generated in the last step */
 	private BufferedImage lastImage;
+
+	/** The mask of the image that was generated in the last step */
 	private BufferedImage oldMask;
+
+	/** The mask of the image that is generated in the current step */
 	private BufferedImage newMask;
+
+	/** The Sign whose confidence should be maximized */
 	private Sign targetSign;
-	private final float DIVERSION_CHANCE = 0.2f;
-	
+
+	/**
+	 * The chance to draw a circle over other previously drawn circles without
+	 * drawing over an area that has not been drawn over before
+	 */
+	private final float DIVERSION_CHANCE = 0.1f;
 
 	@Override
 	public BufferedImage generateNextImage() {
 		Graphics2D g = currentImage.createGraphics();
 		Graphics2D gm = newMask.createGraphics();
 		boolean isDone = false;
-		int x = 0, y = 0, radius = 0, i = 0;
-		boolean diversion_true = false;
-		
+		int x = 0, y = 0, radius = 0;
+
 		while (!isDone) {
-			i++;
-			x = ThreadLocalRandom.current().nextInt(65);
-			y = ThreadLocalRandom.current().nextInt(65);
+			x = ThreadLocalRandom.current().nextInt(0, 65);
+			y = ThreadLocalRandom.current().nextInt(0, 65);
 			radius = ThreadLocalRandom.current().nextInt(8, 30);
-			
+
 			gm.setColor(Color.BLACK);
-			gm.fillOval(x, y, radius, radius);
-			
+			gm.fillOval(x - radius, y - radius, radius, radius);
+
 			if (bufferedImagesEqual(oldMask, newMask)) {
 				float diversionDraw = ThreadLocalRandom.current().nextFloat();
 				if (diversionDraw < DIVERSION_CHANCE) {
 					isDone = true;
-					diversion_true = true;
 				}
 			} else {
 				isDone = true;
 			}
 		}
-		//debugging purpose
-		//System.out.println("Number of draws: " + i + "; Diversion: " + diversion_true);
-		
+
 		oldMask = copyImage(newMask);
-		
+
 		int red = ThreadLocalRandom.current().nextInt(256);
 		int green = ThreadLocalRandom.current().nextInt(256);
 		int blue = ThreadLocalRandom.current().nextInt(256);
 		g.setColor(new Color(red, green, blue));
-		g.fillOval(x, y, radius, radius);
+		g.fillOval(x - radius, y - radius, radius, radius);
 		return currentImage;
 	}
 
@@ -86,8 +96,8 @@ public class SimpleIterationModule implements IModuleIterate {
 		this.currentImage = img;
 		this.lastImage = copyImage(currentImage);
 		this.targetSign = sign;
-		
-		//init oldMask and newMask with plain white image
+
+		// init oldMask and newMask with plain white image
 		oldMask = copyImage(img);
 		Graphics2D g = oldMask.createGraphics();
 		g.setColor(Color.WHITE);
@@ -95,6 +105,13 @@ public class SimpleIterationModule implements IModuleIterate {
 		newMask = copyImage(oldMask);
 	}
 
+	/**
+	 * Copies the content of a BufferedImage into a new BufferedImage object.
+	 * 
+	 * @param source
+	 *            The BufferedImage whose content is copied
+	 * @return The copy of the source image
+	 */
 	private BufferedImage copyImage(BufferedImage source) {
 		BufferedImage b = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
 		Graphics g = b.getGraphics();
@@ -103,7 +120,17 @@ public class SimpleIterationModule implements IModuleIterate {
 		return b;
 	}
 
-	boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
+	/**
+	 * Compares two BufferedImages and evaluates whether their content is equal or
+	 * not.
+	 * 
+	 * @param img1
+	 *            The first image
+	 * @param img2
+	 *            The second image
+	 * @return A boolean indicating whether the images are equal or not
+	 */
+	private boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
 		if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
 			for (int x = 0; x < img1.getWidth(); x++) {
 				for (int y = 0; y < img1.getHeight(); y++) {
