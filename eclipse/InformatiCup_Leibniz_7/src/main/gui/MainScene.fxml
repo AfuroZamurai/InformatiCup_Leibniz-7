@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
@@ -22,7 +28,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
    <children>
       <GridPane>
         <columnConstraints>
@@ -86,12 +92,12 @@
                   <Label fx:id="confidenceLabel" prefHeight="30.0" prefWidth="292.0" text="Konfidenz:" />
                   <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="292.0" progress="0.0" />
                   <ProgressIndicator fx:id="progressIndicator" prefHeight="52.0" prefWidth="57.0" visible="false" />
-                  <LineChart fx:id="lineChart" prefHeight="250.0" prefWidth="250.0">
+                  <LineChart fx:id="lineChart" animated="false" legendVisible="false" prefHeight="250.0" prefWidth="250.0">
                      <xAxis>
-                        <CategoryAxis fx:id="yAxis" label="Zeit" side="BOTTOM" />
+                        <CategoryAxis animated="false" label="Zeit" side="BOTTOM" fx:id="xAxis" />
                      </xAxis>
                      <yAxis>
-                        <NumberAxis label="Konfidenz" side="LEFT" upperBound="90.0" fx:id="xAxis" />
+                        <NumberAxis fx:id="yAxis" animated="false" autoRanging="false" label="Konfidenz" minorTickCount="100" side="LEFT" upperBound="1.0" />
                      </yAxis>
                   </LineChart>
                </children>

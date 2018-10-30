@@ -23,6 +23,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -72,6 +73,9 @@ public class Controller implements Initializable {
 	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
 	public Task<Void> task;
 	private ModuleFramework moduleFramework = new ModuleFramework(this);
+
+	Series series = new Series();
+	private int iterationCounter = 0;
 
 	Sign sign; // Selected Sign
 	MenuItem selectedAlgorithmn;
@@ -130,13 +134,13 @@ public class Controller implements Initializable {
 	private ProgressIndicator progressIndicator;
 
 	@FXML
-	private LineChart<?, ?> lineChart;
+	private LineChart<Number, Number> lineChart;
 
 	@FXML
-	private CategoryAxis yAxis;
+	private NumberAxis yAxis;
 
 	@FXML
-	private NumberAxis xAxis;
+	private CategoryAxis xAxis;
 
 	@FXML
 	private Button cancellationButton;
@@ -270,6 +274,11 @@ public class Controller implements Initializable {
 		listView.setDisable(true);
 		enableButton(cancellationButton);
 		disableButton(generateButton);
+
+		lineChart.getData().clear();
+		series = new Series();
+		lineChart.getData().add(series);
+		iterationCounter = 0;
 
 		if (selectedAlgorithmn == menuItem1) {
 			startAlgorithm(new TestModule());
@@ -561,18 +570,15 @@ public class Controller implements Initializable {
 		confidence = newConfidenceValue;
 		progressBar.setProgress(newConfidenceValue);
 
-		// series.getData().add(new XYChart.Data(1, newConfidenceValue));
-		// series.getData().add(new XYChart.Data(newConfidenceValue, 15));
-		//
-		// lineChart.getData().add(series);
-
-		// series.getData().add(new XYChart.Data(1, 23));
+		series.getData().add(new XYChart.Data("" + iterationCounter, newConfidenceValue));
 
 	}
 
 	public void updateResultImage(BufferedImage newImg, EvaluationResult evalResult) {
 		setOutputImage(SwingFXUtils.toFXImage(newImg, null));
 		setConfidence(evalResult.getConfidenceForSign(listView.getSelectionModel().getSelectedItem()));
+
+		iterationCounter++;
 	}
 
 }
