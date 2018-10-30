@@ -37,7 +37,7 @@ public class EncodingTester {
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
-		ImageSaver.saveImage(img, "data/direct");
+		ImageSaver.saveImage(img, "data/test/direct");
 	}
 	
 	@Test
@@ -58,7 +58,7 @@ public class EncodingTester {
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
-		ImageSaver.saveImage(img, "data/circles");
+		ImageSaver.saveImage(img, "data/test/circles");
 	}
 	
 	@Test
@@ -79,7 +79,7 @@ public class EncodingTester {
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
-		ImageSaver.saveImage(img, "data/grid");
+		ImageSaver.saveImage(img, "data/test/grid");
 	}
 	
 	@Test
@@ -100,7 +100,7 @@ public class EncodingTester {
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
-		ImageSaver.saveImage(img, "data/box");
+		ImageSaver.saveImage(img, "data/test/box");
 	}
 	
 }
