@@ -19,6 +19,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -45,6 +46,8 @@ import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
 import main.io.ImageSaver;
+import main.module.ModuleFramework;
+import main.module.SimpleIterationModule;
 
 /**
  * This class is the Controller for the GUI
@@ -67,78 +70,81 @@ public class Controller implements Initializable {
 	Thread thread;
 	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
 	public Task<Void> task;
-
-	@FXML
-	private LineChart<Number, Number> chart;
-	@FXML
-	private NumberAxis xAxis, yAxis;
-	private XYChart.Series<Number, Number> series;
+	private ModuleFramework moduleFramework = new ModuleFramework(this);
 
 	Sign sign; // Selected Sign
 	MenuItem selectedAlgorithmn;
+    @FXML
+    private MenuButton menuButton;
 
-	@FXML
-	private Button loadImage;
+    @FXML
+    private MenuItem menuItem1;
 
-	@FXML
-	private ImageView outputImage;
+    @FXML
+    private MenuItem menuItem2;
 
-	@FXML
-	private Button SaveImageButton;
+    @FXML
+    private MenuItem menuItem3;
 
-	@FXML
-	private ListView<Sign> listView;
+    @FXML
+    private MenuItem menuItem4;
 
-	@FXML
-	private ImageView inputImage;
+    @FXML
+    private Label explanationLabel;
 
-	@FXML
-	private Label confidenceLabel;
+    @FXML
+    private TextField textField1;
 
-	@FXML
-	private Label inputImageLabel;
+    @FXML
+    private TextField textField11;
 
-	@FXML
-	private Label outputImageLabel;
+    @FXML
+    private ImageView inputImage;
 
-	@FXML
-	public ProgressIndicator progressIndicator;
+    @FXML
+    private Label inputImageLabel;
 
-	@FXML
-	private Label explanationLabel;
+    @FXML
+    private ListView<Sign> listView;
 
-	@FXML
-	private Button cancellationButton;
+    @FXML
+    private Button loadImage;
 
-	@FXML
-	private MenuItem menuItem1;
+    @FXML
+    private ImageView outputImage;
 
-	@FXML
-	private MenuItem menuItem2;
+    @FXML
+    private Label outputImageLabel;
 
-	@FXML
-	private MenuItem menuItem3;
+    @FXML
+    private Label classLabel;
 
-	@FXML
-	private MenuItem menuItem4;
+    @FXML
+    private Label confidenceLabel;
 
-	@FXML
-	private MenuButton menuButton;
+    @FXML
+    private ProgressBar progressBar;
 
-	@FXML
-	private LineChart<?, ?> lineChart;
+    @FXML
+    private ProgressIndicator progressIndicator;
 
-	@FXML
-	private ProgressBar progressBar;
+    @FXML
+    private LineChart<?, ?> lineChart;
 
-	@FXML
-	private Label classLabel;
+    @FXML
+    private CategoryAxis yAxis;
 
-	@FXML
-	private TextField textField1;
+    @FXML
+    private NumberAxis xAxis;
 
-	@FXML
-	private Button generateButton;
+    @FXML
+    private Button cancellationButton;
+
+    @FXML
+    private Button generateButton;
+
+    @FXML
+    private Button SaveImageButton;
 
 	/**
 	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
@@ -150,7 +156,7 @@ public class Controller implements Initializable {
 	 * @see ActionEvent
 	 */
 	@FXML
-	void test1(ActionEvent event) {
+	void menuItem1clicked(ActionEvent event) {
 		explanationLabel.setText(
 				"Erklärungstext zu dem ausgewählten Algorithmus:\n\nDieser Algorithmus sendet das Eingabebild\nan die künstliche Inteligenz.\n"
 						+ "Das Bild ist auch wieder das Ausgabebild,\nda keine Veränderung vorgenommen wurde\n"
@@ -172,7 +178,7 @@ public class Controller implements Initializable {
 	 * @see ActionEvent
 	 */
 	@FXML
-	void test2(ActionEvent event) {
+	void menuItem2clicked(ActionEvent event) {
 		explanationLabel.setText(
 				"Pixelmanipulations-Algorithmus:\n\nEs gibt eine Gruppe von Pixel,\ndie auf schwarz gesetz wird.\n"
 						+ "Steigt die Konfidenz, wird die Gruppe\nim Ausgabebild auf schwarz gesetzt, sonst weiß.\n"
@@ -195,7 +201,7 @@ public class Controller implements Initializable {
 	 * @see ActionEvent
 	 */
 	@FXML
-	void test3(ActionEvent event) {
+	void menuItem3clicked(ActionEvent event) {
 		selectedAlgorithmn = menuItem3;
 		if (sign != null) {
 			enableButton(generateButton);
@@ -214,7 +220,7 @@ public class Controller implements Initializable {
 	 * @see ActionEvent
 	 */
 	@FXML
-	void test4(ActionEvent event) {
+	void menuItem4clicked(ActionEvent event) {
 		selectedAlgorithmn = menuItem4;
 		if (sign != null) {
 			enableButton(generateButton);
@@ -276,6 +282,7 @@ public class Controller implements Initializable {
 			startAlgorithm(
 					new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem(), this, filter));
 		} else if (selectedAlgorithmn == menuItem3) {
+			moduleFramework.startModule(new SimpleIterationModule(), SwingFXUtils.fromFXImage(inputImage.getImage(), null), listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem4) {
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgewählt");
@@ -297,7 +304,8 @@ public class Controller implements Initializable {
 	@FXML
 	void cancellation(ActionEvent event) {
 
-		thread.stop();
+		moduleFramework.stopModule();
+		
 		progressIndicator.setVisible(false);
 		generationLocked = false;
 		enableButton(generateButton);
@@ -556,5 +564,11 @@ public class Controller implements Initializable {
 		// series.getData().add(new XYChart.Data(1, 23));
 
 	}
+	
+	public void updateResultImage(BufferedImage newImg, EvaluationResult evalResult) {
+		setOutputImage(SwingFXUtils.toFXImage(newImg, null));
+		setConfidence(evalResult.getConfidenceForSign(listView.getSelectionModel().getSelectedItem()));
+	}
+	
 
 }

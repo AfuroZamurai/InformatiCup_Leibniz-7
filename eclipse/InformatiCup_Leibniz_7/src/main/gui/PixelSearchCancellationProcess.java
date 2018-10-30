@@ -132,9 +132,9 @@ public class PixelSearchCancellationProcess implements IModule {
 				   Platform.runLater(new Runnable() {
                        public void run() {
                            // Update GUI in this function
-                    	   controller.setOutputImage(SwingFXUtils.toFXImage(inputImage, null));
-                    	   controller.setConfidence(newConfidenceValue);
-                    	   controller.progressIndicator.setProgress(percent/100);
+//                    	   controller.setOutputImage(SwingFXUtils.toFXImage(inputImage, null));
+//                    	   controller.setConfidence(newConfidenceValue);
+//                    	   controller.progressIndicator.setProgress(percent/100);
            
                        }
                    });
