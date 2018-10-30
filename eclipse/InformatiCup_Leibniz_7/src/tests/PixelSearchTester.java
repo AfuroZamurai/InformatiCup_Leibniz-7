@@ -12,7 +12,8 @@ import main.evaluate.EvaluationResult.Sign;
 import main.gui.PixelSearchCancellationProcess;
 
 class PixelSearchTester {
-
+	
+	/* Disabled until Code is restructured
 	@Test
 	void testPixelSearch() throws IOException {
 		
@@ -27,4 +28,5 @@ class PixelSearchTester {
 			
 		}
 	}
+	*/
 }
