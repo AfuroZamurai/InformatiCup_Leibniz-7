@@ -1,6 +1,7 @@
 package main.gui;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
@@ -11,10 +12,11 @@ import main.IModule;
 import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
+import main.module.IModuleIterate;
 
 /**
- * This class contains the implementation of an image manipulate algorithm. 
- * From an input image, the confidence is measured. Then a group of pixels is set to
+ * This class contains the implementation of an image manipulate algorithm. From
+ * an input image, the confidence is measured. Then a group of pixels is set to
  * black and a new confidence is measured. If the new confidence is higher, the
  * pixels in the output image are set to black otherwise white.
  * 
@@ -22,7 +24,7 @@ import main.evaluate.TrasiWebEvaluator;
  *
  */
 
-public class PixelSearchCancellationProcess implements IModule {
+public class PixelSearchCancellationProcess implements IModuleIterate {
 
 	final int IMAGEHEIGHT = 64;
 	final int IMAGEWIDTH = 64;
@@ -32,11 +34,17 @@ public class PixelSearchCancellationProcess implements IModule {
 	double percent;
 
 	Sign sign;
-	BufferedImage inputImage;
+	BufferedImage inputImage, initialImage;
 	ImageIcon icon2;
 	BufferedImage outputImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
 	float confidence;
 	Controller controller;
+	boolean isFinished = false;
+	boolean isFirstStep = true;
+
+	private EvaluationResult er;
+	private int i, j;
+	Color[] colorArray;
 
 	/**
 	 * Constructor
@@ -49,6 +57,7 @@ public class PixelSearchCancellationProcess implements IModule {
 		this.sign = sign;
 		this.controller = controller;
 		this.filter = filter;
+		colorArray = new Color[filter * filter];
 	}
 
 	/**
@@ -59,11 +68,10 @@ public class PixelSearchCancellationProcess implements IModule {
 	 * @return new image
 	 * @see BufferedImage
 	 */
-	@Override
+
 	public BufferedImage generateImage(BufferedImage input) {
 
 		inputImage = input;
-		
 
 		Color BLACK = new Color(0, 0, 0);
 		Color WHITE = new Color(255, 255, 255);
@@ -85,10 +93,14 @@ public class PixelSearchCancellationProcess implements IModule {
 		// its original color
 		for (int i = 0; i < IMAGEHEIGHT; i += filter) {
 			for (int j = 0; j < IMAGEWIDTH; j += filter) {
-				percent = (((((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j)) / ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) filter) * 100);
-				System.out.print("\nEs dauert noch "+ ((int)((double) (IMAGEHEIGHT * IMAGEWIDTH)/(double)(filter * filter) - (((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j) / filter)) +" Sekunden(");
-				System.out.println((int)percent + "%)\n");
-				
+				percent = (((((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j))
+						/ ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) filter) * 100);
+				System.out.print("\nEs dauert noch "
+						+ ((int) ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) (filter * filter)
+								- (((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j) / filter))
+						+ " Sekunden(");
+				System.out.println((int) percent + "%)\n");
+
 				Color[] colorArray = new Color[filter * filter];
 
 				for (int k = 0; k < filter * filter; k++) { // ändern der einfärbung und speichern der echten farbe
@@ -101,18 +113,19 @@ public class PixelSearchCancellationProcess implements IModule {
 					}
 				}
 
-				
 				try {
 
 					er = twb.evaluateImage(inputImage);
-					newConfidenceValue = er.getConfidenceForSign(sign); // get confidence from InputImage with changed Pixel
+					newConfidenceValue = er.getConfidenceForSign(sign); // get confidence from InputImage with changed
+																		// Pixel
 
 					Thread.sleep(950);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
-				for (int k = 0; k < filter * filter; k++) { // set the Pixel for the outputImage and set the Pixel in inputImage back
+				for (int k = 0; k < filter * filter; k++) { // set the Pixel for the outputImage and set the Pixel in
+															// inputImage back
 
 					int x = k % filter;
 					int y = k / filter;
@@ -120,29 +133,114 @@ public class PixelSearchCancellationProcess implements IModule {
 					if (j + x < IMAGEWIDTH && i + y < IMAGEHEIGHT) {
 						if (newConfidenceValue > confidence) {
 							outputImage.setRGB(j + x, i + y, BLACK.getRGB());
-						} else  {
+						} else {
 							outputImage.setRGB(j + x, i + y, WHITE.getRGB());
-						} 
+						}
 						inputImage.setRGB(j + x, i + y, colorArray[k].getRGB());
-						
+
 					}
 
 				}
-				
-				   Platform.runLater(new Runnable() {
-                       public void run() {
-                           // Update GUI in this function
-//                    	   controller.setOutputImage(SwingFXUtils.toFXImage(inputImage, null));
-//                    	   controller.setConfidence(newConfidenceValue);
-//                    	   controller.progressIndicator.setProgress(percent/100);
-           
-                       }
-                   });
-				
+
 			}
 		}
 
 		return outputImage;
 	}
 
+	@Override
+	public BufferedImage generateNextImage() {
+		if (!isFirstStep) {
+			percent = (((((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j))
+					/ ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) filter) * 100);
+			System.out
+					.print("\nEs dauert noch "
+							+ ((int) ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) (filter * filter)
+									- (((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j) / filter))
+							+ " Sekunden(");
+			System.out.println((int) percent + "%)\n");
+
+			for (int k = 0; k < filter * filter; k++) { // ändern der einfärbung und speichern der echten farbe
+				int x = k % filter;
+				int y = k / filter;
+
+				if (j + x < IMAGEWIDTH && i + y < IMAGEHEIGHT) {
+					// colorArray[k] = new Color(inputImage.getRGB(j + x, i + y));
+					inputImage.setRGB(j + x, i + y, Color.BLACK.getRGB());
+				}
+			}
+
+			if (i >= IMAGEHEIGHT - filter && j >= IMAGEWIDTH - filter) {
+				isFinished = true;
+				return outputImage;
+			}
+		}
+
+		return inputImage;
+	}
+
+	@Override
+	public void setEvalResult(EvaluationResult result) {
+		er = result;
+		if (isFirstStep) {
+			confidence = er.getConfidenceForSign(sign);
+			isFirstStep = false;
+		} else {
+			newConfidenceValue = er.getConfidenceForSign(sign);
+
+			for (int k = 0; k < filter * filter; k++) { // set the Pixel for the outputImage and set the Pixel in
+				// inputImage back
+
+				int x = k % filter;
+				int y = k / filter;
+
+				if (j + x < IMAGEWIDTH && i + y < IMAGEHEIGHT) {
+					if (newConfidenceValue > confidence) {
+						outputImage.setRGB(j + x, i + y, Color.BLACK.getRGB());
+					} else {
+						outputImage.setRGB(j + x, i + y, Color.WHITE.getRGB());
+					}
+					// inputImage.setRGB(j + x, i + y, colorArray[k].getRGB());
+					inputImage = copyImage(initialImage);
+
+				}
+
+			}
+
+			if (!isFinished) {
+				if (j < IMAGEWIDTH - filter) {
+					j += filter;
+				} else {
+					j = 0;
+					i += filter;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void setInitImage(BufferedImage img, Sign sign) {
+		i = 0;
+		j = 0;
+		initialImage = img;
+		inputImage = copyImage(img);
+		this.sign = sign;
+		isFinished = false;
+		isFirstStep = true;
+	}
+
+	/**
+	 * Copies the content of a BufferedImage into a new BufferedImage object.
+	 * 
+	 * @param source
+	 *            The BufferedImage whose content is copied
+	 * @return The copy of the source image
+	 */
+	private BufferedImage copyImage(BufferedImage source) {
+		BufferedImage b = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
+		Graphics g = b.getGraphics();
+		g.drawImage(source, 0, 0, null);
+		g.dispose();
+		return b;
+	}
 }

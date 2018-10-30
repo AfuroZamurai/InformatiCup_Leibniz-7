@@ -74,77 +74,77 @@ public class Controller implements Initializable {
 
 	Sign sign; // Selected Sign
 	MenuItem selectedAlgorithmn;
-    @FXML
-    private MenuButton menuButton;
+	@FXML
+	private MenuButton menuButton;
 
-    @FXML
-    private MenuItem menuItem1;
+	@FXML
+	private MenuItem menuItem1;
 
-    @FXML
-    private MenuItem menuItem2;
+	@FXML
+	private MenuItem menuItem2;
 
-    @FXML
-    private MenuItem menuItem3;
+	@FXML
+	private MenuItem menuItem3;
 
-    @FXML
-    private MenuItem menuItem4;
+	@FXML
+	private MenuItem menuItem4;
 
-    @FXML
-    private Label explanationLabel;
+	@FXML
+	private Label explanationLabel;
 
-    @FXML
-    private TextField textField1;
+	@FXML
+	private TextField textField1;
 
-    @FXML
-    private TextField textField11;
+	@FXML
+	private TextField textField11;
 
-    @FXML
-    private ImageView inputImage;
+	@FXML
+	private ImageView inputImage;
 
-    @FXML
-    private Label inputImageLabel;
+	@FXML
+	private Label inputImageLabel;
 
-    @FXML
-    private ListView<Sign> listView;
+	@FXML
+	private ListView<Sign> listView;
 
-    @FXML
-    private Button loadImage;
+	@FXML
+	private Button loadImage;
 
-    @FXML
-    private ImageView outputImage;
+	@FXML
+	private ImageView outputImage;
 
-    @FXML
-    private Label outputImageLabel;
+	@FXML
+	private Label outputImageLabel;
 
-    @FXML
-    private Label classLabel;
+	@FXML
+	private Label classLabel;
 
-    @FXML
-    private Label confidenceLabel;
+	@FXML
+	private Label confidenceLabel;
 
-    @FXML
-    private ProgressBar progressBar;
+	@FXML
+	private ProgressBar progressBar;
 
-    @FXML
-    private ProgressIndicator progressIndicator;
+	@FXML
+	private ProgressIndicator progressIndicator;
 
-    @FXML
-    private LineChart<?, ?> lineChart;
+	@FXML
+	private LineChart<?, ?> lineChart;
 
-    @FXML
-    private CategoryAxis yAxis;
+	@FXML
+	private CategoryAxis yAxis;
 
-    @FXML
-    private NumberAxis xAxis;
+	@FXML
+	private NumberAxis xAxis;
 
-    @FXML
-    private Button cancellationButton;
+	@FXML
+	private Button cancellationButton;
 
-    @FXML
-    private Button generateButton;
+	@FXML
+	private Button generateButton;
 
-    @FXML
-    private Button SaveImageButton;
+	@FXML
+	private Button SaveImageButton;
 
 	/**
 	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
@@ -279,10 +279,15 @@ public class Controller implements Initializable {
 				listView.setDisable(false);
 				return;
 			}
-			startAlgorithm(
-					new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem(), this, filter));
+
+			moduleFramework.startModule(
+					new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem(), this, filter),
+					SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+					listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem3) {
-			moduleFramework.startModule(new SimpleIterationModule(), SwingFXUtils.fromFXImage(inputImage.getImage(), null), listView.getSelectionModel().getSelectedItem());
+			moduleFramework.startModule(new SimpleIterationModule(),
+					SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+					listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem4) {
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgewählt");
@@ -305,7 +310,7 @@ public class Controller implements Initializable {
 	void cancellation(ActionEvent event) {
 
 		moduleFramework.stopModule();
-		
+
 		progressIndicator.setVisible(false);
 		generationLocked = false;
 		enableButton(generateButton);
@@ -328,7 +333,7 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void saveImage(ActionEvent event) {
-		
+
 		if (outputImage.getImage() == null) {
 			showAlertError("Es wurde noch kein Bild generiert, dass gespeichert werden kann.");
 			progressIndicator.setVisible(false);
@@ -454,7 +459,6 @@ public class Controller implements Initializable {
 				disableButton(cancellationButton);
 				enableButton(SaveImageButton);
 				listView.setDisable(false);
-				
 
 				setConfidence(confidence);
 			}
@@ -564,11 +568,10 @@ public class Controller implements Initializable {
 		// series.getData().add(new XYChart.Data(1, 23));
 
 	}
-	
+
 	public void updateResultImage(BufferedImage newImg, EvaluationResult evalResult) {
 		setOutputImage(SwingFXUtils.toFXImage(newImg, null));
 		setConfidence(evalResult.getConfidenceForSign(listView.getSelectionModel().getSelectedItem()));
 	}
-	
 
 }
