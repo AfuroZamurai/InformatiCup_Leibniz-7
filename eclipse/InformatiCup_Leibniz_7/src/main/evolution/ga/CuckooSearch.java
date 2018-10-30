@@ -2,8 +2,12 @@ package main.evolution.ga;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.math3.special.Gamma;
 
 import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
@@ -22,6 +26,13 @@ public class CuckooSearch extends GeneticAlgorithm {
 	private CPPN net;
 	private Sign target;
 	
+	public static final float ABANDONED_NESTS = 0.1f;
+	private static final double LEVY_ALPHA = 0.01 * MAX_GENE_VALUE;
+	private static final double LEVY_BETA = 3.0 / 2.0;
+	private static final double LEVY_SIGMA = Math.pow((Gamma.gamma(1.0 + LEVY_BETA) * 
+			Math.sin(Math.PI * LEVY_BETA / 2.0) / (Gamma.gamma((1.0 + LEVY_BETA) / 2.0) *
+			LEVY_BETA * Math.pow(2, (LEVY_BETA - 1.0) / 2.0))), (1.0 / LEVY_BETA));
+	
 	/**
 	 * Instantiates a cuckoo search.
 	 * 
@@ -39,17 +50,13 @@ public class CuckooSearch extends GeneticAlgorithm {
 	/**
 	 * Performs a cuckoo search to create a fooling image for a given class.
 	 * 
-	 * @param inputClass label of the target class, which the tricked neural net will predict
 	 * @return a BufferedImage of the resulting fooling image
 	 */
-	public BufferedImage searchForImage(String inputClass) {
+	public BufferedImage searchForImage() {
+		System.out.println("Trying to create an image for the sign " + target.name());
 		run();
 		Genom best = getBestGenom();
 		return net.createImage(best);
-	}
-	
-	private float getFitness() {
-		return 0.0f;
 	}
 	
 	@Override
@@ -58,6 +65,9 @@ public class CuckooSearch extends GeneticAlgorithm {
 			Genom genom = new Genom(-1.0f, net.createRandomGene(), net);
 			population.addGenom(genom);
 		}
+		
+		calculateFitness();
+		System.out.println("Best confidence: " + population.getBest().getFitness());
 	}
 	
 	private void createNewNests() {
@@ -92,17 +102,117 @@ public class CuckooSearch extends GeneticAlgorithm {
 		createNewNests();
 	}
 	
+	/**
+	 * Replaces a part of the worst members of the population by new genoms.
+	 */
 	@Override
 	protected void selectSurvivors() {
+		int abandoned = (int) (populationSize * ABANDONED_NESTS);
+		List<Genom> curPopulation = population.getGenoms();
+		Collections.sort(curPopulation);
 		
+		List<Genom> newNests = new ArrayList<>(abandoned);
+		for(int i = 0; i < abandoned; i++) {
+			curPopulation.remove(0);
+			Genom replace = new Genom(-1.0f, net.createRandomGene(), net);
+			newNests.add(replace);
+		}
+		
+		calculateFitness(newNests);
+		curPopulation.addAll(newNests);
 	}
 	
-	private Genom performLevyFlight(Genom cuckoo ) {
-		return null;
+	private void calculateFitness(List<Genom> genoms) {
+		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
+		for(Genom genom : genoms) {
+			BufferedImage image = net.createImage(genom);
+			EvaluationResult result;
+			try {
+				result = evaluator.evaluateImage(image);
+				if (result != null) {
+					float fitness = result.getConfidenceForSign(target);
+					genom.setFitness(fitness);
+				} else {
+					genom.setFitness(0.0f);
+					System.out.println("Evaluation currently impossible!");
+				}
+			} catch (Exception e) {
+				//wrong image size, shouldn't happen
+				genom.setFitness(0.0f);
+			}	
+		}
+		
+		try {
+			Collections.sort(genoms);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		Genom best = (genoms.get(genoms.size() - 1));
+		if(best.getFitness() > population.getBest().getFitness()) {
+			population.setBest(best);
+		}
+	}
+	
+	/**
+	 * Performs a Levy flight on the given genom. A Levy flight is a special type of random walk.
+	 * The step-lengths have a probability distribution that is heavy-tailed.
+	 * 
+	 * @param cuckoo the genom on which the Levy flight will be performed 
+	 * @return the changed genom
+	 */
+	private Genom performLevyFlight(Genom cuckoo) {
+		Genom egg = new Genom();
+		egg.setGenes(cuckoo.getGenes());
+		egg.setNet(cuckoo.getNet());
+		List<Gene> eggGenes = egg.getGenes();
+		
+		for(int i = 0; i < eggGenes.size(); i++) {
+			for(int j = 0; j < eggGenes.get(i).getValues().length; j++) {
+				double u = Evolutionhelper.getNormalDistributedDouble() * LEVY_SIGMA;
+				double v = Evolutionhelper.getNormalDistributedDouble();
+				double stepSize = LEVY_ALPHA * u / Math.pow(Math.abs(v), 1.0 / LEVY_BETA);
+				int newValue = (int) Math.abs((double) eggGenes.get(i).getValues()[j] + 
+						stepSize * Evolutionhelper.getNormalDistributedDouble());
+				
+				if(newValue < 0) {
+					newValue = 0;
+				} else if (newValue > MAX_GENE_VALUE) {
+					newValue = MAX_GENE_VALUE;
+				}
+				
+				eggGenes.get(i).replaceValue(j, newValue);
+			}
+		}
+		
+		calculateFitness(egg);
+		return egg;
+	}
+	
+	private void calculateFitness(Genom genom) {
+		BufferedImage image = net.createImage(genom);
+		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
+		EvaluationResult result;
+		try {
+			result = evaluator.evaluateImage(image);
+			if (result != null) {
+				float fitness = result.getConfidenceForSign(target);
+				genom.setFitness(fitness);
+			} else {
+				genom.setFitness(0.0f);
+				System.out.println("Evaluation currently impossible!");
+			}
+		} catch (Exception e) {
+			//wrong image size, shouldn't happen
+			genom.setFitness(0.0f);
+		}	
+		
+		if(genom.getFitness() > population.getBest().getFitness()) {
+			population.setBest(genom);
+		}
 	}
 	
 	@Override
-	protected void calculateFitness( ) {
+	protected void calculateFitness() {
 		List<Genom> genoms = population.getGenoms();
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
 		for(Genom genom : genoms) {
@@ -114,22 +224,20 @@ public class CuckooSearch extends GeneticAlgorithm {
 					float fitness = result.getConfidenceForSign(target);
 					genom.setFitness(fitness);
 				} else {
-					Thread.sleep(950);
-					result = evaluator.evaluateImage(image);
-					if (result != null) {
-						float fitness = result.getConfidenceForSign(target);
-						genom.setFitness(fitness);
-					} else {
-						// TODO: find a better solution
-						// prevent endless loop if service is unavailable
-						genom.setFitness(0.0f);
-						System.out.println("Evaluation currently impossible!");
-					}
+					genom.setFitness(0.0f);
+					System.out.println("Evaluation currently impossible!");
 				}
 			} catch (Exception e) {
 				//wrong image size, shouldn't happen
 				genom.setFitness(0.0f);
 			}	
 		}
+		
+		try {
+			Collections.sort(genoms);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		population.setBest(genoms.get(genoms.size() - 1));
 	}
 }
