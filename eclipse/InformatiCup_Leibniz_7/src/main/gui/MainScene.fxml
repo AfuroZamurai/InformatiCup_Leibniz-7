@@ -11,20 +11,36 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="893.0" prefWidth="1274.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
    <children>
-      <HBox prefHeight="804.0" prefWidth="1262.0" spacing="40.0" AnchorPane.bottomAnchor="89.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="0.0">
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <VBox prefHeight="853.0" prefWidth="371.0" spacing="60.0">
+            <Button fx:id="cancellationButton" disable="true" mnemonicParsing="false" onAction="#cancellation" prefHeight="40.0" prefWidth="166.0" text="Stop" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Button fx:id="generateButton" disable="true" mnemonicParsing="false" onAction="#generateImage" prefHeight="40.0" prefWidth="166.0" text="Generate" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" text="Save Result" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <VBox alignment="TOP_CENTER" spacing="10.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <children>
-                  <MenuButton fx:id="menuButton" cache="true" prefHeight="40.0" prefWidth="166.0" text="Wähle Algorithmus">
+                  <MenuButton fx:id="menuButton" alignment="CENTER" cache="true" contentDisplay="CENTER" prefHeight="40.0" prefWidth="166.0" text="Wähle Algorithmus">
                      <items>
                         <MenuItem fx:id="menuItem1" mnemonicParsing="false" onAction="#menuItem1clicked" text="Unverändert" />
                         <MenuItem fx:id="menuItem2" mnemonicParsing="false" onAction="#menuItem2clicked" text="Pixelmanipulation" />
@@ -32,54 +48,27 @@
                         <MenuItem fx:id="menuItem4" mnemonicParsing="false" onAction="#menuItem4clicked" text="leer" />
                      </items>
                   </MenuButton>
-                  <Label fx:id="explanationLabel" alignment="TOP_LEFT" prefHeight="345.0" prefWidth="316.0" text="Erklärungstext zum ausgewählten Algorithmus" />
-                  <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="380.0" spacing="10.0">
+                  <TextArea fx:id="explanationArea" editable="false" prefHeight="300.0" prefWidth="300.0" wrapText="true" />
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label prefHeight="25.0" prefWidth="64.0" text="Parameter1:" />
+                        <Label text="Parameter1:" />
                         <TextField fx:id="textField1" onAction="#validateInput" prefHeight="17.0" prefWidth="111.0" promptText="8" text="TextField" visible="false" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="380.0" spacing="10.0">
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label prefHeight="24.0" prefWidth="64.0" text="Parameter2:" />
+                        <Label text="Parameter2:" />
                         <TextField fx:id="textField11" onAction="#validateInput" prefHeight="17.0" prefWidth="111.0" promptText="8" text="TextField" visible="false" />
                      </children>
                   </HBox>
-                  <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" />
                </children>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
             </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="853.0" prefWidth="458.0" spacing="20.0">
+            <VBox alignment="TOP_CENTER" spacing="10.0" GridPane.columnIndex="2">
                <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                     <children>
-                        <ImageView fx:id="inputImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../data/images/00000.jpeg" />
-                           </image>
-                        </ImageView>
-                        <Label fx:id="inputImageLabel" prefHeight="17.0" prefWidth="150.0" text="Eingabebild">
-                           <padding>
-                              <Insets left="50.0" />
-                           </padding>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <ListView fx:id="listView" onMouseClicked="#ClickedListView" prefHeight="465.0" prefWidth="431.0" />
-                  <Button fx:id="loadImage" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="166.0" text="Lade Bild">
-                     <VBox.margin>
-                        <Insets left="50.0" />
-                     </VBox.margin></Button>
-               </children>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-            </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="853.0" prefWidth="393.0" spacing="30.0">
-               <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                  <VBox alignment="TOP_CENTER" spacing="5.0">
                      <children>
                         <ImageView fx:id="outputImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <VBox.margin>
@@ -97,7 +86,7 @@
                   <Label fx:id="confidenceLabel" prefHeight="30.0" prefWidth="292.0" text="Konfidenz:" />
                   <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="292.0" progress="0.0" />
                   <ProgressIndicator fx:id="progressIndicator" prefHeight="52.0" prefWidth="57.0" visible="false" />
-                  <LineChart fx:id="lineChart" prefHeight="280.0" prefWidth="307.0">
+                  <LineChart fx:id="lineChart" prefHeight="250.0" prefWidth="250.0">
                      <xAxis>
                         <CategoryAxis fx:id="yAxis" label="Zeit" side="BOTTOM" />
                      </xAxis>
@@ -106,21 +95,53 @@
                      </yAxis>
                   </LineChart>
                </children>
-               <HBox.margin>
+               <GridPane.margin>
                   <Insets />
-               </HBox.margin>
+               </GridPane.margin>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="TOP_CENTER" spacing="20.0" GridPane.columnIndex="1">
+               <children>
+                  <VBox alignment="TOP_CENTER" spacing="5.0">
+                     <children>
+                        <ImageView fx:id="inputImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../data/images/00000.jpeg" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="inputImageLabel" prefHeight="17.0" prefWidth="150.0" text="Eingabebild">
+                           <padding>
+                              <Insets left="50.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <ListView fx:id="listView" onMouseClicked="#ClickedListView" prefWidth="300.0" />
+                  <Button fx:id="loadImage" graphicTextGap="0.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="166.0" text="Lade Bild">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+               </children>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <padding>
+                  <Insets bottom="20.0" left="5.0" right="5.0" />
+               </padding>
             </VBox>
          </children>
+         <opaqueInsets>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </opaqueInsets>
          <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
-      </HBox>
-      <HBox alignment="CENTER" layoutX="6.0" layoutY="793.0" prefHeight="100.0" prefWidth="1262.0" spacing="370.0">
-         <children>
-            <Button fx:id="cancellationButton" disable="true" mnemonicParsing="false" onAction="#cancellation" prefHeight="40.0" prefWidth="166.0" text="Stop" />
-            <Button fx:id="generateButton" disable="true" mnemonicParsing="false" onAction="#generateImage" prefHeight="40.0" prefWidth="166.0" text="Generate" />
-            <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" text="Save Result" />
-         </children>
-      </HBox>
+      </GridPane>
    </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
 </AnchorPane>

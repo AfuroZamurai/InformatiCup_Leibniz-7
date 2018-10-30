@@ -32,6 +32,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -90,7 +91,7 @@ public class Controller implements Initializable {
 	private MenuItem menuItem4;
 
 	@FXML
-	private Label explanationLabel;
+	private TextArea explanationArea;
 
 	@FXML
 	private TextField textField1;
@@ -157,7 +158,7 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void menuItem1clicked(ActionEvent event) {
-		explanationLabel.setText(
+		explanationArea.setText(
 				"Erklärungstext zu dem ausgewählten Algorithmus:\n\nDieser Algorithmus sendet das Eingabebild\nan die künstliche Inteligenz.\n"
 						+ "Das Bild ist auch wieder das Ausgabebild,\nda keine Veränderung vorgenommen wurde\n"
 						+ "und die dazugeöhrige Konfidenz wird ausgegeben.");
@@ -179,7 +180,7 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void menuItem2clicked(ActionEvent event) {
-		explanationLabel.setText(
+		explanationArea.setText(
 				"Pixelmanipulations-Algorithmus:\n\nEs gibt eine Gruppe von Pixel,\ndie auf schwarz gesetz wird.\n"
 						+ "Steigt die Konfidenz, wird die Gruppe\nim Ausgabebild auf schwarz gesetzt, sonst weiß.\n"
 						+ "Das wird mit allen Gruppen gemacht.\nDie größe der Gruppe gibt der Filter an.\n\n"
@@ -206,7 +207,7 @@ public class Controller implements Initializable {
 		if (sign != null) {
 			enableButton(generateButton);
 		}
-		explanationLabel.setText("leer");
+		explanationArea.setText("leer");
 		textField1.setVisible(false);
 	}
 
@@ -225,7 +226,7 @@ public class Controller implements Initializable {
 		if (sign != null) {
 			enableButton(generateButton);
 		}
-		explanationLabel.setText("leer");
+		explanationArea.setText("leer");
 		textField1.setVisible(false);
 	}
 
