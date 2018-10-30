@@ -8,7 +8,7 @@ import main.evaluate.EvaluationResult;
 import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
 
-public class Genom {
+public class Genom implements Comparable<Genom> {
 	
 	private float fitness;
 	private List<Gene> genes;
@@ -94,5 +94,10 @@ public class Genom {
 
 	public void setNet(CPPN net) {
 		this.net = net;
+	}
+
+	@Override
+	public int compareTo(Genom o) {
+		return this.fitness - o.fitness > 0 ? 1 : this.fitness - o.fitness < 0 ? -1 : 0;
 	}
 }

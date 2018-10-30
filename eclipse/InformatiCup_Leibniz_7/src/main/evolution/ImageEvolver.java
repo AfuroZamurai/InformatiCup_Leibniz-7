@@ -1,8 +1,10 @@
 package main.evolution;
 
 import java.awt.image.BufferedImage;
+import java.security.Signature;
 
 import main.IModule;
+import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.IEvaluator;
 import main.evaluate.TrasiWebEvaluator;
 import main.evolution.ga.CuckooSearch;
@@ -18,8 +20,8 @@ import main.evolution.network.Config;
  */
 public class ImageEvolver implements IModule {
 	
-	private final int POPULATION_SIZE = 300;
-	private final int GENERATION_CAP = 50;
+	private final int POPULATION_SIZE = 60;
+	private final int GENERATION_CAP = 25;
 	private final float TARGET_FITNESS = 0.9f;
 	
 	private CPPN net;
@@ -36,9 +38,9 @@ public class ImageEvolver implements IModule {
 
 	@Override
 	public BufferedImage generateImage(BufferedImage input) {
-		String classLabel = "Zulässige Höchstgeschwindigkeit (100)";
-		CuckooSearch searcher = new CuckooSearch(this.net, POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP);
-		return searcher.searchForImage(classLabel);
+		CuckooSearch searcher = new CuckooSearch(this.net, POPULATION_SIZE, TARGET_FITNESS, 
+				GENERATION_CAP, Sign.VORFAHRT);
+		return searcher.searchForImage();
 	}
 	
 }

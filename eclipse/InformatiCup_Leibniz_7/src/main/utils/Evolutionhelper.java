@@ -3,6 +3,7 @@ package main.utils;
 import java.lang.Math;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import org.apache.commons.math3.distribution.*;
 
 import main.evolution.ga.GeneticAlgorithm;
 
@@ -23,6 +24,11 @@ public class Evolutionhelper {
 	
 	public static int randomInt(int lowerBound, int upperBound) {
 		return ThreadLocalRandom.current().nextInt(lowerBound, upperBound + 1);
+	}
+	
+	public static double getNormalDistributedDouble() {
+		NormalDistribution nd = new NormalDistribution();
+		return nd.sample();
 	}
 	
 	public static double boundedIdentity(double lower, double upper, double value) {

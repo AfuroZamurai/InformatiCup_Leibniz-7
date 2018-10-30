@@ -1,5 +1,6 @@
 package main.evolution.ga;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class Population {
 	private Genom best;
 	
 	public Population() {
-		super();
+		genoms = new ArrayList<>();
 	}
 
 	public List<Genom> getGenoms() {
@@ -32,6 +33,5 @@ public class Population {
 	public void setBest(Genom best) {
 		this.best = best;
 	}
-	
-	
+
 }
