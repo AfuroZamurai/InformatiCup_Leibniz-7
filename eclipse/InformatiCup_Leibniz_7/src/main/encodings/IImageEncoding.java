@@ -5,32 +5,38 @@ import java.awt.image.BufferedImage;
 public interface IImageEncoding {
 
 	/**
-	 * This Image creates an Image with the given dimensions using its encoding
+	 * This Methods creates an Image with the given dimensions using its encoding
 	 * 
 	 * @param width
 	 *            The width of the Image to be created
 	 * @param height
 	 *            The height of the Image to be created
 	 * @param parameters
-	 *            An array of floats between 0 and 1 determining the content of the
-	 *            image it should contain as many floats as getParameterSize
-	 *            indicates
+	 *            An array of floats between 0 and 1, more parameters generally
+	 *            create more complex images
 	 * @return The created Image
 	 * 
-	 * @see getParameterSize
 	 */
 	public BufferedImage createImage(int width, int height, float[] parameters);
 
 	/**
-	 * This method returns the required size of the parameter array for the
-	 * createImage method for a given size of an image
+	 * This Methods creates an Image with the given parameters and adds it on top of
+	 * the given image
 	 * 
-	 * @param width
-	 *            The width the image should have
-	 * @param height
-	 *            The height the image should have This method indicates the
-	 *            required size of the parameter Array
-	 * @return The required size of the parameter array
+	 * @param original
+	 *            An Image which will be the background for the new image
+	 * @param parameters
+	 *            An array of floats between 0 and 1, more parameters generally
+	 *            create more complex images
+	 * @return The result Image, which is the original with new Content on top
 	 */
-	public int getParameterSize(int width, int height);
+	public BufferedImage addToImage(BufferedImage original, float[] parameters);
+	
+	/**
+	 * This Method returns the amount of parameters which form a unit
+	 * The length of the parameters array should be a multiple of this Size
+	 * for efficient use. 
+	 * @return The size of an ParameterBatch
+	 */
+	public int getParameterBatchSize();
 }

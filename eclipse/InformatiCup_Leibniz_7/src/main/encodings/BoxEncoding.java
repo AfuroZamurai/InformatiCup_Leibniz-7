@@ -4,12 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import com.sun.javafx.iio.ImageStorage.ImageType;
+public class BoxEncoding implements IImageEncoding {
 
-public class CircleEncoding implements IImageEncoding {
-	
-	int batchSize = 6;
-	
+	int batchSize = 7;
+
 	@Override
 	public BufferedImage createImage(int width, int height, float[] parameters) {
 
@@ -22,10 +20,10 @@ public class CircleEncoding implements IImageEncoding {
 
 			int xPos = (int) (parameters[i] * width * 1.4f - 0.2f * width);
 			int yPos = (int) (parameters[i + 1] * height * 1.4f - 0.2f * height);
-			int radius = (int) (parameters[i + 2] * width / 4f);
+			int size = (int) (parameters[i + 2] * width / 4f);
 
 			g.setColor(new Color(parameters[i + 3], parameters[i + 4], parameters[i + 5]));
-			g.fillOval(xPos, yPos, radius, radius);
+			g.fillRect(xPos, yPos, size, size);
 		}
 
 		return img;
@@ -48,10 +46,10 @@ public class CircleEncoding implements IImageEncoding {
 
 			int xPos = (int) (parameters[i] * width * 1.4f - 0.2f * width);
 			int yPos = (int) (parameters[i + 1] * height * 1.4f - 0.2f * height);
-			int radius = (int) (parameters[i + 2] * width / 2f);
+			int size = (int) (parameters[i + 2] * width / 2f);
 
 			g.setColor(new Color(parameters[i + 3], parameters[i + 4], parameters[i + 5]));
-			g.fillOval(xPos, yPos, radius, radius);
+			g.fillRect(xPos, yPos, size, size);
 
 		}
 
