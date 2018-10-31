@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import main.evaluate.EvaluationResult;
@@ -41,7 +43,8 @@ public class SimpleIterationModule implements IModuleIterate {
 	 * The chance to draw a circle over other previously drawn circles without
 	 * drawing over an area that has not been drawn over before
 	 */
-	private final float DIVERSION_CHANCE = 0.1f;
+	private Parameter diversionChance = new Parameter("Diversion Chance",
+			"Die Chance einen Kreis über einen anderen zu zeichnen (Wert zwischen 0 und 1)", 0.1f);
 
 	@Override
 	public BufferedImage generateNextImage() {
@@ -60,7 +63,7 @@ public class SimpleIterationModule implements IModuleIterate {
 
 			if (bufferedImagesEqual(oldMask, newMask)) {
 				float diversionDraw = ThreadLocalRandom.current().nextFloat();
-				if (diversionDraw < DIVERSION_CHANCE) {
+				if (diversionDraw < diversionChance.getFloatValue()) {
 					isDone = true;
 				}
 			} else {
@@ -142,5 +145,14 @@ public class SimpleIterationModule implements IModuleIterate {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public List<Parameter> getParameterList() {
+		ArrayList<Parameter> list = new ArrayList<>();
+
+		list.add(diversionChance);
+
+		return list;
 	}
 }

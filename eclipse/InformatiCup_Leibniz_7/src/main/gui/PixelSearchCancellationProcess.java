@@ -3,6 +3,9 @@ package main.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 
 import javafx.application.Platform;
@@ -13,6 +16,7 @@ import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.module.IModuleIterate;
+import main.module.Parameter;
 
 /**
  * This class contains the implementation of an image manipulate algorithm. From
@@ -28,7 +32,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 
 	final int IMAGEHEIGHT = 64;
 	final int IMAGEWIDTH = 64;
-	int filter = 16;
+	int filter;
 	final double ERROR_TOLERANCE = 0.0000005;
 	float newConfidenceValue = 0;
 	double percent;
@@ -46,6 +50,9 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	private int i, j;
 	Color[] colorArray;
 
+	private Parameter filterParameter = new Parameter("Filtergröße", "Größe des Filters (Wert zwischen 1 und 64)",
+			16);
+
 	/**
 	 * Constructor
 	 * 
@@ -53,10 +60,8 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	 *            meaning of the input image
 	 * @see Sign
 	 */
-	public PixelSearchCancellationProcess(Sign sign, Controller controller, int filter) {
-		this.sign = sign;
+	public PixelSearchCancellationProcess(Controller controller) {
 		this.controller = controller;
-		this.filter = filter;
 		colorArray = new Color[filter * filter];
 	}
 
@@ -227,6 +232,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 		this.sign = sign;
 		isFinished = false;
 		isFirstStep = true;
+		filter = filterParameter.getIntValue();
 	}
 
 	/**
@@ -242,5 +248,12 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 		g.drawImage(source, 0, 0, null);
 		g.dispose();
 		return b;
+	}
+
+	@Override
+	public List<Parameter> getParameterList() {
+		ArrayList<Parameter> list = new ArrayList<>();
+		list.add(filterParameter);
+		return list;
 	}
 }

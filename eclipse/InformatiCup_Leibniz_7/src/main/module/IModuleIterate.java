@@ -1,6 +1,7 @@
 package main.module;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
@@ -40,4 +41,6 @@ public interface IModuleIterate {
 	 *            The Sign of the initial image
 	 */
 	public void setInitImage(BufferedImage img, Sign sign);
+	
+	public List<Parameter> getParameterList();
 }

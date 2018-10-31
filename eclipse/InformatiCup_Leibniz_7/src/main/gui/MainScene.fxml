@@ -55,18 +55,7 @@
                      </items>
                   </MenuButton>
                   <TextArea fx:id="explanationArea" editable="false" prefHeight="300.0" prefWidth="300.0" wrapText="true" />
-                  <HBox alignment="CENTER_LEFT" spacing="10.0">
-                     <children>
-                        <Label text="Parameter1:" />
-                        <TextField fx:id="textField1" onAction="#validateInput" prefHeight="17.0" prefWidth="111.0" promptText="8" text="TextField" visible="false" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="10.0">
-                     <children>
-                        <Label text="Parameter2:" />
-                        <TextField fx:id="textField11" onAction="#validateInput" prefHeight="17.0" prefWidth="111.0" promptText="8" text="TextField" visible="false" />
-                     </children>
-                  </HBox>
+                  <VBox fx:id="parameterBox" alignment="TOP_CENTER" spacing="5.0" />
                </children>
                <padding>
                   <Insets right="5.0" />

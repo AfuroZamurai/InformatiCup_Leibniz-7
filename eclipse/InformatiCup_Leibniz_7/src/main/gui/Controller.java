@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
@@ -19,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -35,21 +38,28 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import main.IModule;
 import main.evaluate.EvaluationResult;
 import main.evaluate.EvaluationResult.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
 import main.io.ImageSaver;
+import main.module.IModuleIterate;
 import main.module.ModuleFramework;
+import main.module.Parameter;
 import main.module.SimpleIterationModule;
+import main.module.Parameter.ParameterType;
 
 /**
  * This class is the Controller for the GUI
@@ -73,6 +83,8 @@ public class Controller implements Initializable {
 	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
 	public Task<Void> task;
 	private ModuleFramework moduleFramework = new ModuleFramework(this);
+	private IModuleIterate module;
+	private ArrayList<Pair<Parameter, TextField>> parameterTextFieldList = new ArrayList<>();
 
 	Series series = new Series();
 	private int iterationCounter = 0;
@@ -151,6 +163,9 @@ public class Controller implements Initializable {
 	@FXML
 	private Button SaveImageButton;
 
+	@FXML
+	private VBox parameterBox;
+
 	/**
 	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
 	 * Generation Button gets enabled
@@ -167,10 +182,12 @@ public class Controller implements Initializable {
 						+ "Das Bild ist auch wieder das Ausgabebild,\nda keine Veränderung vorgenommen wurde\n"
 						+ "und die dazugeöhrige Konfidenz wird ausgegeben.");
 		selectedAlgorithmn = menuItem1;
-		textField1.setVisible(false);
+		// textField1.setVisible(false);
 		if (sign != null) {
 			enableButton(generateButton);
 		}
+		module = null;
+		generateParameterLayout();
 	}
 
 	/**
@@ -190,10 +207,13 @@ public class Controller implements Initializable {
 						+ "Das wird mit allen Gruppen gemacht.\nDie größe der Gruppe gibt der Filter an.\n\n"
 						+ "Filtergröße: ");
 		selectedAlgorithmn = menuItem2;
-		textField1.setVisible(true);
+		// textField1.setVisible(true);
 		if (sign != null) {
 			enableButton(generateButton);
 		}
+		module = new PixelSearchCancellationProcess(this);
+		parameterTextFieldList.clear();
+		generateParameterLayout();
 	}
 
 	/**
@@ -212,7 +232,11 @@ public class Controller implements Initializable {
 			enableButton(generateButton);
 		}
 		explanationArea.setText("leer");
-		textField1.setVisible(false);
+		// textField1.setVisible(false);
+
+		module = new SimpleIterationModule();
+		parameterTextFieldList.clear();
+		generateParameterLayout();
 	}
 
 	/**
@@ -283,20 +307,18 @@ public class Controller implements Initializable {
 		if (selectedAlgorithmn == menuItem1) {
 			startAlgorithm(new TestModule());
 		} else if (selectedAlgorithmn == menuItem2) {
-			if (filter == 0) {
+			/* if (filter == 0) {
 				showAlertError("Es muss eine Filtergröße angegeben werden");
 				disableButton(cancellationButton);
 				listView.setDisable(false);
 				return;
-			}
-
-			moduleFramework.startModule(
-					new PixelSearchCancellationProcess(listView.getSelectionModel().getSelectedItem(), this, filter),
-					SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+			}*/
+			parseParameters();
+			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem3) {
-			moduleFramework.startModule(new SimpleIterationModule(),
-					SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+			parseParameters();
+			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem4) {
 		} else {
@@ -579,6 +601,62 @@ public class Controller implements Initializable {
 		setConfidence(evalResult.getConfidenceForSign(listView.getSelectionModel().getSelectedItem()));
 
 		iterationCounter++;
+	}
+
+	/**
+	 * Modulates the GUI to show an input-mask for parameters for the selected
+	 * module.
+	 */
+	private void generateParameterLayout() {
+		parameterBox.getChildren().clear();
+		if (module != null) {
+			List<Parameter> parameterList = module.getParameterList();
+
+			for (Parameter parameter : parameterList) {
+				HBox hbox = new HBox(5.0);
+				hbox.setAlignment(Pos.CENTER);
+				Label parameterLabel = new Label(parameter.getName());
+				TextField parameterTextfield = new TextField();
+				parameterLabel.setTooltip(new Tooltip(parameter.getDescription()));
+				parameterTextfield.setTooltip(new Tooltip(parameter.getDescription()));
+
+				switch (parameter.getType()) {
+				case P_BOOL:
+					break;
+				case P_FLOAT:
+					parameterTextfield.setText("" + parameter.getFloatValue());
+					parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
+					break;
+				case P_INT:
+					parameterTextfield.setText("" + parameter.getIntValue());
+					parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
+					break;
+				default:
+					break;
+				}
+
+				hbox.getChildren().addAll(parameterLabel, parameterTextfield);
+				parameterBox.getChildren().add(hbox);
+			}
+		}
+	}
+
+	private void parseParameters() {
+		for (Pair<Parameter, TextField> pair : parameterTextFieldList) {
+			TextField textField = pair.getValue();
+			try {
+				if (pair.getKey().getType() == ParameterType.P_FLOAT) {
+					float value = Float.parseFloat(textField.getText());
+					pair.getKey().setFloatValue(value);
+				} else if (pair.getKey().getType() == ParameterType.P_INT) {
+					int value = Integer.parseInt(textField.getText());
+					pair.getKey().setIntValue(value);
+				}
+			} catch (Exception e) {
+				showAlertError("Please enter valid Parameters!");
+				return;
+			}
+		}
 	}
 
 }
