@@ -12,7 +12,7 @@ import main.encodings.DirectEncoding;
 import main.encodings.GridEncoding;
 import main.encodings.IImageEncoding;
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.Sign;
 import main.io.ImageSaver;
 
 public class EncodingTester {
@@ -33,7 +33,7 @@ public class EncodingTester {
 			parameters[i] = rand.nextFloat();
 		}
 		
-		BufferedImage baustelle = EvaluationResult.getExampleImage(Sign.BAUSTELLE);
+		BufferedImage baustelle = Sign.BAUSTELLE.getExampleImage();
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
@@ -54,7 +54,7 @@ public class EncodingTester {
 			parameters[i] = rand.nextFloat();
 		}
 		
-		BufferedImage baustelle = EvaluationResult.getExampleImage(Sign.BAUSTELLE);
+		BufferedImage baustelle = Sign.BAUSTELLE.getExampleImage();
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
@@ -75,7 +75,7 @@ public class EncodingTester {
 			parameters[i] = rand.nextFloat();
 		}
 		
-		BufferedImage baustelle = EvaluationResult.getExampleImage(Sign.BAUSTELLE);
+		BufferedImage baustelle = Sign.BAUSTELLE.getExampleImage();
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
@@ -96,7 +96,7 @@ public class EncodingTester {
 			parameters[i] = rand.nextFloat();
 		}
 		
-		BufferedImage baustelle = EvaluationResult.getExampleImage(Sign.BAUSTELLE);
+		BufferedImage baustelle = Sign.BAUSTELLE.getExampleImage();
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
 		
