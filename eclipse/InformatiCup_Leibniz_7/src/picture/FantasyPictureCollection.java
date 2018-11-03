@@ -3,7 +3,7 @@ package picture;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.Sign;
 import picture.FantasyPicture.Shape;
 import picture.features.ConstructionSiteFeature;
 import picture.features.Feature;

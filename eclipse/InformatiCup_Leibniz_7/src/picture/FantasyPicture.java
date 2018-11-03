@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
+import main.evaluate.Sign;
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IClassification;
 import main.evaluate.IEvaluator;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
@@ -115,8 +116,8 @@ public class FantasyPicture {
 		}
 		IEvaluator evaluator = new TrasiWebEvaluator();
 		try {
-			EvaluationResult res = evaluator.evaluateImage(img);
-			System.out.println("Result: " + res.getMaxSign().toString() + " Value: " + res.getMaxValue());
+			EvaluationResult<IClassification> res = evaluator.evaluateImage(img);
+			System.out.println("Result: " + Sign.values()[res.getMaxClassIndex()].toString() + " Value: " + res.getMaxValue());
 
 		} catch (Exception e) {
 

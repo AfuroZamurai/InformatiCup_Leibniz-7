@@ -136,7 +136,7 @@ public class TrasiWebEvaluator implements IEvaluator {
 	@Override
 	public float evaluate(BufferedImage image) throws Exception {
 
-		EvaluationResult<Sign> result = evaluateImage(image);
+		EvaluationResult<IClassification> result = evaluateImage(image);
 
 		return result.getMaxValue();
 	}
@@ -152,7 +152,7 @@ public class TrasiWebEvaluator implements IEvaluator {
 	 *             when image size is wrong or a bad shaped json response
 	 */
 	@Override
-	public EvaluationResult<Sign> evaluateImage(BufferedImage image) throws Exception {
+	public EvaluationResult<IClassification> evaluateImage(BufferedImage image) throws Exception {
 
 		// Check if image has neccessary dimensions
 		int width = image.getWidth();
@@ -224,7 +224,7 @@ public class TrasiWebEvaluator implements IEvaluator {
 
 		}
 
-		EvaluationResult<Sign> result = new EvaluationResult<Sign>(scores);
+		EvaluationResult<IClassification> result = new EvaluationResult<IClassification>(scores);
 
 		return result;
 	}

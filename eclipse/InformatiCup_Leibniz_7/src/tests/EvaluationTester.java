@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import main.evaluate.EvaluationResult;
+import main.evaluate.IClassification;
 import main.evaluate.IEvaluator;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
@@ -41,7 +42,7 @@ public class EvaluationTester {
 			
 			BufferedImage img = Sign.values()[i].getExampleImage();
 			
-			EvaluationResult<Sign> result = evaluator.evaluateImage(img);
+			EvaluationResult<IClassification> result = evaluator.evaluateImage(img);
 			
 			for (float f : result.scores) {
 

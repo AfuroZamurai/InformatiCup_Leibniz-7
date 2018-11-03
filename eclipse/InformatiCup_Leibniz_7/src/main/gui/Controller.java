@@ -51,7 +51,8 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import main.IModule;
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IClassification;
+import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
 import main.io.ImageSaver;
@@ -89,7 +90,7 @@ public class Controller implements Initializable {
 	Series series = new Series();
 	private int iterationCounter = 0;
 
-	Sign sign; // Selected Sign
+	IClassification imageClass; // Selected Sign
 	MenuItem selectedAlgorithmn;
 	@FXML
 	private MenuButton menuButton;
@@ -122,7 +123,7 @@ public class Controller implements Initializable {
 	private Label inputImageLabel;
 
 	@FXML
-	private ListView<Sign> listView;
+	private ListView<IClassification> listView;
 
 	@FXML
 	private Button loadImage;
@@ -183,7 +184,7 @@ public class Controller implements Initializable {
 						+ "und die dazugeöhrige Konfidenz wird ausgegeben.");
 		selectedAlgorithmn = menuItem1;
 		// textField1.setVisible(false);
-		if (sign != null) {
+		if (imageClass != null) {
 			enableButton(generateButton);
 		}
 		module = null;
@@ -208,7 +209,7 @@ public class Controller implements Initializable {
 						+ "Filtergröße: ");
 		selectedAlgorithmn = menuItem2;
 		// textField1.setVisible(true);
-		if (sign != null) {
+		if (imageClass != null) {
 			enableButton(generateButton);
 		}
 		module = new PixelSearchCancellationProcess(this);
@@ -228,7 +229,7 @@ public class Controller implements Initializable {
 	@FXML
 	void menuItem3clicked(ActionEvent event) {
 		selectedAlgorithmn = menuItem3;
-		if (sign != null) {
+		if (imageClass != null) {
 			enableButton(generateButton);
 		}
 		explanationArea.setText("leer");
@@ -251,7 +252,7 @@ public class Controller implements Initializable {
 	@FXML
 	void menuItem4clicked(ActionEvent event) {
 		selectedAlgorithmn = menuItem4;
-		if (sign != null) {
+		if (imageClass != null) {
 			enableButton(generateButton);
 		}
 		explanationArea.setText("leer");
@@ -270,10 +271,10 @@ public class Controller implements Initializable {
 	@FXML
 	void ClickedListView(MouseEvent event) {
 		System.out.println("" + listView.getSelectionModel().getSelectedItem());
-		sign = listView.getSelectionModel().getSelectedItem();
+		imageClass = listView.getSelectionModel().getSelectedItem();
 
 		try {
-			inputImage.setImage(SwingFXUtils.toFXImage(EvaluationResult.getExampleImage(sign), null));
+			inputImage.setImage(SwingFXUtils.toFXImage(imageClass.getExampleImage(), null));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -446,7 +447,7 @@ public class Controller implements Initializable {
 
 		generationLocked = true;
 		progressIndicator.setVisible(true);
-		classLabel.setText("Class:" + sign);
+		classLabel.setText("Class:" + imageClass);
 
 		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);
 
@@ -463,7 +464,7 @@ public class Controller implements Initializable {
 					// get confidence from outputImage for the selected sign
 
 					er = twb.evaluateImage(SwingFXUtils.fromFXImage(output, null));
-					confidence = er.getConfidenceForSign(listView.getSelectionModel().getSelectedItem());
+					confidence = er.getConfidenceForClass(listView.getSelectionModel().getSelectedItem());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -538,7 +539,7 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		Sign[] arrayOfSigns = Sign.values();
-		ObservableList<Sign> obsList = FXCollections.observableArrayList();
+		ObservableList<IClassification> obsList = FXCollections.observableArrayList();
 		for (int i = 1; i < 43; i++) {
 			obsList.add(arrayOfSigns[i]);
 		}
@@ -598,7 +599,7 @@ public class Controller implements Initializable {
 
 	public void updateResultImage(BufferedImage newImg, EvaluationResult evalResult) {
 		setOutputImage(SwingFXUtils.toFXImage(newImg, null));
-		setConfidence(evalResult.getConfidenceForSign(listView.getSelectionModel().getSelectedItem()));
+		setConfidence(evalResult.getConfidenceForClass(listView.getSelectionModel().getSelectedItem()));
 
 		iterationCounter++;
 	}
