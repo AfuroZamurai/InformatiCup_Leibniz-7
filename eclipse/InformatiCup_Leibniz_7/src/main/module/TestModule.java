@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IClassification;
 
 public class TestModule implements IModuleIterate {
 
@@ -18,21 +18,20 @@ public class TestModule implements IModuleIterate {
 	}
 
 	@Override
-	public void setEvalResult(EvaluationResult result) {
+	public void setEvalResult(EvaluationResult<IClassification> result) {
 		
 		
-	}
-
-	@Override
-	public void setInitImage(BufferedImage img, Sign sign) {
-		
-		this.img = img;
 	}
 
 	@Override
 	public List<Parameter> getParameterList() {
 		
 		return new ArrayList<Parameter>();
+	}
+
+	@Override
+	public void setInitImage(BufferedImage img, IClassification imageClass) {
+		this.img = img;
 	}
 
 }
