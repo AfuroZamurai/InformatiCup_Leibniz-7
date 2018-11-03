@@ -35,6 +35,6 @@ public interface IEvaluator {
 	 * @throws Exception
 	 *             see implementing class for detailed exception causes
 	 */
-	public EvaluationResult evaluateImage(BufferedImage image) throws Exception;
+	public EvaluationResult<IClassification> evaluateImage(BufferedImage image) throws Exception;
 
 }

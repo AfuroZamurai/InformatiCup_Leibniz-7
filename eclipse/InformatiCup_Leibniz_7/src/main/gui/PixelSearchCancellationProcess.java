@@ -13,7 +13,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import main.IModule;
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IClassification;
 import main.evaluate.TrasiWebEvaluator;
 import main.module.IModuleIterate;
 import main.module.Parameter;
@@ -37,7 +37,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	float newConfidenceValue = 0;
 	double percent;
 
-	Sign sign;
+	IClassification imageClass;
 	BufferedImage inputImage, initialImage;
 	ImageIcon icon2;
 	BufferedImage outputImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
@@ -46,7 +46,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	boolean isFinished = false;
 	boolean isFirstStep = true;
 
-	private EvaluationResult er;
+	private EvaluationResult<IClassification> er;
 	private int i, j;
 	Color[] colorArray;
 
@@ -56,7 +56,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	/**
 	 * Constructor
 	 * 
-	 * @param sign
+	 * @param imageClass
 	 *            meaning of the input image
 	 * @see Sign
 	 */
@@ -85,11 +85,11 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 		Color BLUE = new Color(0, 0, 255);
 
 		TrasiWebEvaluator twb = new TrasiWebEvaluator();
-		EvaluationResult er;
+		EvaluationResult<IClassification> er;
 		try {
 
 			er = twb.evaluateImage(inputImage);
-			confidence = er.getConfidenceForSign(sign); // initialized confidence
+			confidence = er.getConfidenceForClass(imageClass); // initialized confidence
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -121,7 +121,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 				try {
 
 					er = twb.evaluateImage(inputImage);
-					newConfidenceValue = er.getConfidenceForSign(sign); // get confidence from InputImage with changed
+					newConfidenceValue = er.getConfidenceForClass(imageClass); // get confidence from InputImage with changed
 																		// Pixel
 
 					Thread.sleep(950);
@@ -185,13 +185,13 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	}
 
 	@Override
-	public void setEvalResult(EvaluationResult result) {
+	public void setEvalResult(EvaluationResult<IClassification> result) {
 		er = result;
 		if (isFirstStep) {
-			confidence = er.getConfidenceForSign(sign);
+			confidence = er.getConfidenceForClass(imageClass);
 			isFirstStep = false;
 		} else {
-			newConfidenceValue = er.getConfidenceForSign(sign);
+			newConfidenceValue = er.getConfidenceForClass(imageClass);
 
 			for (int k = 0; k < filter * filter; k++) { // set the Pixel for the outputImage and set the Pixel in
 				// inputImage back
@@ -224,12 +224,12 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	}
 
 	@Override
-	public void setInitImage(BufferedImage img, Sign sign) {
+	public void setInitImage(BufferedImage img, IClassification imageClass) {
 		i = 0;
 		j = 0;
 		initialImage = img;
 		inputImage = copyImage(img);
-		this.sign = sign;
+		this.imageClass = imageClass;
 		isFinished = false;
 		isFirstStep = true;
 		filter = filterParameter.getIntValue();

@@ -7,6 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -106,22 +113,19 @@ public class TrasiWebEvaluator implements IEvaluator {
 		File keyFile = new File("data/api_key.txt");
 
 		BufferedReader reader = null;
-		
+
 		try {
 			reader = new BufferedReader(new FileReader(keyFile));
 			API_KEY = reader.readLine();
 		} catch (FileNotFoundException e) {
-			
+
 			e.printStackTrace();
 			throw new IOException(
 					"API Key File is missing. Add api_key.txt to data folder with a valid key as content.");
-		}
-		finally {
+		} finally {
 			reader.close();
 		}
 
-		
-		
 	}
 
 	/**
@@ -132,7 +136,7 @@ public class TrasiWebEvaluator implements IEvaluator {
 	@Override
 	public float evaluate(BufferedImage image) throws Exception {
 
-		EvaluationResult result = evaluateImage(image);
+		EvaluationResult<IClassification> result = evaluateImage(image);
 
 		return result.getMaxValue();
 	}
@@ -148,7 +152,7 @@ public class TrasiWebEvaluator implements IEvaluator {
 	 *             when image size is wrong or a bad shaped json response
 	 */
 	@Override
-	public EvaluationResult evaluateImage(BufferedImage image) throws Exception {
+	public EvaluationResult<IClassification> evaluateImage(BufferedImage image) throws Exception {
 
 		// Check if image has neccessary dimensions
 		int width = image.getWidth();
@@ -169,26 +173,26 @@ public class TrasiWebEvaluator implements IEvaluator {
 
 		// Image must be present in file format to upload it TODO: Find workaround
 		File imageFile = ImageSaver.saveImage(image, "data/tmp/image");
-		
+
 		boolean done = false;
 		String response = "";
-		
-		while(!done) {
+
+		while (!done) {
 			System.out.println("Sending Request...");
 
 			response = sendRequest(imageFile);
 
 			System.out.println("Response: " + response.trim());
-			
-			if(!response.startsWith("429")) {
+
+			if (!response.startsWith("429")) {
 				done = true;
 				break;
 			}
-			
+
 			System.out.println("Server is overloaded, waiting 2000ms, then try again");
 			Thread.sleep(2000);
 		}
-		
+
 		if (!response.startsWith("200")) {
 			// Invalid response, return null
 			return null;
@@ -196,7 +200,31 @@ public class TrasiWebEvaluator implements IEvaluator {
 
 		response = response.replaceAll("200\n", "");
 
-		EvaluationResult result = new EvaluationResult(response);
+		JsonReader reader = Json.createReader(new StringReader(response));
+
+		JsonArray classes = reader.readArray();
+
+		float[] scores = new float[Sign.values().length];
+
+		for (int i = 0; i < classes.size(); i++) {
+			JsonObject object = classes.getJsonObject(i);
+
+			String className = object.getString("class");
+			double confidence = object.getJsonNumber("confidence").doubleValue();
+
+			for (int n = 0; n < Sign.classNames.length; n++) {
+				if (Sign.classNames[n].equals(className)) {
+					scores[n] = (float) confidence;
+					break;
+				}
+				if (n == Sign.classNames.length - 1) {
+					throw new Exception("Could not find Class: " + className);
+				}
+			}
+
+		}
+
+		EvaluationResult<IClassification> result = new EvaluationResult<IClassification>(scores);
 
 		return result;
 	}

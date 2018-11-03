@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IClassification;
 
 /**
  * A Module that alters an image by painting random circles with random colors
@@ -25,7 +25,7 @@ public class SimpleIterationModule implements IModuleIterate {
 	private BufferedImage currentImage;
 
 	/** The result of the evaluation of the image generated in the last step */
-	private EvaluationResult lastResult;
+	private EvaluationResult<IClassification> lastResult;
 
 	/** The image that was generated in the last step */
 	private BufferedImage lastImage;
@@ -36,8 +36,8 @@ public class SimpleIterationModule implements IModuleIterate {
 	/** The mask of the image that is generated in the current step */
 	private BufferedImage newMask;
 
-	/** The Sign whose confidence should be maximized */
-	private Sign targetSign;
+	/** The image class whose confidence should be maximized */
+	private IClassification targetClass;
 
 	/**
 	 * The chance to draw a circle over other previously drawn circles without
@@ -82,10 +82,10 @@ public class SimpleIterationModule implements IModuleIterate {
 	}
 
 	@Override
-	public void setEvalResult(EvaluationResult result) {
-		float res = result.getConfidenceForSign(targetSign);
+	public void setEvalResult(EvaluationResult<IClassification> result) {
+		float res = result.getConfidenceForClass(targetClass);
 		if (lastResult != null) {
-			if (res < 0.9f || res < lastResult.getConfidenceForSign(targetSign) - 0.01f) {
+			if (res < 0.9f || res < lastResult.getConfidenceForClass(targetClass) - 0.01f) {
 				currentImage = copyImage(lastImage);
 			} else {
 				lastImage = copyImage(currentImage);
@@ -95,10 +95,10 @@ public class SimpleIterationModule implements IModuleIterate {
 	}
 
 	@Override
-	public void setInitImage(BufferedImage img, Sign sign) {
+	public void setInitImage(BufferedImage img, IClassification imageClass) {
 		this.currentImage = img;
 		this.lastImage = copyImage(currentImage);
-		this.targetSign = sign;
+		this.targetClass = imageClass;
 
 		// init oldMask and newMask with plain white image
 		oldMask = copyImage(img);
