@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IClassification;
 
 /**
  * This interface describes a module that generates new images given an initial
@@ -30,7 +30,7 @@ public interface IModuleIterate {
 	 * @param result
 	 *            The EvaluationResult of the last generated image
 	 */
-	public void setEvalResult(EvaluationResult result);
+	public void setEvalResult(EvaluationResult<IClassification> result);
 
 	/**
 	 * Sets up the module by giving an initial Image and its corresponding Sign.
@@ -40,7 +40,7 @@ public interface IModuleIterate {
 	 * @param sign
 	 *            The Sign of the initial image
 	 */
-	public void setInitImage(BufferedImage img, Sign sign);
+	public void setInitImage(BufferedImage img, IClassification imageClass);
 	
 	public List<Parameter> getParameterList();
 }
