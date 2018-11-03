@@ -91,10 +91,11 @@ public class ModuleFramework implements Runnable {
 	@Override
 	public void run() {
 		while (!shouldStop) {
+			long startTime = System.currentTimeMillis();
 			BufferedImage newImg = module.generateNextImage();
 
 			try {
-				EvaluationResult evalResult = evaluator.evaluateImage(newImg);
+				EvaluationResult<IClassification> evalResult = evaluator.evaluateImage(newImg);
 				module.setEvalResult(evalResult);
 
 				Platform.runLater(new Runnable() {
@@ -104,7 +105,7 @@ public class ModuleFramework implements Runnable {
 					}
 				});
 
-				Thread.sleep(800);
+				Thread.sleep(1000 - System.currentTimeMillis() + startTime);
 			} catch (Exception e) {
 				e.printStackTrace();
 				stopModule();
