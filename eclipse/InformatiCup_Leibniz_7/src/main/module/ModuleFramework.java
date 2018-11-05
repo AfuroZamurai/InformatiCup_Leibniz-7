@@ -105,7 +105,9 @@ public class ModuleFramework implements Runnable {
 					}
 				});
 
-				Thread.sleep(1000 - System.currentTimeMillis() + startTime);
+				long sleeptime = 1000 - System.currentTimeMillis() + startTime;
+				if (sleeptime > 0) 
+					Thread.sleep(sleeptime);
 			} catch (Exception e) {
 				e.printStackTrace();
 				stopModule();
