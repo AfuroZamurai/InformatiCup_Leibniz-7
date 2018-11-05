@@ -42,5 +42,10 @@ public interface IModuleIterate {
 	 */
 	public void setInitImage(BufferedImage img, IClassification imageClass);
 	
+	/**
+	 * Returns a list of Parameters that are used by the module.
+	 * 
+	 * @return A list of used Parameters
+	 */
 	public List<Parameter> getParameterList();
 }
