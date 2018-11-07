@@ -113,6 +113,12 @@ public class ModuleFramework implements Runnable {
 				stopModule();
 				System.out.println("The image could not be evaluated!");
 			}
+			
+			if (module.isFinished()) {
+				//this may not be the most elegant way to stop the module
+				//(this is just simulating the stop button)
+				controller.cancellation(null);
+			}
 		}
 		shouldStop = false;
 		isRunning = false;

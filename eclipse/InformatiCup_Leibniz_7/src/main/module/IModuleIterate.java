@@ -48,4 +48,11 @@ public interface IModuleIterate {
 	 * @return A list of used Parameters
 	 */
 	public List<Parameter> getParameterList();
+	
+	/**
+	 * Returns whether the module is finished.
+	 * 
+	 * @return A boolean indicating whether the module is finished.
+	 */
+	public boolean isFinished();
 }

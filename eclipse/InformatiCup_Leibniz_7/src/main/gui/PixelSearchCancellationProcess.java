@@ -256,4 +256,9 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 		list.add(filterParameter);
 		return list;
 	}
+
+	@Override
+	public boolean isFinished() {
+		return isFinished;
+	}
 }

@@ -155,4 +155,9 @@ public class SimpleIterationModule implements IModuleIterate {
 
 		return list;
 	}
+
+	@Override
+	public boolean isFinished() {
+		return false;
+	}
 }

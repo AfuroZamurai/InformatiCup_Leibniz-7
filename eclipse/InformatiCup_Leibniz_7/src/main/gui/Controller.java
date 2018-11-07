@@ -340,7 +340,7 @@ public class Controller implements Initializable {
 	 * @see ActionEvent
 	 */
 	@FXML
-	void cancellation(ActionEvent event) {
+	public void cancellation(ActionEvent event) {
 
 		moduleFramework.stopModule();
 

@@ -34,4 +34,9 @@ public class TestModule implements IModuleIterate {
 		this.img = img;
 	}
 
+	@Override
+	public boolean isFinished() {
+		return false;
+	}
+
 }

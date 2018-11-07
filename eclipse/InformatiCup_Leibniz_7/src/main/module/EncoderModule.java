@@ -50,4 +50,9 @@ public class EncoderModule implements IModuleIterate {
 		this.targetClass = imageClass;
 	}
 
+	@Override
+	public boolean isFinished() {
+		return false;
+	}
+
 }
