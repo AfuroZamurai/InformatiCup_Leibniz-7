@@ -202,17 +202,13 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void menuItem2clicked(ActionEvent event) {
-		explanationArea.setText(
-				"Pixelmanipulations-Algorithmus:\n\nEs gibt eine Gruppe von Pixel,\ndie auf schwarz gesetz wird.\n"
-						+ "Steigt die Konfidenz, wird die Gruppe\nim Ausgabebild auf schwarz gesetzt, sonst weiß.\n"
-						+ "Das wird mit allen Gruppen gemacht.\nDie größe der Gruppe gibt der Filter an.\n\n"
-						+ "Filtergröße: ");
 		selectedAlgorithmn = menuItem2;
 		// textField1.setVisible(true);
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
 		module = new PixelSearchCancellationProcess(this);
+		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		generateParameterLayout();
 	}
@@ -232,10 +228,9 @@ public class Controller implements Initializable {
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		explanationArea.setText("leer");
-		// textField1.setVisible(false);
 
 		module = new SimpleIterationModule();
+		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		generateParameterLayout();
 	}

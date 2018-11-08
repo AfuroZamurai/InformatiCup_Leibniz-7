@@ -160,4 +160,18 @@ public class SimpleIterationModule implements IModuleIterate {
 	public boolean isFinished() {
 		return false;
 	}
+
+	@Override
+	public String getModuleDescription() {
+		return "Zufallskreise: \n\n"
+				+ "Dieser Algorithmus malt zufällig Kreise über das Eingabebild. "
+				+ "Wenn die Konfidenz dabei zu stark oder"
+				+ " unter 90% sinkt, dann wird der Kreis entfernt und ein neuer "
+				+ "gezeichnet. Der Algorithmus benutzt dabei eine Heuristik, dass "
+				+ "er versucht Kreise über eine noch unbemalte Fläche zu zeichnen, "
+				+ "um das Bild schneller zu füllen. Die Chance trotzdem einen Kreis "
+				+ "zu zeichen kann über den Parameter \"Diversion Chance\" eingestellt "
+				+ "werden."
+				+ "";
+	}
 }

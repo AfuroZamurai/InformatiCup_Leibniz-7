@@ -39,4 +39,9 @@ public class TestModule implements IModuleIterate {
 		return false;
 	}
 
+	@Override
+	public String getModuleDescription() {
+		return "TestModule";
+	}
+
 }

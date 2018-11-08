@@ -55,4 +55,9 @@ public class EncoderModule implements IModuleIterate {
 		return false;
 	}
 
+	@Override
+	public String getModuleDescription() {
+		return "EncoderModule";
+	}
+
 }

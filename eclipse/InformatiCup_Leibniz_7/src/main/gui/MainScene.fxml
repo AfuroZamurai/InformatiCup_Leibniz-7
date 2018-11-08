@@ -50,7 +50,7 @@
                      <items>
                         <MenuItem fx:id="menuItem1" mnemonicParsing="false" onAction="#menuItem1clicked" text="Unverändert" />
                         <MenuItem fx:id="menuItem2" mnemonicParsing="false" onAction="#menuItem2clicked" text="Pixelmanipulation" />
-                        <MenuItem fx:id="menuItem3" mnemonicParsing="false" onAction="#menuItem3clicked" text="leer" />
+                        <MenuItem fx:id="menuItem3" mnemonicParsing="false" onAction="#menuItem3clicked" text="Zufallskreise" />
                         <MenuItem fx:id="menuItem4" mnemonicParsing="false" onAction="#menuItem4clicked" text="leer" />
                      </items>
                   </MenuButton>

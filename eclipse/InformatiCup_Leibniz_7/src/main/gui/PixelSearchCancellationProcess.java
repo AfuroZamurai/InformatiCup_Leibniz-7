@@ -261,4 +261,11 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	public boolean isFinished() {
 		return isFinished;
 	}
+
+	@Override
+	public String getModuleDescription() {
+		return "Pixelmanipulations-Algorithmus:\n\nEs gibt eine Gruppe von Pixel, die auf schwarz gesetzt wird."
+				+ "Steigt die Konfidenz, wird die Gruppe im Ausgabebild auf schwarz gesetzt, sonst weiß. "
+				+ "Das wird mit allen Gruppen gemacht. Die größe der Gruppe gibt der Filter an.\n\n";
+	}
 }

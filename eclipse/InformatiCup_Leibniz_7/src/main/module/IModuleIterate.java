@@ -55,4 +55,11 @@ public interface IModuleIterate {
 	 * @return A boolean indicating whether the module is finished.
 	 */
 	public boolean isFinished();
+	
+	/**
+	 * Returns a description of the module that is displayed in the GUI.
+	 * 
+	 * @return A description of the module
+	 */
+	public String getModuleDescription();
 }
