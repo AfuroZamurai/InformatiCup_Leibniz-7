@@ -61,6 +61,7 @@ import main.module.ModuleFramework;
 import main.module.Parameter;
 import main.module.SimpleIterationModule;
 import main.module.Parameter.ParameterType;
+import main.module.RecursiveSquareModule;
 
 /**
  * This class is the Controller for the GUI
@@ -250,8 +251,10 @@ public class Controller implements Initializable {
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		explanationArea.setText("leer");
-		textField1.setVisible(false);
+		module = new RecursiveSquareModule();
+		explanationArea.setText(module.getModuleDescription());
+		parameterTextFieldList.clear();
+		generateParameterLayout();
 	}
 
 	/**
@@ -303,12 +306,11 @@ public class Controller implements Initializable {
 		if (selectedAlgorithmn == menuItem1) {
 			startAlgorithm(new TestModule());
 		} else if (selectedAlgorithmn == menuItem2) {
-			/* if (filter == 0) {
-				showAlertError("Es muss eine Filtergröße angegeben werden");
-				disableButton(cancellationButton);
-				listView.setDisable(false);
-				return;
-			}*/
+			/*
+			 * if (filter == 0) {
+			 * showAlertError("Es muss eine Filtergröße angegeben werden");
+			 * disableButton(cancellationButton); listView.setDisable(false); return; }
+			 */
 			parseParameters();
 			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
@@ -317,6 +319,9 @@ public class Controller implements Initializable {
 			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem4) {
+			parseParameters();
+			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+					listView.getSelectionModel().getSelectedItem());
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgewählt");
 			disableButton(cancellationButton);
@@ -608,31 +613,33 @@ public class Controller implements Initializable {
 		if (module != null) {
 			List<Parameter> parameterList = module.getParameterList();
 
-			for (Parameter parameter : parameterList) {
-				HBox hbox = new HBox(5.0);
-				hbox.setAlignment(Pos.CENTER);
-				Label parameterLabel = new Label(parameter.getName());
-				TextField parameterTextfield = new TextField();
-				parameterLabel.setTooltip(new Tooltip(parameter.getDescription()));
-				parameterTextfield.setTooltip(new Tooltip(parameter.getDescription()));
+			if (parameterList != null) {
+				for (Parameter parameter : parameterList) {
+					HBox hbox = new HBox(5.0);
+					hbox.setAlignment(Pos.CENTER);
+					Label parameterLabel = new Label(parameter.getName());
+					TextField parameterTextfield = new TextField();
+					parameterLabel.setTooltip(new Tooltip(parameter.getDescription()));
+					parameterTextfield.setTooltip(new Tooltip(parameter.getDescription()));
 
-				switch (parameter.getType()) {
-				case P_BOOL:
-					break;
-				case P_FLOAT:
-					parameterTextfield.setText("" + parameter.getFloatValue());
-					parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
-					break;
-				case P_INT:
-					parameterTextfield.setText("" + parameter.getIntValue());
-					parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
-					break;
-				default:
-					break;
+					switch (parameter.getType()) {
+					case P_BOOL:
+						break;
+					case P_FLOAT:
+						parameterTextfield.setText("" + parameter.getFloatValue());
+						parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
+						break;
+					case P_INT:
+						parameterTextfield.setText("" + parameter.getIntValue());
+						parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
+						break;
+					default:
+						break;
+					}
+
+					hbox.getChildren().addAll(parameterLabel, parameterTextfield);
+					parameterBox.getChildren().add(hbox);
 				}
-
-				hbox.getChildren().addAll(parameterLabel, parameterTextfield);
-				parameterBox.getChildren().add(hbox);
 			}
 		}
 	}
