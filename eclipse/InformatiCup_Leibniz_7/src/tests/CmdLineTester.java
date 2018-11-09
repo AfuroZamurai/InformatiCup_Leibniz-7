@@ -8,8 +8,8 @@ import main.CmdLineStart;
 
 class CmdLineTester {
 
-	@Test
-	void testMain() {
+	//@Test
+	void testMain() throws Exception {
 		
 		System.out.println("Test 0: No arguments");
 		String[] args = new String[] {};
@@ -49,6 +49,12 @@ class CmdLineTester {
 		
 		System.out.println("Test 9: Wrong argument evaluator");
 		args = new String[] {"-e saadsd"};
+		CmdLineStart.main(args);
+	}
+	
+	@Test
+	void testEncoder() throws Exception {
+		String[] args = new String[] {"-e trasiweb -a encodingsearch -c 11"};
 		CmdLineStart.main(args);
 	}
 

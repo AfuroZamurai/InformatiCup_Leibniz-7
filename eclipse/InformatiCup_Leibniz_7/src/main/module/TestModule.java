@@ -44,4 +44,9 @@ public class TestModule implements IModuleIterate {
 		return "TestModule";
 	}
 
+	@Override
+	public BufferedImage getResult() {
+		return this.img;
+	}
+
 }

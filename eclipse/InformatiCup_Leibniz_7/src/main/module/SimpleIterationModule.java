@@ -174,4 +174,10 @@ public class SimpleIterationModule implements IModuleIterate {
 				+ "werden."
 				+ "";
 	}
+
+	@Override
+	public BufferedImage getResult() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

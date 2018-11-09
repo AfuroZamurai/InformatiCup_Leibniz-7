@@ -62,4 +62,10 @@ public interface IModuleIterate {
 	 * @return A description of the module
 	 */
 	public String getModuleDescription();
+	
+	/**
+	 * This method returns the result after the algorithm finished or ran out of time
+	 * @return An image being the best result
+	 */
+	public BufferedImage getResult();
 }

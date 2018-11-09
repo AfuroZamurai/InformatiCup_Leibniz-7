@@ -268,4 +268,10 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 				+ "Steigt die Konfidenz, wird die Gruppe im Ausgabebild auf schwarz gesetzt, sonst weiß. "
 				+ "Das wird mit allen Gruppen gemacht. Die größe der Gruppe gibt der Filter an.\n\n";
 	}
+
+	@Override
+	public BufferedImage getResult() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

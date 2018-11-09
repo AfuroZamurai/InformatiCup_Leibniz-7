@@ -1,13 +1,19 @@
 package main;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import main.encodings.CircleEncoding;
+import main.evaluate.EvaluationResult;
+import main.evaluate.IClassification;
 import main.evaluate.IEvaluator;
+import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
-import main.gui.PixelSearchCancellationProcess;
+import main.io.ImageSaver;
+import main.module.EncoderModule;
 import main.module.IModuleIterate;
 import main.module.TestModule;
 
@@ -15,7 +21,7 @@ public class CmdLineStart {
 
 	private static final String COMMAND_NAME = "icfooler";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		// Parses out all Args in a convenient HashMap Structure
 		final Map<String, List<String>> params = new HashMap<String, List<String>>();
@@ -71,6 +77,7 @@ public class CmdLineStart {
 			System.out.println(
 					"\tpixelsearch\t<filterSize=0-64>\tPuts black or white boxes on the image depending on evaluation.");
 			System.out.println("\tcirclesearch\t\t\t\tPuts colored circles on the image depending on evaluation.");
+			System.out.println("\tencodingsearch\t\t\t\tUses any image encoding to generate new images.");
 
 			System.out.println("");
 			System.out.println("Target class:");
@@ -106,6 +113,10 @@ public class CmdLineStart {
 				//TODO Implement CircleSearch
 				System.out.println("Error: CircleSearch not yet implemented for command line interface");
 				return;
+			}
+			else if(params.get("-a").get(0).equals("encodingsearch")) {
+				
+				algorithm = new EncoderModule(new CircleEncoding());
 			}
 			else {
 				System.out.println("Error: argument \""+ params.get("-a").get(0) +" \" for option -a is invalid");
@@ -155,6 +166,34 @@ public class CmdLineStart {
 			targetClass = 0;
 		}
 		
+		IClassification sign = Sign.values()[targetClass];
+		runAlgorithm(evaluator, algorithm, sign, 60);
+	}
+	
+	public static void runAlgorithm(IEvaluator evaluator, IModuleIterate algo, IClassification targetClass, int maxIterations) throws Exception {
 		
+		algo.setInitImage(targetClass.getExampleImage(), targetClass);
+		
+		int iterations = 1;
+		
+		BufferedImage next = algo.generateNextImage();
+		
+		EvaluationResult<IClassification> evalResult;
+		
+		while (!algo.isFinished() && iterations < maxIterations) {
+			evalResult = evaluator.evaluateImage(next);
+			algo.setEvalResult(evalResult);
+			next = algo.generateNextImage();
+			iterations++;
+		}
+		
+		BufferedImage result = algo.getResult();
+		
+		evalResult = evaluator.evaluateImage(result);
+		float score = evalResult.getConfidenceForClass(targetClass);
+		
+		System.out.println("Score: "+ score);
+		
+		ImageSaver.saveImage(result, "data/results/resultImage");
 	}
 }
