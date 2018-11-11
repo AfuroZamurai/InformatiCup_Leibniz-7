@@ -106,17 +106,17 @@ public class ModuleFramework implements Runnable {
 				});
 
 				long sleeptime = 1000 - System.currentTimeMillis() + startTime;
-				if (sleeptime > 0) 
+				if (sleeptime > 0)
 					Thread.sleep(sleeptime);
 			} catch (Exception e) {
 				e.printStackTrace();
 				stopModule();
 				System.out.println("The image could not be evaluated!");
 			}
-			
+
 			if (module.isFinished()) {
-				//this may not be the most elegant way to stop the module
-				//(this is just simulating the stop button)
+				// this may not be the most elegant way to stop the module
+				// (this is just simulating the stop button)
 				controller.cancellation(null);
 			}
 		}

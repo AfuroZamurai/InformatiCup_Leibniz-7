@@ -350,7 +350,7 @@ public class Controller implements Initializable {
 		disableButton(cancellationButton);
 		enableButton(SaveImageButton);
 		listView.setDisable(false);
-		setConfidence(confidence);
+		//setConfidence(confidence);
 
 	}
 
