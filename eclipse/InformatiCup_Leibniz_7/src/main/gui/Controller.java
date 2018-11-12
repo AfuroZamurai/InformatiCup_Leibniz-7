@@ -208,7 +208,7 @@ public class Controller implements Initializable {
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		module = new PixelSearchCancellationProcess(this);
+		module = new PixelSearchCancellationProcess();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		generateParameterLayout();

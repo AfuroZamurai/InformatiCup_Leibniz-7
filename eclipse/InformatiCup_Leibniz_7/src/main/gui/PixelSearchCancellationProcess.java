@@ -5,13 +5,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.ImageIcon;
-
-import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.event.Event;
-import main.IModule;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.TrasiWebEvaluator;
@@ -42,28 +36,13 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 	ImageIcon icon2;
 	BufferedImage outputImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
 	float confidence;
-	Controller controller;
 	boolean isFinished = false;
 	boolean isFirstStep = true;
 
 	private EvaluationResult<IClassification> er;
 	private int i, j;
-	Color[] colorArray;
 
-	private Parameter filterParameter = new Parameter("Filtergröße", "Größe des Filters (Wert zwischen 1 und 64)",
-			16);
-
-	/**
-	 * Constructor
-	 * 
-	 * @param imageClass
-	 *            meaning of the input image
-	 * @see Sign
-	 */
-	public PixelSearchCancellationProcess(Controller controller) {
-		this.controller = controller;
-		colorArray = new Color[filter * filter];
-	}
+	private Parameter filterParameter = new Parameter("Filtergröße", "Größe des Filters (Wert zwischen 1 und 64)", 16);
 
 	/**
 	 * This method get an Image and generate an new one.
@@ -80,9 +59,6 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 
 		Color BLACK = new Color(0, 0, 0);
 		Color WHITE = new Color(255, 255, 255);
-		Color RED = new Color(255, 0, 0);
-		Color GREEN = new Color(0, 255, 0);
-		Color BLUE = new Color(0, 0, 255);
 
 		TrasiWebEvaluator twb = new TrasiWebEvaluator();
 		EvaluationResult<IClassification> er;
@@ -106,14 +82,11 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 						+ " Sekunden(");
 				System.out.println((int) percent + "%)\n");
 
-				Color[] colorArray = new Color[filter * filter];
-
-				for (int k = 0; k < filter * filter; k++) { // ändern der einfärbung und speichern der echten farbe
+				for (int k = 0; k < filter * filter; k++) {
 					int x = k % filter;
 					int y = k / filter;
 
 					if (j + x < IMAGEWIDTH && i + y < IMAGEHEIGHT) {
-						colorArray[k] = new Color(inputImage.getRGB(j + x, i + y));
 						inputImage.setRGB(j + x, i + y, BLACK.getRGB());
 					}
 				}
@@ -121,8 +94,8 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 				try {
 
 					er = twb.evaluateImage(inputImage);
-					newConfidenceValue = er.getConfidenceForClass(imageClass); // get confidence from InputImage with changed
-																		// Pixel
+					newConfidenceValue = er.getConfidenceForClass(imageClass); // get confidence from InputImage with
+																				// changed Pixel
 
 					Thread.sleep(950);
 				} catch (Exception e) {
@@ -141,7 +114,6 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 						} else {
 							outputImage.setRGB(j + x, i + y, WHITE.getRGB());
 						}
-						inputImage.setRGB(j + x, i + y, colorArray[k].getRGB());
 
 					}
 
@@ -165,12 +137,12 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 							+ " Sekunden(");
 			System.out.println((int) percent + "%)\n");
 
-			for (int k = 0; k < filter * filter; k++) { // ändern der einfärbung und speichern der echten farbe
+			for (int k = 0; k < filter * filter; k++) { //set pixel in input image on black
+
 				int x = k % filter;
 				int y = k / filter;
 
 				if (j + x < IMAGEWIDTH && i + y < IMAGEHEIGHT) {
-					// colorArray[k] = new Color(inputImage.getRGB(j + x, i + y));
 					inputImage.setRGB(j + x, i + y, Color.BLACK.getRGB());
 				}
 			}
@@ -193,8 +165,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 		} else {
 			newConfidenceValue = er.getConfidenceForClass(imageClass);
 
-			for (int k = 0; k < filter * filter; k++) { // set the Pixel for the outputImage and set the Pixel in
-				// inputImage back
+			for (int k = 0; k < filter * filter; k++) { // set the Pixel for the outputImage
 
 				int x = k % filter;
 				int y = k / filter;
@@ -205,7 +176,6 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 					} else {
 						outputImage.setRGB(j + x, i + y, Color.WHITE.getRGB());
 					}
-					// inputImage.setRGB(j + x, i + y, colorArray[k].getRGB());
 					inputImage = copyImage(initialImage);
 
 				}
@@ -271,7 +241,7 @@ public class PixelSearchCancellationProcess implements IModuleIterate {
 
 	@Override
 	public BufferedImage getResult() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return outputImage;
 	}
 }
