@@ -53,7 +53,7 @@ Mittwoch 12:00 - 14:00
 Zeitplanung:
 01.10.2018 - Brainstorming/Ideenfindung abgeschlossen - Beginn Implementierung
 
-01.11.2018 - Grundgerüst(Requests fertig, Grund-GUI fertig, Struktur(Interfaces))
+01.11.2018 - Grundgerüst(Requests fertig, Grund-GUI fertig, Struktur(Interfaces)) - Beginn User Manual
 
 01.12.2018 - Alle Features implementiert(ab hier Polishing) - Beginn Theoretische Ausarbeitung
 
