@@ -29,7 +29,7 @@ public class FantasyPictureCollection {
 			break;
 		case DOPPELKURVE_LINKS:
 			break;
-		case EINFAHRT_VERBOT:
+		case EINFAHRT_VERBOTEN:
 			break;
 		case ENDE_ALLER_VERBOTE:
 			break;

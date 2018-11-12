@@ -540,7 +540,7 @@ public class Controller implements Initializable {
 
 		Sign[] arrayOfSigns = Sign.values();
 		ObservableList<IClassification> obsList = FXCollections.observableArrayList();
-		for (int i = 1; i < 43; i++) {
+		for (int i = 0; i < 43; i++) {
 			obsList.add(arrayOfSigns[i]);
 		}
 		listView.setItems(obsList);

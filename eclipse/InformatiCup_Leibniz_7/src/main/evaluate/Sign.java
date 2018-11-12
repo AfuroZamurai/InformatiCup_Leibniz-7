@@ -30,7 +30,7 @@ public enum Sign implements IClassification {
 	STOP, 
 	FAHRVERBOT,
 	LKW_VERBOT, 
-	EINFAHRT_VERBOT, 
+	EINFAHRT_VERBOTEN, 
 	GEFAHRSTELLE, 
 	KURVE_LINKS, 
 	KURVE_RECHTS,
@@ -148,6 +148,25 @@ public enum Sign implements IClassification {
 		return Sign.values();
 	}
 	
-	
+	@Override
+	public String toString() { 
+		
+		String readableName = this.name();
+		readableName = readableName.substring(0,1).toUpperCase() + readableName.substring(1).toLowerCase();	// set the first character to a capital letter 																											// the remaining characters to small letters
+		readableName = readableName.replaceAll("_", " ");
+		
+		readableName = readableName.replaceAll("laessig", "lässig");
+		readableName = readableName.replaceAll("hoechstgeschwindigkeit", "Höchstgeschwindigkeit");
+		readableName = readableName.replaceAll("Ueberholverbot", "Überholverbot");	
+		readableName = readableName.replaceAll("lkw", "Lkw");
+		readableName = readableName.replaceAll("gewaehren", "gewähren");
+		readableName = readableName.replaceAll("fahrbahn", "Fahrbahn");
+		readableName = readableName.replaceAll("Fussgaenger", "Fussgänger");
+		readableName = readableName.replaceAll("Schneeglaette", "Schneeglätte");
+		readableName = readableName.replaceAll("verbote", "Verbote");
+		readableName = readableName.replaceAll("ueberholverbot", "Überholverbot");	
+		
+	  return readableName; 
+	}	
 	
 }
