@@ -6,7 +6,6 @@ import java.lang.Math;
 import java.util.List;
 
 import main.evolution.ga.Gene;
-import main.evolution.ga.GeneticAlgorithm;
 import main.evolution.ga.Genom;
 import main.utils.Evolutionhelper;
 

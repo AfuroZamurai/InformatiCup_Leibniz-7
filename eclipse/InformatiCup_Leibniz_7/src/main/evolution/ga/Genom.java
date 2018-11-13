@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import main.evaluate.EvaluationResult;
 import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
 
@@ -27,12 +26,17 @@ public class Genom implements Comparable<Genom> {
 	}
 	
 	/**
-	 * Takes two Genoms and creates two childs. The childs will already be mutated.
+	 * Takes two Genoms and creates two childs. The childs won't be mutated.
 	 * @param parent1 first parent
 	 * @param parent2 second parent
-	 * @return two newly created genoms
+	 * @return two newly created genoms or null if the genoms have genes with a different size
 	 */
 	public static Genom[] reproduce(Genom parent1, Genom parent2) {
+		if(parent1.getGenes().size() != parent2.getGenes().size()) {
+			System.out.println("Tryong to reproduce with genoms of different gene length!");
+			return null;
+		}
+		
 		Genom[] offspring = new Genom[2];
 		Genom child1 = new Genom();
 		Genom child2 = new Genom();
@@ -51,8 +55,36 @@ public class Genom implements Comparable<Genom> {
 			child2.getGenes().add(parent2.getGenes().get(i));
 		}
 		
-		//TODO: implement crossover of the gene values
+		int[] crossover1 = new int[parent1.getGenes().get(0).getValues().length];
+		int[] crossover2 = new int[parent1.getGenes().get(0).getValues().length];
+		for(j = 0; j < parent1.getGenes().get(0).getValues().length; j++) {
+			if(i < geneValueCrossoverSize) {
+				crossover1[j] = parent1.getGenes().get(i).getValues()[j];
+				crossover2[j] = parent2.getGenes().get(i).getValues()[j];
+			} else {
+				crossover1[j] = parent2.getGenes().get(i).getValues()[j];
+				crossover2[j] = parent1.getGenes().get(i).getValues()[j];
+			}
+		}
 		
+		Gene crossoverGene1 = new Gene(crossover1);
+		Gene crossoverGene2 = new Gene(crossover2);
+		
+		child1.getGenes().add(crossoverGene1);
+		child2.getGenes().add(crossoverGene2);
+		
+		for(i++; i < geneSizeUpper; i++) {
+			if(i < parent2.getGenes().size()) {
+				child1.getGenes().add(parent2.getGenes().get(i));
+			} 
+			
+			if(i < parent1.getGenes().size()){
+				child2.getGenes().add(parent1.getGenes().get(i));
+			}
+		}
+		
+		offspring[0] = child1;
+		offspring[1] = child2;
 		
 		return offspring;
 	}

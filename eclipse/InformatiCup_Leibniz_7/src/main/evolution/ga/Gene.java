@@ -1,8 +1,5 @@
 package main.evolution.ga;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import main.utils.Evolutionhelper;
 
 /**
@@ -23,6 +20,10 @@ public class Gene {
 	public Gene(int length) {
 		values = new int[length];
 		initializeGene();
+	}
+	
+	public Gene(int[] values) {
+		this.values = values;
 	}
 	
 	private void initializeGene( ) {

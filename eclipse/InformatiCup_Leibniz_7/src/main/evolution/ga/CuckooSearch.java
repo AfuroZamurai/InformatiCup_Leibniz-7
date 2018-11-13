@@ -2,7 +2,6 @@ package main.evolution.ga;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 import org.apache.commons.math3.special.Gamma;
 
 import main.evaluate.EvaluationResult;
+import main.evaluate.IClassification;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.evolution.network.CPPN;
@@ -126,7 +126,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
 		for(Genom genom : genoms) {
 			BufferedImage image = net.createImage(genom);
-			EvaluationResult result;
+			EvaluationResult<IClassification> result;
 			try {
 				result = evaluator.evaluateImage(image);
 				if (result != null) {
@@ -191,7 +191,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 	private void calculateFitness(Genom genom) {
 		BufferedImage image = net.createImage(genom);
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
-		EvaluationResult result;
+		EvaluationResult<IClassification> result;
 		try {
 			result = evaluator.evaluateImage(image);
 			if (result != null) {
@@ -217,7 +217,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
 		for(Genom genom : genoms) {
 			BufferedImage image = net.createImage(genom);
-			EvaluationResult result;
+			EvaluationResult<IClassification> result;
 			try {
 				result = evaluator.evaluateImage(image);
 				if (result != null) {
