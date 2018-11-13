@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.security.Signature;
 
 import main.IModule;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.Sign;
 import main.evaluate.IEvaluator;
 import main.evaluate.TrasiWebEvaluator;
 import main.evolution.ga.CuckooSearch;

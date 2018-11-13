@@ -2,8 +2,10 @@ package main.evolution.ga;
 
 import java.util.List;
 
+import org.apache.commons.logging.impl.Log4JLogger;
+
 /**
- * Generic implementation of a genetic algoithm. It is intended to be used as a superclass.
+ * Generic implementation of a genetic algorithm. It is intended to be used as a superclass.
  * The image-specific implementation used here is CuckooSearch. 
  * 
  * @author Felix
@@ -18,6 +20,7 @@ public class GeneticAlgorithm {
 	
 	public static final int MAX_GENE_VALUE = Integer.MAX_VALUE;
 	public static final float MUTATION_RATE = 0.03f;
+	
 	
 	/**
 	 * Constructor to initialize a genetic algorithm with some needed parameters.
@@ -37,13 +40,18 @@ public class GeneticAlgorithm {
 	 * Starts the genetic algorithm. It will run until either the target fitness or the generation cap was reached.
 	 */
 	public void run() {
+		System.out.println("Creating the initial population");
 		createPopulation();
 		
 		int generation = 1;
 		while(generation < generationCap && getHighestFitness() < targetFitness) {
+			System.out.println("Running generation " + generation + ":");
 			createOffspring();
+			System.out.println("Created new nests!");
 			selectSurvivors();
+			System.out.println("Selected the survivors!");
 			generation++;
+			System.out.println("Highest fitness fo far: " + getHighestFitness());
 		}
 		
 		if(getHighestFitness() >= targetFitness) {

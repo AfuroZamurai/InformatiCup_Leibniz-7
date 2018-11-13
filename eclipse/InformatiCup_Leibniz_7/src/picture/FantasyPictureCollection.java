@@ -3,7 +3,7 @@ package picture;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.Sign;
 import picture.FantasyPicture.Shape;
 import picture.features.ConstructionSiteFeature;
 import picture.features.Feature;
@@ -29,7 +29,7 @@ public class FantasyPictureCollection {
 			break;
 		case DOPPELKURVE_LINKS:
 			break;
-		case EINFAHRT_VERBOT:
+		case EINFAHRT_VERBOTEN:
 			break;
 		case ENDE_ALLER_VERBOTE:
 			break;

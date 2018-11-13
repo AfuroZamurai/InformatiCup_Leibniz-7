@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.commons.math3.special.Gamma;
 
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
@@ -130,7 +130,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 			try {
 				result = evaluator.evaluateImage(image);
 				if (result != null) {
-					float fitness = result.getConfidenceForSign(target);
+					float fitness = result.getConfidenceForClass(target);
 					genom.setFitness(fitness);
 				} else {
 					genom.setFitness(0.0f);
@@ -195,7 +195,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 		try {
 			result = evaluator.evaluateImage(image);
 			if (result != null) {
-				float fitness = result.getConfidenceForSign(target);
+				float fitness = result.getConfidenceForClass(target);
 				genom.setFitness(fitness);
 			} else {
 				genom.setFitness(0.0f);
@@ -221,7 +221,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 			try {
 				result = evaluator.evaluateImage(image);
 				if (result != null) {
-					float fitness = result.getConfidenceForSign(target);
+					float fitness = result.getConfidenceForClass(target);
 					genom.setFitness(fitness);
 				} else {
 					genom.setFitness(0.0f);
