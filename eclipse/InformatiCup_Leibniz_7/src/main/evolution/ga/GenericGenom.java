@@ -2,25 +2,20 @@ package main.evolution.ga;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
 
-public class Genom implements Comparable<Genom> {
+public class GenericGenom {
 	
-	private float fitness;
-	private List<Gene> genes;
-	private CPPN net;
-
-	public Genom(float initialFitness, Gene initialGene, CPPN net) {
-		fitness = initialFitness;
-		genes = new ArrayList<>();
-		genes.add(initialGene);
-		this.net = net;
+	protected float fitness;
+	protected List<Gene> genes;
+	
+	public GenericGenom(float fitness, List<Gene> genes) {
+		this.fitness = fitness;
+		this.genes = genes;
 	}
 	
-	public Genom() {
+	public GenericGenom() {
 		fitness = -1.0f;
 		genes = new ArrayList<>();
 	}
@@ -31,15 +26,15 @@ public class Genom implements Comparable<Genom> {
 	 * @param parent2 second parent
 	 * @return two newly created genoms or null if the genoms have genes with a different size
 	 */
-	public static Genom[] reproduce(Genom parent1, Genom parent2) {
+	public static GenericGenom[] reproduce(GenericGenom parent1, GenericGenom parent2) {
 		if(parent1.getGenes().size() != parent2.getGenes().size()) {
 			System.out.println("Tryong to reproduce with genoms of different gene length!");
 			return null;
 		}
 		
-		Genom[] offspring = new Genom[2];
-		Genom child1 = new Genom();
-		Genom child2 = new Genom();
+		GenericGenom[] offspring = new GenericGenom[2];
+		GenericGenom child1 = new GenericGenom();
+		GenericGenom child2 = new GenericGenom();
 		int p1GeneSize = parent1.getGenes().size();
 		int p2GeneSize = parent2.getGenes().size();
 		
@@ -88,21 +83,6 @@ public class Genom implements Comparable<Genom> {
 		
 		return offspring;
 	}
-	
-	/**
-	 * Mutate this genom. The method will iterate over all values of all genes.
-	 * It will replace a value with a random new one with the probability given by the mutation rate.
-	 */
-	private void mutate() {
-		for(Gene gene : genes) {
-			for(int i = 0; i < gene.getValues().length; i++) {
-				Random rnd = new Random();
-				if (rnd.nextFloat() < GeneticAlgorithm.MUTATION_RATE) {
-					gene.replaceValue(i, Evolutionhelper.randomGeneValue());
-				}
-			}
-		}
-	}
 
 	public float getFitness() {
 		return fitness;
@@ -111,25 +91,16 @@ public class Genom implements Comparable<Genom> {
 	public void setFitness(float fitness) {
 		this.fitness = fitness;
 	}
-	
+
 	public List<Gene> getGenes() {
 		return genes;
 	}
-	
+
 	public void setGenes(List<Gene> genes) {
 		this.genes = genes;
 	}
-
-	public CPPN getNet() {
-		return net;
-	}
-
-	public void setNet(CPPN net) {
-		this.net = net;
-	}
-
-	@Override
-	public int compareTo(Genom o) {
+	
+	public int compareTo(GenericGenom o) {
 		return this.fitness - o.fitness > 0 ? 1 : this.fitness - o.fitness < 0 ? -1 : 0;
 	}
 }
