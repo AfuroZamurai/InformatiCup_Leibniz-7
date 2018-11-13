@@ -1,4 +1,5 @@
 /bin/
 api_key.txt
 /tmp/
-/test/
+/test
+/results/
