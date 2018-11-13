@@ -13,9 +13,12 @@ public class CircleEncoding implements IImageEncoding {
 	@Override
 	public BufferedImage createImage(int width, int height, float[] parameters) {
 
-		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.getGraphics();
-
+		
+		g.setColor(new Color(0,0,0,0));
+		g.fillRect(0,0,width,height);
+		
 		int amount = parameters.length / batchSize;
 		for (int n = 0; n < amount; n++) {
 			int i = n * batchSize;

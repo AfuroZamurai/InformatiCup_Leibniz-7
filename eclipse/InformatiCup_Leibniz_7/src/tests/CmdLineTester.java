@@ -54,7 +54,7 @@ class CmdLineTester {
 	
 	@Test
 	void testEncoder() throws Exception {
-		String[] args = new String[] {"-e trasiweb -a encodingsearch -c 11"};
+		String[] args = new String[] {"-e trasiweb -a encodingsearch -c 4"};
 		CmdLineStart.main(args);
 	}
 

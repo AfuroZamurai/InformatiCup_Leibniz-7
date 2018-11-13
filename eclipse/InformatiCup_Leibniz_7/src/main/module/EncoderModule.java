@@ -1,5 +1,6 @@
 package main.module;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +49,9 @@ public class EncoderModule implements IModuleIterate {
 			parameters[i] = rand.nextFloat();
 		}
 		
-		current = this.encoding.addToImage(current, parameters);
+		current = drawOnTop(current, this.encoding.createImage(original.getWidth(), original.getHeight(), parameters));
 		
-		return current;
+		return drawOnTop(original, current);
 	}
 
 	@Override
@@ -106,7 +107,25 @@ public class EncoderModule implements IModuleIterate {
 
 	@Override
 	public BufferedImage getResult() {
-		return last;
+		return drawOnTop(original, last);
+	}
+	
+	private BufferedImage drawOnTop(BufferedImage background,BufferedImage image) {
+		BufferedImage result = new BufferedImage(background.getWidth(),background.getHeight(),BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D graphics = (Graphics2D) result.getGraphics();
+	    
+	    graphics.drawImage(background, 0, 0, null);
+	    graphics.drawImage(image, 0, 0, null);
+		
+	    return result;
+	}
+	
+	private int[] findFreePixels(BufferedImage img) {
+		
+		List<Integer> freePixel = new ArrayList<Integer>();
+		
+		
+		return null;//freePixel.toArray(int);
 	}
 
 }
