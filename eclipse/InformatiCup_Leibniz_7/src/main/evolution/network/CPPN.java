@@ -6,7 +6,7 @@ import java.lang.Math;
 import java.util.List;
 
 import main.evolution.ga.CPPNGenom;
-import main.evolution.ga.Gene;
+import main.evolution.ga.GenericGene;
 import main.utils.Evolutionhelper;
 
 /**
@@ -38,8 +38,8 @@ public class CPPN {
 		assert config.getMaxHlSize() >= config.getMinHlSize();
 	}
 	
-	public Gene createRandomGene() {
-		return new Gene(55);
+	public GenericGene createRandomGene() {
+		return new GenericGene(55);
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class CPPN {
 		int centerY = config.getHeight() / 2;
 		double maxCenterDist = Math.sqrt((Math.pow(width - centerX, 2) + Math.pow(height -centerY, 2)));
 		
-		List<Gene> genes = genom.getGenes();
+		List<GenericGene> genes = genom.getGenes();
 		
 		//calculate network size from genom
 		int networkSize = NUM_INPUT + genes.size();

@@ -5,12 +5,12 @@ import java.util.List;
 
 import main.utils.Evolutionhelper;
 
-public class GenericGenom implements Comparable<GenericGenom>{
+public class GenericGenom<T extends GenericGene> implements Comparable<GenericGenom<T>>{
 	
 	protected float fitness;
-	protected List<Gene> genes;
+	protected List<T> genes;
 	
-	public GenericGenom(float fitness, List<Gene> genes) {
+	public GenericGenom(float fitness, List<T> genes) {
 		this.fitness = fitness;
 		this.genes = genes;
 	}
@@ -26,15 +26,15 @@ public class GenericGenom implements Comparable<GenericGenom>{
 	 * @param parent2 second parent
 	 * @return two newly created genoms or null if the genoms have genes with a different size
 	 */
-	public static GenericGenom[] reproduce(GenericGenom parent1, GenericGenom parent2) {
+	public GenericGenom<GenericGene>[] reproduce(GenericGenom<GenericGene> parent1, GenericGenom<GenericGene> parent2) {
 		if(parent1.getGenes().size() != parent2.getGenes().size()) {
 			System.out.println("Tryong to reproduce with genoms of different gene length!");
 			return null;
 		}
 		
-		GenericGenom[] offspring = new GenericGenom[2];
-		GenericGenom child1 = new GenericGenom();
-		GenericGenom child2 = new GenericGenom();
+		GenericGenom<GenericGene>[] offspring = new GenericGenom[2];
+		GenericGenom<GenericGene> child1 = new GenericGenom<>();
+		GenericGenom<GenericGene> child2 = new GenericGenom<>();
 		int p1GeneSize = parent1.getGenes().size();
 		int p2GeneSize = parent2.getGenes().size();
 		
@@ -62,8 +62,8 @@ public class GenericGenom implements Comparable<GenericGenom>{
 			}
 		}
 		
-		Gene crossoverGene1 = new Gene(crossover1);
-		Gene crossoverGene2 = new Gene(crossover2);
+		GenericGene crossoverGene1 = new GenericGene(crossover1);
+		GenericGene crossoverGene2 = new GenericGene(crossover2);
 		
 		child1.getGenes().add(crossoverGene1);
 		child2.getGenes().add(crossoverGene2);
@@ -92,15 +92,15 @@ public class GenericGenom implements Comparable<GenericGenom>{
 		this.fitness = fitness;
 	}
 
-	public List<Gene> getGenes() {
+	public List<T> getGenes() {
 		return genes;
 	}
 
-	public void setGenes(List<Gene> genes) {
+	public void setGenes(List<T> genes) {
 		this.genes = genes;
 	}
 	
-	public int compareTo(GenericGenom o) {
+	public int compareTo(GenericGenom<T> o) {
 		return this.fitness - o.fitness > 0 ? 1 : this.fitness - o.fitness < 0 ? -1 : 0;
 	}
 }

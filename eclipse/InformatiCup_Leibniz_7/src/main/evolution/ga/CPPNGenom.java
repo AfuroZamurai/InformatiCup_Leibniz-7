@@ -7,11 +7,11 @@ import java.util.Random;
 import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
 
-public class CPPNGenom extends GenericGenom {
+public class CPPNGenom extends GenericGenom<GenericGene> {
 	
 	private CPPN net;
 
-	public CPPNGenom(float initialFitness, Gene initialGene, CPPN net) {
+	public CPPNGenom(float initialFitness, GenericGene initialGene, CPPN net) {
 		fitness = initialFitness;
 		genes = new ArrayList<>();
 		genes.add(initialGene);
@@ -28,7 +28,7 @@ public class CPPNGenom extends GenericGenom {
 	 * It will replace a value with a random new one with the probability given by the mutation rate.
 	 */
 	private void mutate() {
-		for(Gene gene : genes) {
+		for(GenericGene gene : genes) {
 			for(int i = 0; i < gene.getValues().length; i++) {
 				Random rnd = new Random();
 				if (rnd.nextFloat() < GeneticAlgorithm.MUTATION_RATE) {

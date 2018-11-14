@@ -168,7 +168,7 @@ public class CuckooSearch extends GeneticAlgorithm<CPPNGenom> {
 		CPPNGenom egg = new CPPNGenom();
 		egg.setGenes(cuckoo.getGenes());
 		egg.setNet(cuckoo.getNet());
-		List<Gene> eggGenes = egg.getGenes();
+		List<GenericGene> eggGenes = egg.getGenes();
 		
 		for(int i = 0; i < eggGenes.size(); i++) {
 			for(int j = 0; j < eggGenes.get(i).getValues().length; j++) {

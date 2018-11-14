@@ -9,7 +9,7 @@ import main.utils.Evolutionhelper;
  * @author Felix
  *
  */
-public class Gene {
+public class GenericGene {
 	private int[] values;
 	
 	/**
@@ -17,12 +17,12 @@ public class Gene {
 	 * 
 	 * @param length the number of values this gene will have
 	 */
-	public Gene(int length) {
+	public GenericGene(int length) {
 		values = new int[length];
 		initializeGene();
 	}
 	
-	public Gene(int[] values) {
+	public GenericGene(int[] values) {
 		this.values = values;
 	}
 	
