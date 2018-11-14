@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 import java.lang.Math;
 import java.util.List;
 
+import main.evolution.ga.CPPNGenom;
 import main.evolution.ga.Gene;
-import main.evolution.ga.Genom;
 import main.utils.Evolutionhelper;
 
 /**
@@ -47,7 +47,7 @@ public class CPPN {
 	 * @param gene
 	 * @return the created image
 	 */
-	public BufferedImage createImage(Genom genom) {
+	public BufferedImage createImage(CPPNGenom genom) {
 		int width = config.getWidth();
 		int height = config.getHeight();
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

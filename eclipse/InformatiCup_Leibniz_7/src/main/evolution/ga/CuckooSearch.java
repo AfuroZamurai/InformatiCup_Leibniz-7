@@ -21,10 +21,12 @@ import main.utils.Evolutionhelper;
  * @author Felix
  *
  */
-public class CuckooSearch extends GeneticAlgorithm {
+public class CuckooSearch extends GeneticAlgorithm<CPPNGenom> {
 	
 	private CPPN net;
-	private Sign target;
+	private IClassification target;
+	
+	private int currentGeneration = 1;
 	
 	public static final float ABANDONED_NESTS = 0.1f;
 	private static final double LEVY_ALPHA = 0.01 * MAX_GENE_VALUE;
@@ -41,7 +43,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 	 * @param targetFitness minimum fitness which must be reached for the algorithm to terminate
 	 * @param generationCap maximum number of generations the algorithm will search 
 	 */
-	public CuckooSearch(CPPN net, int populationSize, float targetFitness, int generationCap, Sign target) {
+	public CuckooSearch(CPPN net, int populationSize, float targetFitness, int generationCap, IClassification target) {
 		super(populationSize, targetFitness, generationCap);
 		this.net = net;
 		this.target = target;
@@ -53,16 +55,17 @@ public class CuckooSearch extends GeneticAlgorithm {
 	 * @return a BufferedImage of the resulting fooling image
 	 */
 	public BufferedImage searchForImage() {
-		System.out.println("Trying to create an image for the sign " + target.name());
-		run();
-		Genom best = getBestGenom();
+		System.out.println("Trying to create an image for the sign " + target.getNameOfClass());
+		run(currentGeneration);
+		currentGeneration++;
+		CPPNGenom best = (CPPNGenom) getBestGenom();
 		return net.createImage(best);
 	}
 	
 	@Override
 	protected void createPopulation() {
 		for(int i = 0; i < populationSize; i++) {
-			Genom genom = new Genom(-1.0f, net.createRandomGene(), net);
+			CPPNGenom genom = new CPPNGenom(-1.0f, net.createRandomGene(), net);
 			population.addGenom(genom);
 		}
 		
@@ -72,10 +75,11 @@ public class CuckooSearch extends GeneticAlgorithm {
 	
 	private void createNewNests() {
 		//create new eggs from the old population using levy flight
-		List<Genom> newEggs = new ArrayList<>();
-		for (Iterator<Genom> iterator = population.getGenoms().iterator(); iterator.hasNext();) {
-			Genom old = iterator.next();
-			Genom cuckoo = new Genom();
+		List<CPPNGenom> newEggs = new ArrayList<>();
+		List<CPPNGenom> oldGenoms = population.getGenoms();
+		for (Iterator<CPPNGenom> iterator = population.getGenoms().iterator(); iterator.hasNext();) {
+			CPPNGenom old = iterator.next();
+			CPPNGenom cuckoo = new CPPNGenom();
 			cuckoo.setFitness(old.getFitness());
 			cuckoo.setGenes(old.getGenes());
 			cuckoo.setNet(old.getNet());
@@ -83,12 +87,12 @@ public class CuckooSearch extends GeneticAlgorithm {
 		}
 		
 		//replace eggs with the cuckoos
-		for (Iterator<Genom> iterator = newEggs.iterator(); iterator.hasNext();) {
-			Genom egg = iterator.next();
+		for (Iterator<CPPNGenom> iterator = newEggs.iterator(); iterator.hasNext();) {
+			CPPNGenom egg = iterator.next();
 			int randomNest = Evolutionhelper.randomInt(0, populationSize - 1);
 			//only replace when new genom is better
-			if(egg.getFitness() > population.getGenoms().get(randomNest).getFitness()) {
-				population.getGenoms().set(randomNest, egg);
+			if(egg.getFitness() > (oldGenoms.get(randomNest)).getFitness()) {
+				oldGenoms.set(randomNest, egg);
 			}
 		}
 	}
@@ -108,13 +112,13 @@ public class CuckooSearch extends GeneticAlgorithm {
 	@Override
 	protected void selectSurvivors() {
 		int abandoned = (int) (populationSize * ABANDONED_NESTS);
-		List<Genom> curPopulation = population.getGenoms();
+		List<CPPNGenom> curPopulation = population.getGenoms();
 		Collections.sort(curPopulation);
 		
-		List<Genom> newNests = new ArrayList<>(abandoned);
+		List<CPPNGenom> newNests = new ArrayList<>(abandoned);
 		for(int i = 0; i < abandoned; i++) {
 			curPopulation.remove(0);
-			Genom replace = new Genom(-1.0f, net.createRandomGene(), net);
+			CPPNGenom replace = new CPPNGenom(-1.0f, net.createRandomGene(), net);
 			newNests.add(replace);
 		}
 		
@@ -122,9 +126,9 @@ public class CuckooSearch extends GeneticAlgorithm {
 		curPopulation.addAll(newNests);
 	}
 	
-	private void calculateFitness(List<Genom> genoms) {
+	private void calculateFitness(List<CPPNGenom> genoms) {
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
-		for(Genom genom : genoms) {
+		for(CPPNGenom genom : genoms) {
 			BufferedImage image = net.createImage(genom);
 			EvaluationResult<IClassification> result;
 			try {
@@ -147,7 +151,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		Genom best = (genoms.get(genoms.size() - 1));
+		CPPNGenom best = (genoms.get(genoms.size() - 1));
 		if(best.getFitness() > population.getBest().getFitness()) {
 			population.setBest(best);
 		}
@@ -160,8 +164,8 @@ public class CuckooSearch extends GeneticAlgorithm {
 	 * @param cuckoo the genom on which the Levy flight will be performed 
 	 * @return the changed genom
 	 */
-	private Genom performLevyFlight(Genom cuckoo) {
-		Genom egg = new Genom();
+	private CPPNGenom performLevyFlight(CPPNGenom cuckoo) {
+		CPPNGenom egg = new CPPNGenom();
 		egg.setGenes(cuckoo.getGenes());
 		egg.setNet(cuckoo.getNet());
 		List<Gene> eggGenes = egg.getGenes();
@@ -188,7 +192,7 @@ public class CuckooSearch extends GeneticAlgorithm {
 		return egg;
 	}
 	
-	private void calculateFitness(Genom genom) {
+	private void calculateFitness(CPPNGenom genom) {
 		BufferedImage image = net.createImage(genom);
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
 		EvaluationResult<IClassification> result;
@@ -213,9 +217,9 @@ public class CuckooSearch extends GeneticAlgorithm {
 	
 	@Override
 	protected void calculateFitness() {
-		List<Genom> genoms = population.getGenoms();
+		List<CPPNGenom> genoms = population.getGenoms();
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
-		for(Genom genom : genoms) {
+		for(CPPNGenom genom : genoms) {
 			BufferedImage image = net.createImage(genom);
 			EvaluationResult<IClassification> result;
 			try {

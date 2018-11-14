@@ -11,12 +11,15 @@ import org.apache.commons.logging.impl.Log4JLogger;
  * @author Felix
  *
  */
-public class GeneticAlgorithm {
+public class GeneticAlgorithm<T extends GenericGenom> {
 	
 	protected final int populationSize;
 	protected final float targetFitness;
 	protected final int generationCap;
-	protected Population population;
+	protected Population<T> population;
+	
+	protected boolean finished = false;
+	protected int generation = 1;
 	
 	public static final int MAX_GENE_VALUE = Integer.MAX_VALUE;
 	public static final float MUTATION_RATE = 0.03f;
@@ -33,17 +36,16 @@ public class GeneticAlgorithm {
 		this.populationSize = populationSize;
 		this.targetFitness = targetFitness;
 		this.generationCap = generationCap;
-		this.population = new Population();
+		this.population = new Population<>();
 	}
 	
 	/**
 	 * Starts the genetic algorithm. It will run until either the target fitness or the generation cap was reached.
 	 */
-	public void run() {
+	public void run(int pauseCap) {
 		System.out.println("Creating the initial population");
 		createPopulation();
 		
-		int generation = 1;
 		while(generation < generationCap && getHighestFitness() < targetFitness) {
 			System.out.println("Running generation " + generation + ":");
 			createOffspring();
@@ -52,7 +54,13 @@ public class GeneticAlgorithm {
 			System.out.println("Selected the survivors!");
 			generation++;
 			System.out.println("Highest fitness fo far: " + getHighestFitness());
+			
+			if(generation >= pauseCap) {
+				return;
+			}
 		}
+		
+		finished = true;
 		
 		if(getHighestFitness() >= targetFitness) {
 			System.out.println("Successful run!");
@@ -66,15 +74,15 @@ public class GeneticAlgorithm {
 	}
 	
 	public float getAverageFitness() {
-		List<Genom> genoms = population.getGenoms();
+		List<T> genoms = population.getGenoms();
 		float average = 0.0f;
-		for(Genom genom : genoms) {
+		for(T genom : genoms) {
 			average += genom.getFitness();
 		}
 		return average / genoms.size();
 	}
 	
-	public Genom getBestGenom() {
+	public T getBestGenom() {
 		return population.getBest();
 	}
 	
@@ -96,5 +104,9 @@ public class GeneticAlgorithm {
 	
 	protected void calculateFitness() {
 
+	}
+	
+	public boolean isFinished() {
+		return finished;
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import main.utils.Evolutionhelper;
 
-public class GenericGenom {
+public class GenericGenom implements Comparable<GenericGenom>{
 	
 	protected float fitness;
 	protected List<Gene> genes;

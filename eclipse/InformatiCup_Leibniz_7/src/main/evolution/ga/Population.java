@@ -7,30 +7,31 @@ import java.util.List;
  * A population used in a genetic algorithm. It holds the genoms and knows the best genom.
  * 
  * @author Felix
+ * @param <T>
  *
  */
-public class Population {
+public class Population<T extends GenericGenom> {
 	
-	private List<Genom> genoms;
-	private Genom best;
+	private List<T> genoms;
+	private T best;
 	
 	public Population() {
 		genoms = new ArrayList<>();
 	}
 
-	public List<Genom> getGenoms() {
+	public List<T> getGenoms() {
 		return genoms;
 	}
 
-	public void addGenom(Genom genom) {
+	public void addGenom(T genom) {
 		this.genoms.add(genom);
 	}
 
-	public Genom getBest() {
+	public T getBest() {
 		return best;
 	}
 
-	public void setBest(Genom best) {
+	public void setBest(T best) {
 		this.best = best;
 	}
 
