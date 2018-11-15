@@ -13,6 +13,7 @@ import main.evaluate.IEvaluator;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageSaver;
+import main.module.CuckooSearchModule;
 import main.module.EncoderModule;
 import main.module.IModuleIterate;
 import main.module.TestModule;
@@ -117,6 +118,9 @@ public class CmdLineStart {
 			else if(params.get("-a").get(0).equals("encodingsearch")) {
 				
 				algorithm = new EncoderModule(new CircleEncoding());
+			}
+			else if(params.get("-a").get(0).equals("cuckoosearch")) {
+				algorithm = new CuckooSearchModule(64, 64);
 			}
 			else {
 				System.out.println("Error: argument \""+ params.get("-a").get(0) +" \" for option -a is invalid");
