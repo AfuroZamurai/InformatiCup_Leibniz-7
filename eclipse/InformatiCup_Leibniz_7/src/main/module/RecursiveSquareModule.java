@@ -20,8 +20,6 @@ public class RecursiveSquareModule implements IModuleIterate {
 	private BufferedImage workingImage;
 	private BufferedImage bestImage;
 	private IClassification imageClass;
-	private Color color1 = Color.RED;
-	private Color color2 = Color.WHITE;
 	private Color[] colors = new Color[3];
 	private int x = 0, y = 0;
 	private int blockSize = 32;
@@ -96,6 +94,11 @@ public class RecursiveSquareModule implements IModuleIterate {
 			}
 		}
 
+		/**
+		 * Paints the block using the given graphics object.
+		 * 
+		 * @param g The graphics object used to draw the block
+		 */
 		public void paint(Graphics2D g) {
 			g.setColor(color);
 			g.fillRect(x, y, size, size);
@@ -223,7 +226,7 @@ public class RecursiveSquareModule implements IModuleIterate {
 
 			} else if (isDone) {
 				for (WorkingBlock block : queue) {
-					block.rating = res;
+					block.rating = 1 - res;
 				}
 				overallConfidence = res;
 				isDone = false;
@@ -238,7 +241,7 @@ public class RecursiveSquareModule implements IModuleIterate {
 				if (res > overallConfidence)
 					overallConfidence = res;
 				if (res >= overallConfidence) {
-					currentBlock.rating = res;
+					currentBlock.rating = 1 - res;
 					currentBlock.paint(g);
 					g.setColor(Color.DARK_GRAY);
 					g.drawLine(0, height - 1, width, height - 1);
