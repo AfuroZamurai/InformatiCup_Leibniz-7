@@ -92,11 +92,18 @@ public class ModuleFramework implements Runnable {
 	public void run() {
 		while (!shouldStop) {
 			long startTime = System.currentTimeMillis();
-			BufferedImage newImg = module.generateNextImage();
+			BufferedImage newImg;
+			if (module.isFinished()) {
+				newImg = module.getResult();
+			} else {
+				newImg = module.generateNextImage();
+			}
 
 			try {
 				EvaluationResult<IClassification> evalResult = evaluator.evaluateImage(newImg);
-				module.setEvalResult(evalResult);
+
+				if (!module.isFinished())
+					module.setEvalResult(evalResult);
 
 				Platform.runLater(new Runnable() {
 					@Override
@@ -122,5 +129,22 @@ public class ModuleFramework implements Runnable {
 		}
 		shouldStop = false;
 		isRunning = false;
+		
+		BufferedImage resultImage = module.getResult();
+		if (resultImage != null) {
+			try {
+				EvaluationResult<IClassification> evalResult = evaluator.evaluateImage(resultImage);
+				
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						controller.updateResultImage(resultImage, evalResult);
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("The image could not be evaluated");
+			}
+		}
 	}
 }

@@ -18,9 +18,9 @@ public class RecursiveSquareModule implements IModuleIterate {
 
 	private BufferedImage originalImage;
 	private BufferedImage workingImage;
+	private BufferedImage bestImage;
 	private IClassification imageClass;
-	private Color color1 = Color.GREEN;
-	private Color color2 = Color.WHITE;
+	private Color[] colors = new Color[3];
 	private int x = 0, y = 0;
 	private int blockSize = 32;
 	private int width, height;
@@ -29,9 +29,8 @@ public class RecursiveSquareModule implements IModuleIterate {
 	private boolean isFirst, isFinished = false, isDone = false;
 	private boolean discoveryPhase;
 	private float overallConfidence;
-	private float confidenceColor1;
+	private float[] confidenceColors = new float[colors.length];
 	private Graphics2D g;
-	private int showResIn = 4;
 
 	private PriorityQueue<WorkingBlock> queue = new PriorityQueue<>();
 
@@ -55,7 +54,7 @@ public class RecursiveSquareModule implements IModuleIterate {
 				int childSize = size / 2;
 				int childX = (position % 2) * childSize + x;
 				int childY = position / 2 * childSize + y;
-				Color childColor = color == color1 ? color2 : color1;
+				Color childColor = pickNewColor();
 				WorkingBlock child = new WorkingBlock(childX, childY, childSize, rating, childColor);
 				children[position] = child;
 				return child;
@@ -95,6 +94,11 @@ public class RecursiveSquareModule implements IModuleIterate {
 			}
 		}
 
+		/**
+		 * Paints the block using the given graphics object.
+		 * 
+		 * @param g The graphics object used to draw the block
+		 */
 		public void paint(Graphics2D g) {
 			g.setColor(color);
 			g.fillRect(x, y, size, size);
@@ -121,6 +125,19 @@ public class RecursiveSquareModule implements IModuleIterate {
 		public String toString() {
 			return "(" + x + ", " + y + ", " + rating + ")";
 		}
+
+		private Color pickNewColor() {
+			int rnd = ThreadLocalRandom.current().nextInt(colors.length - 1);
+			int counter = 0;
+			for (int i = 0; i < colors.length; i++) {
+				if (color == colors[i])
+					continue;
+				if (counter == rnd)
+					return colors[i];
+				counter++;
+			}
+			return color;
+		}
 	}
 
 	@Override
@@ -128,15 +145,14 @@ public class RecursiveSquareModule implements IModuleIterate {
 		if (isFirst) {
 			return originalImage;
 		} else if (isDone) {
-			// isFinished = true;
 			return workingImage;
 		} else if (discoveryPhase) {
 			BufferedImage res = copyImage(originalImage);
 			Graphics2D g = res.createGraphics();
-			if (i % 2 == 0) {
-				g.setColor(color1);
-			} else {
-				g.setColor(color2);
+			for (int j = 0; j < colors.length; j++) {
+				if (i % colors.length == j) {
+					g.setColor(colors[j]);
+				}
 			}
 			g.fillRect(x, y, blockSize, blockSize);
 
@@ -158,7 +174,7 @@ public class RecursiveSquareModule implements IModuleIterate {
 			g.setColor(Color.DARK_GRAY);
 			g.drawLine(0, height - 1, width, height - 1);
 			g.drawLine(width - 1, 0, width - 1, height);
-			
+
 			return res;
 		}
 	}
@@ -173,20 +189,28 @@ public class RecursiveSquareModule implements IModuleIterate {
 		} else {
 			if (discoveryPhase) {
 				WorkingBlock block;
-				if (i % 2 == 0) {
-					confidenceColor1 = res;
-				} else if (confidenceColor1 < res) {
-					block = new WorkingBlock(x, y, blockSize, res, color2);
-					queue.add(block);
-					block.paint(g);
-				} else {
-					block = new WorkingBlock(x, y, blockSize, confidenceColor1, color1);
+				for (int j = 0; j < colors.length; j++) {
+					if (i % colors.length == j) {
+						confidenceColors[j] = res;
+					}
+				}
+				int index = 0;
+				float max = 0f;
+				if (i % colors.length == colors.length - 1) {
+					for (int j = 0; j < colors.length; j++) {// selecting the color with max confidence
+						if (confidenceColors[j] >= max) {
+							max = confidenceColors[j];
+							index = j;
+						}
+					}
+					block = new WorkingBlock(x, y, blockSize, max, colors[index]);
 					queue.add(block);
 					block.paint(g);
 				}
 
+				// advancing the block further: left -> right, top -> bottom
 				i++;
-				if (i % 2 == 0) {
+				if (i % colors.length == 0) {
 					x += blockSize;
 					if (x >= width) {
 						x = 0;
@@ -202,15 +226,27 @@ public class RecursiveSquareModule implements IModuleIterate {
 
 			} else if (isDone) {
 				for (WorkingBlock block : queue) {
-					block.rating = res;
+					block.rating = 1 - res;
 				}
 				overallConfidence = res;
 				isDone = false;
+				if (overallConfidence <= 0f) {
+					discoveryPhase = true;
+					blockSize = blockSize / 2;
+					queue.clear();
+				}
 			} else {
+				if (overallConfidence >= 0.9f)
+					isFinished = true;
 				if (res > overallConfidence)
 					overallConfidence = res;
-				if (res >= overallConfidence) {					
-					currentBlock.rating = res;
+				if (res >= overallConfidence) {
+					currentBlock.rating = 1 - res;
+					currentBlock.paint(g);
+					g.setColor(Color.DARK_GRAY);
+					g.drawLine(0, height - 1, width, height - 1);
+					g.drawLine(width - 1, 0, width - 1, height);
+					bestImage = copyImage(workingImage);
 				} else {
 					currentBlock.removeLastAddedChild();
 				}
@@ -231,8 +267,12 @@ public class RecursiveSquareModule implements IModuleIterate {
 		isFinished = false;
 		isDone = false;
 		discoveryPhase = true;
+		colors[0] = Color.WHITE;
+		colors[1] = Color.RED;
+		colors[2] = Color.BLUE;
 		queue.clear();
 		currentBlock = null;
+		blockSize = 32;
 		x = 0;
 		y = 0;
 		i = 0;
@@ -275,6 +315,6 @@ public class RecursiveSquareModule implements IModuleIterate {
 
 	@Override
 	public BufferedImage getResult() {
-		return null;
+		return bestImage;
 	}
 }
