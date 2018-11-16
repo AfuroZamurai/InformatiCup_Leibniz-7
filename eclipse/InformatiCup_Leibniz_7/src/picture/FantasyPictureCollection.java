@@ -33,7 +33,7 @@ public class FantasyPictureCollection {
 			break;
 		case ENDE_ALLER_VERBOTE:
 			break;
-		case ENDE_DER_ZULAESSIGEN_HOECHSTGESCHWINDIGKEIT_80:
+		case ENDE_HOECHSTGESCHWINDIGKEIT_80:
 			break;
 		case ENDE_UEBERHOLVERBOT:
 			break;
@@ -110,49 +110,49 @@ public class FantasyPictureCollection {
 			break;
 		case WILDWECHSEL:
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_100:
+		case HOECHSTGESCHWINDIGKEIT_100:
 			features.add(new TextFeature("100", 11, 41, 25));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
 			pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_120:
+		case HOECHSTGESCHWINDIGKEIT_120:
 			features.add(new TextFeature("120", 11, 41, 25));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
 			pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_20:
+		case HOECHSTGESCHWINDIGKEIT_20:
 			features.add(new TextFeature("20", 16, 43, 30));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
 			pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_30:
+		case HOECHSTGESCHWINDIGKEIT_30:
 			features.add(new TextFeature("30", 16, 43, 30));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
 			pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_50:
+		case HOECHSTGESCHWINDIGKEIT_50:
 			features.add(new TextFeature("50", 16, 43, 30));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
 			pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_60:
+		case HOECHSTGESCHWINDIGKEIT_60:
 			features.add(new TextFeature("60", 16, 43, 30));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
 			pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_70:
+		case HOECHSTGESCHWINDIGKEIT_70:
 			features.add(new TextFeature("70", 16, 43, 30));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
 			pic = new FantasyPicture(Shape.CIRCLE, Color.WHITE, layout, border);
 			break;
-		case ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_80:
+		case HOECHSTGESCHWINDIGKEIT_80:
 			features.add(new TextFeature("80", 16, 43, 30));
 			layout = new Layout(Layout.LayoutType.SINGLEFEATURE, features);
 			border = new Border(new Color(230, 0, 3), 8);
