@@ -25,7 +25,7 @@ public class CircleEncoding implements IImageEncoding {
 
 			int xPos = (int) (parameters[i] * width * 1.4f - 0.2f * width);
 			int yPos = (int) (parameters[i + 1] * height * 1.4f - 0.2f * height);
-			int radius = (int) (parameters[i + 2] * width / 4f);
+			int radius = (int) (parameters[i + 2] * width / 2f);
 
 			g.setColor(new Color(parameters[i + 3], parameters[i + 4], parameters[i + 5]));
 			g.fillOval(xPos, yPos, radius, radius);

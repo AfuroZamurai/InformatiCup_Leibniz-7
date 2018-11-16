@@ -119,13 +119,4 @@ public class EncoderModule implements IModuleIterate {
 		
 	    return result;
 	}
-	
-	private int[] findFreePixels(BufferedImage img) {
-		
-		List<Integer> freePixel = new ArrayList<Integer>();
-		
-		
-		return null;//freePixel.toArray(int);
-	}
-
 }
