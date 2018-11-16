@@ -13,7 +13,7 @@ public class CircleEncoding implements IImageEncoding {
 	@Override
 	public BufferedImage createImage(int width, int height, float[] parameters) {
 
-		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics g = img.getGraphics();
 		
 		g.setColor(new Color(0,0,0,0));
@@ -37,7 +37,7 @@ public class CircleEncoding implements IImageEncoding {
 	@Override
 	public BufferedImage addToImage(BufferedImage original, float[] parameters) {
 
-		BufferedImage image = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage image = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics g = image.getGraphics();
 		g.drawImage(original, 0, 0, null);
 
