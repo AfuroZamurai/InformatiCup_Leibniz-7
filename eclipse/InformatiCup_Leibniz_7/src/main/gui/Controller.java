@@ -7,8 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
-import javafx.application.Platform;
+import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -87,6 +86,12 @@ public class Controller implements Initializable {
 	private ModuleFramework moduleFramework = new ModuleFramework(this);
 	private IModuleIterate module;
 	private ArrayList<Pair<Parameter, TextField>> parameterTextFieldList = new ArrayList<>();
+	
+	List<String> fileExtensions = new ArrayList<String>(){{
+		add("JPG");
+		add("PNG");
+		add("GIF");  
+	}};
 
 	Series series = new Series();
 	private int iterationCounter = 0;
@@ -376,12 +381,18 @@ public class Controller implements Initializable {
 		BufferedImage image = SwingFXUtils.fromFXImage(outputImage.getImage(), null);
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
+		
+		for(String s : fileExtensions) {
+			fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter(s, "*."+ s.toLowerCase()));
+		}
+		
 		File file = fileChooser.showSaveDialog(stage);
-
 		configuringFileChooser(fileChooser);
 
 		try {
-			ImageSaver.saveImage(image, file + "");
+			String fileName = file+"";
+			String[] split = fileName.split(Pattern.quote("."));
+			ImageSaver.saveImage(image, split[split.length - 2], split[split.length - 1]);
 		} catch (IOException e) {
 			e.printStackTrace();
 			showAlertError("Es hat einen Fehler beim speichern des Bildes gegeben.");
@@ -404,14 +415,22 @@ public class Controller implements Initializable {
 		// BufferedImage image = SwingFXUtils.fromFXImage(outputImage.getImage(), null);
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
+		
+		for(String s : fileExtensions) {
+			fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter(s, "*."+ s.toLowerCase()));
+		}
+		
 		File file = fileChooser.showOpenDialog(stage);
-
 		configuringFileChooser(fileChooser);
+		
+		if(file == null) {
+			return;
+		}
 
 		try {
 			BufferedImage image = ImageLoader.loadImage(file + "");
 			inputImage.setImage(SwingFXUtils.toFXImage(image, null));
-		} catch (IOException e) {
+		}catch (IOException e) {
 			e.printStackTrace();
 			showAlertError("Es hat einen Fehler beim laden des Bildes gegeben.");
 		}
