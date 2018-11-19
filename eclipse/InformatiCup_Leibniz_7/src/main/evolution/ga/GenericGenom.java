@@ -5,7 +5,7 @@ import java.util.List;
 
 import main.utils.Evolutionhelper;
 
-public class GenericGenom<T extends GenericGene> implements Comparable<GenericGenom<T>>{
+public class GenericGenom<T extends AbstractGene<?>> implements Comparable<GenericGenom<T>>{
 	
 	protected float fitness;
 	protected List<T> genes;
@@ -26,22 +26,23 @@ public class GenericGenom<T extends GenericGene> implements Comparable<GenericGe
 	 * @param parent2 second parent
 	 * @return two newly created genoms or null if the genoms have genes with a different size
 	 */
-	public GenericGenom<GenericGene>[] reproduce(GenericGenom<GenericGene> parent1, GenericGenom<GenericGene> parent2) {
+	/*
+	public List<GenericGenom<T>> reproduce(GenericGenom<T> parent1, GenericGenom<T> parent2) {
 		if(parent1.getGenes().size() != parent2.getGenes().size()) {
-			System.out.println("Tryong to reproduce with genoms of different gene length!");
+			System.out.println("Trying to reproduce with genoms of different gene length!");
 			return null;
 		}
 		
-		GenericGenom<GenericGene>[] offspring = new GenericGenom[2];
-		GenericGenom<GenericGene> child1 = new GenericGenom<>();
-		GenericGenom<GenericGene> child2 = new GenericGenom<>();
+		List<GenericGenom<T>> offspring = new ArrayList<>(2);
+		GenericGenom<T> child1 = new GenericGenom<>();
+		GenericGenom<T> child2 = new GenericGenom<>();
 		int p1GeneSize = parent1.getGenes().size();
 		int p2GeneSize = parent2.getGenes().size();
 		
 		int geneSizeLower = p1GeneSize < p2GeneSize ? p1GeneSize : p2GeneSize;
 		int geneSizeUpper = p1GeneSize > p2GeneSize ? p1GeneSize : p2GeneSize;
 		int geneCrossoverSize = Evolutionhelper.randomInt(0, geneSizeLower);
-		int geneValueCrossoverSize = Evolutionhelper.randomInt(0, parent1.getGenes().get(0).getValues().length - 1);
+		int geneValueCrossoverSize = Evolutionhelper.randomInt(0, parent1.getGenes().get(0).getGeneLength() - 1);
 		
 		int i, j;
 		
@@ -50,20 +51,20 @@ public class GenericGenom<T extends GenericGene> implements Comparable<GenericGe
 			child2.getGenes().add(parent2.getGenes().get(i));
 		}
 		
-		int[] crossover1 = new int[parent1.getGenes().get(0).getValues().length];
-		int[] crossover2 = new int[parent1.getGenes().get(0).getValues().length];
-		for(j = 0; j < parent1.getGenes().get(0).getValues().length; j++) {
+		List<T> crossover1 = new ArrayList<>(parent1.getGenes().get(0).getGeneLength());
+		List<T> crossover2 = new ArrayList<>(parent1.getGenes().get(0).getGeneLength());
+		for(j = 0; j < parent1.getGenes().get(0).getGeneLength(); j++) {
 			if(i < geneValueCrossoverSize) {
-				crossover1[j] = parent1.getGenes().get(i).getValues()[j];
-				crossover2[j] = parent2.getGenes().get(i).getValues()[j];
+				crossover1.add((T) parent1.getGenes().get(i).getValues().get(j));
+				crossover2.add((T) parent2.getGenes().get(i).getValues().get(j));
 			} else {
-				crossover1[j] = parent2.getGenes().get(i).getValues()[j];
-				crossover2[j] = parent1.getGenes().get(i).getValues()[j];
+				crossover1.add((T) parent2.getGenes().get(i).getValues().get(j));
+				crossover2.add((T) parent1.getGenes().get(i).getValues().get(j));
 			}
 		}
 		
-		GenericGene crossoverGene1 = new GenericGene(crossover1);
-		GenericGene crossoverGene2 = new GenericGene(crossover2);
+		T crossoverGene1 = new T(crossover1);
+		T crossoverGene2 = new T(crossover2);
 		
 		child1.getGenes().add(crossoverGene1);
 		child2.getGenes().add(crossoverGene2);
@@ -78,11 +79,12 @@ public class GenericGenom<T extends GenericGene> implements Comparable<GenericGe
 			}
 		}
 		
-		offspring[0] = child1;
-		offspring[1] = child2;
+		offspring.add(child1);
+		offspring.add(child2);
 		
 		return offspring;
 	}
+	*/
 
 	public float getFitness() {
 		return fitness;

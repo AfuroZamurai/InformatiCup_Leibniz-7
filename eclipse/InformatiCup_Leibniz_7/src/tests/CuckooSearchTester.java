@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import main.CmdLineStart;
 import main.evaluate.Sign;
-import main.evolution.ga.CuckooSearch;
+import main.evolution.ga.cppn.CuckooSearch;
 import main.evolution.network.CPPN;
 import main.evolution.network.Config;
 

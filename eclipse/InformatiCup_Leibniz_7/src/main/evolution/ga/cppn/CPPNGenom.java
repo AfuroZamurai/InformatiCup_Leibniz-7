@@ -1,17 +1,20 @@
-package main.evolution.ga;
+package main.evolution.ga.cppn;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import main.evolution.ga.AbstractGene;
+import main.evolution.ga.GenericGenom;
+import main.evolution.ga.GeneticAlgorithm;
 import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
 
-public class CPPNGenom extends GenericGenom<GenericGene> {
+public class CPPNGenom extends GenericGenom<CPPNGene> {
 	
 	private CPPN net;
 
-	public CPPNGenom(float initialFitness, GenericGene initialGene, CPPN net) {
+	public CPPNGenom(float initialFitness, CPPNGene initialGene, CPPN net) {
 		fitness = initialFitness;
 		genes = new ArrayList<>();
 		genes.add(initialGene);
@@ -28,8 +31,8 @@ public class CPPNGenom extends GenericGenom<GenericGene> {
 	 * It will replace a value with a random new one with the probability given by the mutation rate.
 	 */
 	private void mutate() {
-		for(GenericGene gene : genes) {
-			for(int i = 0; i < gene.getValues().length; i++) {
+		for(CPPNGene gene : genes) {
+			for(int i = 0; i < gene.getGeneLength(); i++) {
 				Random rnd = new Random();
 				if (rnd.nextFloat() < GeneticAlgorithm.MUTATION_RATE) {
 					gene.replaceValue(i, Evolutionhelper.randomGeneValue());

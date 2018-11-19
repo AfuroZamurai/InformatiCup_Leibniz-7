@@ -1,4 +1,4 @@
-package main.evolution.ga;
+package main.evolution.ga.cppn;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
+import main.evolution.ga.AbstractGene;
+import main.evolution.ga.GeneticAlgorithm;
 import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
 
@@ -168,14 +170,14 @@ public class CuckooSearch extends GeneticAlgorithm<CPPNGenom> {
 		CPPNGenom egg = new CPPNGenom();
 		egg.setGenes(cuckoo.getGenes());
 		egg.setNet(cuckoo.getNet());
-		List<GenericGene> eggGenes = egg.getGenes();
+		List<CPPNGene> eggGenes = egg.getGenes();
 		
 		for(int i = 0; i < eggGenes.size(); i++) {
-			for(int j = 0; j < eggGenes.get(i).getValues().length; j++) {
+			for(int j = 0; j < eggGenes.get(i).getGeneLength(); j++) {
 				double u = Evolutionhelper.getNormalDistributedDouble() * LEVY_SIGMA;
 				double v = Evolutionhelper.getNormalDistributedDouble();
 				double stepSize = LEVY_ALPHA * u / Math.pow(Math.abs(v), 1.0 / LEVY_BETA);
-				int newValue = (int) Math.abs((double) eggGenes.get(i).getValues()[j] + 
+				int newValue = (int) Math.abs((double) eggGenes.get(i).getValues().get(j) + 
 						stepSize * Evolutionhelper.getNormalDistributedDouble());
 				
 				if(newValue < 0) {

@@ -109,4 +109,8 @@ public class GeneticAlgorithm<T extends GenericGenom> {
 	public boolean isFinished() {
 		return finished;
 	}
+	
+	public int currentGeneration() {
+		return generation - 1;
+	}
 }

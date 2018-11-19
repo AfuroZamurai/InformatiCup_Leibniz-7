@@ -5,8 +5,9 @@ import java.awt.image.BufferedImage;
 import java.lang.Math;
 import java.util.List;
 
-import main.evolution.ga.CPPNGenom;
-import main.evolution.ga.GenericGene;
+import main.evolution.ga.AbstractGene;
+import main.evolution.ga.cppn.CPPNGene;
+import main.evolution.ga.cppn.CPPNGenom;
 import main.utils.Evolutionhelper;
 
 /**
@@ -38,8 +39,8 @@ public class CPPN {
 		assert config.getMaxHlSize() >= config.getMinHlSize();
 	}
 	
-	public GenericGene createRandomGene() {
-		return new GenericGene(55);
+	public CPPNGene createRandomGene() {
+		return new CPPNGene(55);
 	}
 	
 	/**
@@ -55,7 +56,7 @@ public class CPPN {
 		int centerY = config.getHeight() / 2;
 		double maxCenterDist = Math.sqrt((Math.pow(width - centerX, 2) + Math.pow(height -centerY, 2)));
 		
-		List<GenericGene> genes = genom.getGenes();
+		List<CPPNGene> genes = genom.getGenes();
 		
 		//calculate network size from genom
 		int networkSize = NUM_INPUT + genes.size();
@@ -76,13 +77,13 @@ public class CPPN {
 				for(int neuron = 0; neuron < genes.size(); neuron++) {
 					double value = 0.0;
 					for(int in = 0; in < neuron + 4; in++) {
-						double even = Evolutionhelper.GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in)], 1);
+						double even = Evolutionhelper.GeneToDoubleRange(genes.get(neuron).getValues().get(1 + (2 * in)), 1);
 						if(even > 0) {
-							double odd = Evolutionhelper.GeneToDoubleRange(genes.get(neuron).getValues()[1 + (2 * in) + 1], 1);
+							double odd = Evolutionhelper.GeneToDoubleRange(genes.get(neuron).getValues().get(1 + (2 * in + 1)), 1);
 							value += network[in] + odd;
 						}
 					}
-					network[neuron + 4] = applyFunction(value, genes.get(neuron).getValues()[0]);
+					network[neuron + 4] = applyFunction(value, genes.get(neuron).getValues().get(0));
 				}
 				
 				int r = (int) Math.floor(Evolutionhelper.boundedIdentity(0.0, 255.0, network[networkSize - 3] * 255));

@@ -1,5 +1,8 @@
 package main.evolution.ga;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import main.utils.Evolutionhelper;
 
 /**
@@ -9,39 +12,41 @@ import main.utils.Evolutionhelper;
  * @author Felix
  *
  */
-public class GenericGene {
-	private int[] values;
+public abstract class AbstractGene<T> {
+	protected List<T> values;
+	protected int length;
 	
 	/**
 	 * Creates a new gene with a given number of values. The values will be initialized during creation.
 	 * 
 	 * @param length the number of values this gene will have
 	 */
-	public GenericGene(int length) {
-		values = new int[length];
+	public AbstractGene(int length) {
+		values = new ArrayList<>();
+		this.length = length;
 		initializeGene();
 	}
 	
-	public GenericGene(int[] values) {
+	public AbstractGene(List<T> values) {
 		this.values = values;
 	}
 	
-	private void initializeGene( ) {
-		for(int i = 0; i < values.length; i++) {
-			values[i] = Evolutionhelper.randomGeneValue();
-		}
-	}
+	abstract protected void initializeGene();
 	
 	/**
 	 * Replaces one value of this gene.
 	 * @param index position of the value which will be replaced
 	 * @param newValue the new value
 	 */
-	public void replaceValue(int index, int newValue) {
-		values[index] = newValue;
+	public void replaceValue(int index, T newValue) {
+		values.set(index, newValue);
 	}
 
-	public int[] getValues() {
+	public List<T> getValues() {
 		return values;
+	}
+	
+	public int getGeneLength( ) {
+		return length;
 	}
 }
