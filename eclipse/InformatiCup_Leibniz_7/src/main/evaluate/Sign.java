@@ -13,33 +13,33 @@ import main.io.ImageLoader;
  *
  */
 public enum Sign implements IClassification {
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_20,
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_30,
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_50,
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_60,
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_70,
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_80,
-	ENDE_DER_ZULAESSIGEN_HOECHSTGESCHWINDIGKEIT_80,
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_100,
-	ZULAESSIGE_HOECHSTGESCHWINDIGKEIT_120,
+	HOECHSTGESCHWINDIGKEIT_20, 
+	HOECHSTGESCHWINDIGKEIT_30, 
+	HOECHSTGESCHWINDIGKEIT_50, 
+	HOECHSTGESCHWINDIGKEIT_60, 
+	HOECHSTGESCHWINDIGKEIT_70, 
+	HOECHSTGESCHWINDIGKEIT_80, 
+	ENDE_HOECHSTGESCHWINDIGKEIT_80, 
+	HOECHSTGESCHWINDIGKEIT_100, 
+	HOECHSTGESCHWINDIGKEIT_120, 
 	UEBERHOLVERBOT_ALLE, 
 	UEBERHOLVERBOT_LKW, 
 	VORFAHRT, 
 	VORFAHRTSSTRASSE, 
 	VORFAHRT_GEWAEHREN, 
 	STOP, 
-	FAHRVERBOT,
+	FAHRVERBOT, 
 	LKW_VERBOT, 
 	EINFAHRT_VERBOTEN, 
 	GEFAHRSTELLE, 
 	KURVE_LINKS, 
-	KURVE_RECHTS,
+	KURVE_RECHTS, 
 	DOPPELKURVE_LINKS, 
 	UNEBENE_FAHRBAHN, 
-	SCHLEUDERGEFAHR,
+	SCHLEUDERGEFAHR, 
 	VERENGUNG_RECHTS, 
 	BAUSTELLE, 
-	LICHTZEICHENANLAGE, 
+	LICHTZEICHENANLAGE,
 	FUSSGAENGER, 
 	KINDER, 
 	RADVERKEHR, 
@@ -56,61 +56,30 @@ public enum Sign implements IClassification {
 	KREISVERKEHR, 
 	ENDE_UEBERHOLVERBOT, 
 	ENDE_UEBERHOLVERBOT_LKW;
-	
+
 	/**
-	 * Names of the classes returned by the webAPI
-	 * TODO: Input missing names(could not be retrieved because no images reach high enough confidence)
+	 * Names of the classes returned by the webAPI TODO: Input missing names(could
+	 * not be retrieved because no images reach high enough confidence)
 	 */
-	public static final String[] classNames = new String[] {
-			"Zulässige Höchstgeschwindigkeit (20)",
-			"Zulässige Höchstgeschwindigkeit (30)",
-			"Zulässige Höchstgeschwindigkeit (50)",
-			"Zulässige Höchstgeschwindigkeit (60)",
-			"Zulässige Höchstgeschwindigkeit (70)",
-			"Zulässige Höchstgeschwindigkeit (80)",
-			"Ende der Geschwindigkeitsbegrenzung (80)",
-			"Zulässige Höchstgeschwindigkeit (100)",
-			"Zulässige Höchstgeschwindigkeit (120)",
+	public static final String[] classNames = new String[] { "Zulässige Höchstgeschwindigkeit (20)",
+			"Zulässige Höchstgeschwindigkeit (30)", "Zulässige Höchstgeschwindigkeit (50)",
+			"Zulässige Höchstgeschwindigkeit (60)", "Zulässige Höchstgeschwindigkeit (70)",
+			"Zulässige Höchstgeschwindigkeit (80)", "Ende der Geschwindigkeitsbegrenzung (80)",
+			"Zulässige Höchstgeschwindigkeit (100)", "Zulässige Höchstgeschwindigkeit (120)",
 			"Überholverbot für Kraftfahrzeuge aller Art",
-			"Überholverbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t",
-			"Einmalige Vorfahrt",
-			"Vorfahrt",
-			"Vorfahrt gewähren",
-			"Stoppschild",
-			"Verbot für Fahrzeuge aller Art",
-			"Verbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse von 3,5t",
-			"Verbot der Einfahrt",
-			"Gefahrenstelle",
-			"Kurve (links)",
-			"Kurve (rechts)",
-			"Doppelkurve (zunächst links)",
-			"Unebene Fahrbahn",
-			"Schleudergefahr bei Nässe oder Schmutz",
-			"",
-			"Baustelle",
-			"",
-			"Fußgänger",
-			"",
-			"Fahrradfahrer",
-			"",
-			"Wildwechsel",
-			"Ende aller Streckenverbote",
-			"Ausschließlich rechts",
-			"Ausschließlich links",
-			"Ausschließlich geradeaus",
-			"",
-			"",
-			"Rechts vorbei",
-			"Links vorbei",
-			"Kreisverkehr",
+			"Überholverbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t", "Einmalige Vorfahrt",
+			"Vorfahrt", "Vorfahrt gewähren", "Stoppschild", "Verbot für Fahrzeuge aller Art",
+			"Verbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse von 3,5t", "Verbot der Einfahrt",
+			"Gefahrenstelle", "Kurve (links)", "Kurve (rechts)", "Doppelkurve (zunächst links)", "Unebene Fahrbahn",
+			"Schleudergefahr bei Nässe oder Schmutz", "", "Baustelle", "", "Fußgänger", "", "Fahrradfahrer", "",
+			"Wildwechsel", "Ende aller Streckenverbote", "Ausschließlich rechts", "Ausschließlich links",
+			"Ausschließlich geradeaus", "", "", "Rechts vorbei", "Links vorbei", "Kreisverkehr",
 			"Ende des Überholverbotes für Kraftfahrzeuge aller Art",
-			"Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t"
-	};
-	
+			"Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t" };
 
 	@Override
 	public BufferedImage getExampleImage() throws IOException {
-		
+
 		int number = this.ordinal();
 
 		String numString = "" + number;
@@ -128,13 +97,13 @@ public enum Sign implements IClassification {
 			e.printStackTrace();
 			throw new IOException("The example image could not be loaded!");
 		}
-		
+
 		return example;
 	}
 
 	@Override
 	public String getNameOfClass() {
-		
+
 		return this.toString();
 	}
 
@@ -147,26 +116,30 @@ public enum Sign implements IClassification {
 	public IClassification[] getValues() {
 		return Sign.values();
 	}
-	
+
 	@Override
-	public String toString() { 
-		
+	public String toString() {
+
 		String readableName = this.name();
-		readableName = readableName.substring(0,1).toUpperCase() + readableName.substring(1).toLowerCase();	// set the first character to a capital letter 																											// the remaining characters to small letters
-		readableName = readableName.replaceAll("_", " ");
+
+		//Convert Umlaute
+		readableName = readableName.replaceAll("AE", "�");
+		readableName = readableName.replaceAll("UE", "�");
+		readableName = readableName.replaceAll("OE", "�");
+
+		//Make first letter Uppercase
+		readableName = readableName.substring(0, 1).toUpperCase() + readableName.substring(1).toLowerCase();
 		
-		readableName = readableName.replaceAll("laessig", "l�ssig");
-		readableName = readableName.replaceAll("hoechstgeschwindigkeit", "H�chstgeschwindigkeit");
-		readableName = readableName.replaceAll("Ueberholverbot", "�berholverbot");	
-		readableName = readableName.replaceAll("lkw", "Lkw");
-		readableName = readableName.replaceAll("gewaehren", "gew�hren");
-		readableName = readableName.replaceAll("fahrbahn", "Fahrbahn");
-		readableName = readableName.replaceAll("Fussgaenger", "Fussg�nger");
-		readableName = readableName.replaceAll("Schneeglaette", "Schneegl�tte");
-		readableName = readableName.replaceAll("verbote", "Verbote");
-		readableName = readableName.replaceAll("ueberholverbot", "�berholverbot");	
-		
-	  return readableName; 
-	}	
-	
+		//Replace all _ with spaces and the letter after it to upper case
+		int spaceIndex = readableName.indexOf("_");
+		while (spaceIndex >= 0) {
+			readableName = readableName.substring(0, spaceIndex) + " "
+					+ readableName.substring(spaceIndex + 1, spaceIndex + 2).toUpperCase()
+					+ readableName.substring(spaceIndex + 2);
+			spaceIndex = readableName.indexOf("_");
+		}
+
+		return readableName;
+	}
+
 }

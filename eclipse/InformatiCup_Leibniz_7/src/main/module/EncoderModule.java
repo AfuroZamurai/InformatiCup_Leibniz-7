@@ -2,6 +2,7 @@ package main.module;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,67 +10,81 @@ import java.util.Random;
 import main.encodings.IImageEncoding;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
+import main.io.ImageSaver;
 
 public class EncoderModule implements IModuleIterate {
 
 	private Parameter exampleParam = new Parameter("Example Parameter", "Example Explanation", 1);
 
 	BufferedImage original;
-	
+
 	BufferedImage last;
-	
+
 	BufferedImage current;
-	
+
 	BufferedImage optimal;
-	
+
 	float optimalScore;
 
 	IClassification targetClass;
 
 	IImageEncoding encoding;
-	
+
 	Random rand;
-	
+
 	float[] parameters;
 
 	public EncoderModule(IImageEncoding encoding) {
 		this.encoding = encoding;
-		
+
 		int parameterAmount = this.encoding.getParameterBatchSize()*6;
-		
+
 		this.parameters = new float[parameterAmount];
-		
+
 		rand = new Random();
 	}
 
 	@Override
 	public BufferedImage generateNextImage() {
+
+		float coverage = getTransparentPercent(current);
+		
+		float newCoverage = 0;
+		
+		while(newCoverage <= coverage && coverage < 1.0f)
+		{
+			for (int i = 0; i < parameters.length; i++) {
+				parameters[i] = rand.nextFloat();
+			}
 			
-		for(int i = 0; i < parameters.length; i++) {
-			parameters[i] = rand.nextFloat();
+			BufferedImage newImg = drawOnTop(current, this.encoding.createImage(original.getWidth(), original.getHeight(), parameters));
+			
+			newCoverage = getTransparentPercent(newImg);
 		}
 		
 		current = drawOnTop(current, this.encoding.createImage(original.getWidth(), original.getHeight(), parameters));
-		
+
 		return drawOnTop(original, current);
 	}
 
 	@Override
 	public void setEvalResult(EvaluationResult<IClassification> result) {
-		
+
+		float coverage = getTransparentPercent(current);
+
+		System.out.println("Coverage: " + coverage);
+
 		float score = result.getConfidenceForClass(targetClass);
-		
-		if(score > optimalScore) {
+
+		if (score > optimalScore) {
 			optimalScore = score;
 			optimal = current;
-		}
-		else {
+		} else {
 			float drop = optimalScore - score;
-			
-			if(drop > 0.1) {
+
+			if (drop > 0.1) {
 				current = last;
-			}
-			else {
+			} else {
 				last = current;
 			}
 		}
@@ -89,9 +104,9 @@ public class EncoderModule implements IModuleIterate {
 	public void setInitImage(BufferedImage img, IClassification imageClass) {
 
 		this.original = img;
-		this.current = img;
-		this.optimal = img;
-		this.last = img;
+		this.current = this.encoding.createImage(original.getWidth(), original.getHeight(), new float[] {});
+		this.optimal = this.encoding.createImage(original.getWidth(), original.getHeight(), new float[] {});
+		this.last = this.encoding.createImage(original.getWidth(), original.getHeight(), new float[] {});
 		this.targetClass = imageClass;
 	}
 
@@ -109,23 +124,51 @@ public class EncoderModule implements IModuleIterate {
 	public BufferedImage getResult() {
 		return drawOnTop(original, last);
 	}
-	
-	private BufferedImage drawOnTop(BufferedImage background,BufferedImage image) {
-		BufferedImage result = new BufferedImage(background.getWidth(),background.getHeight(),BufferedImage.TYPE_INT_ARGB);
-	    Graphics2D graphics = (Graphics2D) result.getGraphics();
-	    
-	    graphics.drawImage(background, 0, 0, null);
-	    graphics.drawImage(image, 0, 0, null);
-		
-	    return result;
-	}
-	
-	private int[] findFreePixels(BufferedImage img) {
-		
-		List<Integer> freePixel = new ArrayList<Integer>();
-		
-		
-		return null;//freePixel.toArray(int);
+
+	private BufferedImage drawOnTop(BufferedImage background, BufferedImage image) {
+		BufferedImage result = new BufferedImage(background.getWidth(), background.getHeight(),
+				BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D graphics = (Graphics2D) result.getGraphics();
+
+		graphics.drawImage(background, 0, 0, null);
+		graphics.drawImage(image, 0, 0, null);
+
+		return result;
 	}
 
+	private float getTransparentPercent(BufferedImage img) {
+
+		int transparentPixel = findTransparentPixels(img).length / 2;
+
+		int allPixel = img.getWidth() * img.getHeight();
+
+		return (float) transparentPixel / (float) allPixel;
+	}
+
+	private int[] findTransparentPixels(BufferedImage img) {
+
+		List<Integer> freePixelList = new ArrayList<Integer>();
+
+		for (int x = 0; x < current.getWidth(); x++) {
+			for (int y = 0; y < current.getHeight(); y++) {
+
+				int pixel = img.getRGB(x, y);
+
+				int alpha = (pixel >> 24) & 0xff;
+
+				if (alpha == 255) {
+					freePixelList.add(x);
+					freePixelList.add(y);
+				}
+			}
+		}
+
+		int[] freePixel = new int[freePixelList.size()];
+
+		for (int i = 0; i < freePixelList.size(); i++) {
+			freePixel[i] = freePixelList.get(i);
+		}
+
+		return freePixel;
+	}
 }
