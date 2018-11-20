@@ -17,4 +17,6 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	public BufferedImage getImageFromGenom(EncodingGenom genom, int width, int height) {
 		return encoding.createImage(width, height, genom.getAllParameters());
 	}
+	
+	
 }
