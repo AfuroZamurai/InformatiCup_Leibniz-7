@@ -43,13 +43,15 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	 * Starts the genetic algorithm. It will run until either the target fitness or the generation cap was reached.
 	 */
 	public void run(int pauseCap) {
-		System.out.println("Creating the initial population");
-		createPopulation();
+		if(generation == 1) {
+			System.out.println("Creating the initial population");
+			createPopulation();
+		}
 		
 		while(generation < generationCap && getHighestFitness() < targetFitness) {
 			System.out.println("Running generation " + generation + ":");
 			createOffspring();
-			System.out.println("Created new nests!");
+			System.out.println("Created new population!");
 			selectSurvivors();
 			System.out.println("Selected the survivors!");
 			generation++;
@@ -70,7 +72,11 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	}
 	
 	public float getHighestFitness() {
-		return population.getBest().getFitness();
+		try {
+			return population.getBest().getFitness();
+		} catch (NullPointerException e) {
+			return 0.0f;
+		}
 	}
 	
 	public float getAverageFitness() {

@@ -43,7 +43,7 @@ public class EncodingSearchModule implements IModuleIterate {
 	@Override
 	public void setInitImage(BufferedImage img, IClassification imageClass) {
 		targetClass = imageClass;
-		searcher = new EncodingSearch(POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP, encoding);
+		searcher = new EncodingSearch(POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP, encoding, imageClass);
 	}
 
 	@Override

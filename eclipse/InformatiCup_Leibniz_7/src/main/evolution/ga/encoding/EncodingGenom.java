@@ -12,7 +12,14 @@ import main.evolution.ga.GenericGenom;
  *
  */
 public class EncodingGenom extends GenericGenom<EncodingGene> {
-		
+	
+	public EncodingGenom(float initialFitness, List<EncodingGene> genes) {
+		super(initialFitness, genes);
+	}
+	
+	public EncodingGenom( ) {
+		super();
+	}
 	
 	public float[] getAllParameters() {
 		int size = parameterSize();
