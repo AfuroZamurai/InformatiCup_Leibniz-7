@@ -17,13 +17,18 @@ public class Evolutionhelper {
 		return sigmoid(x) * (1 - sigmoid(x));
 	}
 	
-	public static int randomGeneValue() {
+	public static int randomIntegerGeneValue() {
 		Random rnd = new Random();
 		return rnd.nextInt(GeneticAlgorithm.MAX_GENE_VALUE);
 	}
 	
 	public static int randomInt(int lowerBound, int upperBound) {
 		return ThreadLocalRandom.current().nextInt(lowerBound, upperBound + 1);
+	}
+	
+	public static float randomFloat() {
+		Random rnd = new Random();
+		return rnd.nextFloat();
 	}
 	
 	public static double getNormalDistributedDouble() {

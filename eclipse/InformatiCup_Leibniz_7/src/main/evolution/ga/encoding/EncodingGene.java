@@ -3,6 +3,7 @@ package main.evolution.ga.encoding;
 import java.util.List;
 
 import main.evolution.ga.AbstractGene;
+import main.utils.Evolutionhelper;
 
 public class EncodingGene extends AbstractGene<Float> {
 	
@@ -16,7 +17,8 @@ public class EncodingGene extends AbstractGene<Float> {
 
 	@Override
 	protected void initializeGene() {
-		// TODO Auto-generated method stub
-		
+		for(int i = 0; i < values.size(); i++) {
+			values.add(Evolutionhelper.randomFloat());
+		}
 	}
 }

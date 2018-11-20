@@ -18,7 +18,7 @@ public class CPPNGene extends AbstractGene<Integer> {
 	@Override
 	protected void initializeGene() {
 		for(int i = 0; i < values.size(); i++) {
-			values.add(Evolutionhelper.randomGeneValue());
+			values.add(Evolutionhelper.randomIntegerGeneValue());
 		}
 	}
 }

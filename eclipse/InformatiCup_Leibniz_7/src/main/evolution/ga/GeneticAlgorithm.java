@@ -11,7 +11,7 @@ import org.apache.commons.logging.impl.Log4JLogger;
  * @author Felix
  *
  */
-public class GeneticAlgorithm<T extends GenericGenom> {
+public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>> {
 	
 	protected final int populationSize;
 	protected final float targetFitness;

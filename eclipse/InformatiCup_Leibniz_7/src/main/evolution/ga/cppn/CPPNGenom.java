@@ -35,7 +35,7 @@ public class CPPNGenom extends GenericGenom<CPPNGene> {
 			for(int i = 0; i < gene.getGeneLength(); i++) {
 				Random rnd = new Random();
 				if (rnd.nextFloat() < GeneticAlgorithm.MUTATION_RATE) {
-					gene.replaceValue(i, Evolutionhelper.randomGeneValue());
+					gene.replaceValue(i, Evolutionhelper.randomIntegerGeneValue());
 				}
 			}
 		}
