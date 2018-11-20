@@ -24,8 +24,9 @@ public class RecursiveSquareModule implements IModuleIterate {
 	private int x = 0, y = 0;
 	private int blockSize = 32;
 	private int width, height;
-	private int i;
+	private int i, blockCounter;
 	private WorkingBlock currentBlock;
+	private WorkingBlock[] blocks = new WorkingBlock[4];
 	private boolean isFirst, isFinished = false, isDone = false;
 	private boolean discoveryPhase;
 	private float overallConfidence;
@@ -55,6 +56,19 @@ public class RecursiveSquareModule implements IModuleIterate {
 				int childX = (position % 2) * childSize + x;
 				int childY = position / 2 * childSize + y;
 				Color childColor = pickNewColor();
+				WorkingBlock child = new WorkingBlock(childX, childY, childSize, rating, childColor);
+				children[position] = child;
+				return child;
+			}
+			return null;
+		}
+
+		public WorkingBlock addChild(int position, Color color) {
+			if (position >= 0 && position < 4) {
+				int childSize = size / 2;
+				int childX = (position % 2) * childSize + x;
+				int childY = position / 2 * childSize + y;
+				Color childColor = color;
 				WorkingBlock child = new WorkingBlock(childX, childY, childSize, rating, childColor);
 				children[position] = child;
 				return child;
@@ -97,7 +111,8 @@ public class RecursiveSquareModule implements IModuleIterate {
 		/**
 		 * Paints the block using the given graphics object.
 		 * 
-		 * @param g The graphics object used to draw the block
+		 * @param g
+		 *            The graphics object used to draw the block
 		 */
 		public void paint(Graphics2D g) {
 			g.setColor(color);
@@ -203,20 +218,88 @@ public class RecursiveSquareModule implements IModuleIterate {
 							index = j;
 						}
 					}
-					block = new WorkingBlock(x, y, blockSize, max, colors[index]);
-					queue.add(block);
-					block.paint(g);
+
+					if (blockCounter < 4) {
+						block = new WorkingBlock(x, y, blockSize, max, colors[index]);
+						queue.add(block);
+						blocks[blockCounter] = block;
+						block.paint(g);
+					} else {
+						block = blocks[blockCounter % 4];
+						int position = 0;
+						if (blockCounter % 4 == 0) {
+							position = 3;
+						} else if (blockCounter % 4 == 1) {
+							position = 2;
+						} else if (blockCounter % 4 == 2) {
+							position = 1;
+						} else if (blockCounter % 4 == 3) {
+							position = 0;
+						}
+						if (blockCounter < 8) {
+							block.addChild(position, colors[index]);
+							block.paint(g);
+						} else {
+							block = block.children[position];
+							Color blockColor = colors[index];
+							if (blockCounter >= 16) {
+								position = ThreadLocalRandom.current().nextInt(4);
+								int rnd = ThreadLocalRandom.current().nextInt(colors.length);
+								blockColor = colors[rnd];
+								//TODO: here should be a new random phase + alternating colors
+							}
+							block.addChild(position, blockColor);
+							block.paint(g);
+						}
+					}
+					//blockCounter++;
+
 				}
 
 				// advancing the block further: left -> right, top -> bottom
 				i++;
 				if (i % colors.length == 0) {
 					x += blockSize;
-					if (x >= width) {
-						x = 0;
+					int endX = width;
+					// quick try out! this has to be changed if it works out
+					/*
+					if (blockSize == 16)
+						endX = 48;
+					if (blockSize == 8)
+						endX = 40;
+					*/
+					if (x >= endX) {
+						int startX = 0;
+						/*
+						if (blockSize == 16)
+							startX = 16;
+						if (blockSize == 8)
+							startX = 24;
+						*/
+						x = startX;
 						y += blockSize;
-						if (y >= height) {
-							y = 0;
+						int endY = height;
+						/*
+						if (blockSize == 16)
+							endY = 48;
+						if (blockSize == 8)
+							endY = 40;
+						*/
+						if (y >= endY) {
+							int startY = 0;
+							/*
+							if (blockSize == 32) {
+								startY = 16;
+								startX = 16;
+							}
+
+							if (blockSize == 16) {
+								startY = 24;
+								startX = 24;
+							}
+							*/
+							y = startY;
+							x = startX;
 							isDone = true;
 							i = 0;
 							discoveryPhase = false;
@@ -230,7 +313,8 @@ public class RecursiveSquareModule implements IModuleIterate {
 				}
 				overallConfidence = res;
 				isDone = false;
-				if (overallConfidence <= 0f) {
+				bestImage = copyImage(workingImage);
+				if (overallConfidence <= 0.01f) {
 					discoveryPhase = true;
 					blockSize = blockSize / 2;
 					queue.clear();
@@ -273,9 +357,12 @@ public class RecursiveSquareModule implements IModuleIterate {
 		queue.clear();
 		currentBlock = null;
 		blockSize = 32;
+		overallConfidence = 0f;
+		bestImage = null;
 		x = 0;
 		y = 0;
 		i = 0;
+		blockCounter = 0;
 
 		workingImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		g = workingImage.createGraphics();
