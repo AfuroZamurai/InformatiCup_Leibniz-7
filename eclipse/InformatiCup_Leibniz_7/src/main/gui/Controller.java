@@ -49,12 +49,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import main.IModule;
+import main.encodings.CircleEncoding;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
 import main.io.ImageSaver;
+import main.module.EncodingSearchModule;
 import main.module.IModuleIterate;
 import main.module.ModuleFramework;
 import main.module.Parameter;
@@ -112,6 +114,9 @@ public class Controller implements Initializable {
 
 	@FXML
 	private MenuItem menuItem4;
+	
+	@FXML
+	private MenuItem menuItem5;
 
 	@FXML
 	private TextArea explanationArea;
@@ -261,6 +266,18 @@ public class Controller implements Initializable {
 		parameterTextFieldList.clear();
 		generateParameterLayout();
 	}
+	
+	@FXML
+	void menuItem5clicked(ActionEvent event) {
+		selectedAlgorithmn = menuItem5;
+		if (imageClass != null) {
+			enableButton(generateButton);
+		}
+		module = new EncodingSearchModule(new CircleEncoding());
+		explanationArea.setText(module.getModuleDescription());
+		parameterTextFieldList.clear();
+		generateParameterLayout();
+	}
 
 	/**
 	 * This method is an MouseEvent of the ListView. Select a Sign in the ListView
@@ -324,6 +341,10 @@ public class Controller implements Initializable {
 			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem4) {
+			parseParameters();
+			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+					listView.getSelectionModel().getSelectedItem());
+		} else if (selectedAlgorithmn == menuItem5) {
 			parseParameters();
 			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
