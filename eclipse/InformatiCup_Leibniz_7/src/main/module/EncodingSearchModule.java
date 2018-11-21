@@ -1,17 +1,19 @@
 package main.module;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 
 import main.encodings.IImageEncoding;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evolution.ga.encoding.EncodingSearch;
+import main.io.ImageSaver;
 import main.utils.ImageUtil;
 
 public class EncodingSearchModule implements IModuleIterate {
 	
-	private final int POPULATION_SIZE = 60;
+	private final int POPULATION_SIZE = 20;
 	private final int GENERATION_CAP = 25;
 	private final float TARGET_FITNESS = 0.9f;
 	
@@ -20,6 +22,7 @@ public class EncodingSearchModule implements IModuleIterate {
 	private IClassification targetClass;
 	
 	private BufferedImage current;
+	private boolean started = false;
 	
 	public EncodingSearchModule(IImageEncoding encoding) {
 		this.encoding = encoding;
@@ -27,9 +30,21 @@ public class EncodingSearchModule implements IModuleIterate {
 
 	@Override
 	public BufferedImage generateNextImage() {
-		searcher.run(1);
-		current = getResult();
-		return current;
+		System.out.println("Generating image for gen " + searcher.currentGeneration());
+		if(started) {
+			searcher.run(1);
+			current = getResult();
+			String path = "data/results/encodingsearch/gen" + searcher.currentGeneration();
+			try {
+				ImageSaver.saveImage(current, path);
+			} catch (IOException e) {
+				System.out.println("Too bad, no saved image this time");
+			}
+			return current;
+		} else {
+			started = true;
+			return current;
+		}
 	}
 
 	@Override
@@ -42,8 +57,9 @@ public class EncodingSearchModule implements IModuleIterate {
 
 	@Override
 	public void setInitImage(BufferedImage img, IClassification imageClass) {
+		current = img;
 		targetClass = imageClass;
-		searcher = new EncodingSearch(POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP, encoding, imageClass);
+		searcher = new EncodingSearch(POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP, encoding, imageClass, img);
 	}
 
 	@Override
@@ -63,6 +79,6 @@ public class EncodingSearchModule implements IModuleIterate {
 
 	@Override
 	public BufferedImage getResult() {
-		return searcher.getImageFromGenom(searcher.getBestGenom(), 64, 64);
+		return searcher.getImageFromGenom(searcher.getBestGenom());
 	}
 }

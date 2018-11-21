@@ -17,23 +17,26 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	
 	private final IImageEncoding encoding;
 	private final IClassification targetClass;
+	
+	private final BufferedImage original;
 
 	public EncodingSearch(int populationSize, float targetFitness, int generationCap, IImageEncoding encoding, 
-			IClassification targetClass) {
+			IClassification targetClass, BufferedImage original) {
 		super(populationSize, targetFitness, generationCap);
 		this.encoding = encoding;
 		this.targetClass = targetClass;
+		this.original = original;
 	}
 	
-	public BufferedImage getImageFromGenom(EncodingGenom genom, int width, int height) {
-		return encoding.createImage(width, height, genom.getAllParameters());
+	public BufferedImage getImageFromGenom(EncodingGenom genom) {
+		return encoding.addToImage(original, genom.getAllParameters());
 	}
 
 	@Override
 	protected void createPopulation() {
 		for(int i = 0; i < populationSize; i++) {
 			List<EncodingGene> genes = new ArrayList<>();
-			genes.add(new EncodingGene(6));
+			genes.add(new EncodingGene(encoding.getParameterBatchSize()));
 			EncodingGenom genom = new EncodingGenom(-1.0f, genes);
 			population.addGenom(genom);
 		}
@@ -45,7 +48,8 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	@Override
 	protected void createOffspring() {
 		//List<EncodingGenom> newPopulation = new ArrayList<>();
-		
+		population.getGenoms().clear();
+		createPopulation();
 	}
 
 	@Override
@@ -58,7 +62,7 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		List<EncodingGenom> genoms = population.getGenoms();
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
 		for(EncodingGenom genom : genoms) {
-			BufferedImage image = getImageFromGenom(genom, 64, 64);
+			BufferedImage image = getImageFromGenom(genom);
 			EvaluationResult<IClassification> result;
 			try {
 				result = evaluator.evaluateImage(image);

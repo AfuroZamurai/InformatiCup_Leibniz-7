@@ -17,7 +17,7 @@ public class EncodingGene extends AbstractGene<Float> {
 
 	@Override
 	protected void initializeGene() {
-		for(int i = 0; i < values.size(); i++) {
+		for(int i = 0; i < length; i++) {
 			values.add(Evolutionhelper.randomFloat());
 		}
 	}
