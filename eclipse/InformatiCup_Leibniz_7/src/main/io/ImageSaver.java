@@ -17,9 +17,12 @@ import javax.imageio.ImageIO;
 public class ImageSaver {
 
 	// Constants for the supported Image formats
-	public static final String PNG = "png";
-	public static final String GIF = "gif";
-	public static final String JPG = "jpg";
+	public enum FileExtension {
+		PNG,
+		GIF,
+		JPG,
+	}
+	
 
 	/**
 	 *
@@ -67,10 +70,10 @@ public class ImageSaver {
 	 */
 	public static File saveImage(BufferedImage img, String savePath) throws IOException {
 
-		File outputFile = new File(savePath + "." + PNG);
+		File outputFile = new File(savePath + "." + FileExtension.PNG.toString().toLowerCase());
 
 		// ImageIO write returns false when image could not be saved
-		boolean success = ImageIO.write(img, PNG, outputFile);
+		boolean success = ImageIO.write(img, FileExtension.PNG.toString().toLowerCase(), outputFile);
 
 		if (!success) {
 			throw new IOException("Could not save Image!");
