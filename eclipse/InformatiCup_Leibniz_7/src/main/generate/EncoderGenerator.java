@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -13,7 +13,7 @@ import main.evaluate.IClassification;
 import main.io.ImageSaver;
 import main.utils.ImageUtil;
 
-public class EncoderModule implements IModuleIterate {
+public class EncoderGenerator implements IGenerator {
 
 	private Parameter exampleParam = new Parameter("Example Parameter", "Example Explanation", 1);
 
@@ -32,7 +32,7 @@ public class EncoderModule implements IModuleIterate {
 
 	float[] parameters;
 
-	public EncoderModule(IImageEncoding encoding) {
+	public EncoderGenerator(IImageEncoding encoding) {
 		this.encoding = encoding;
 
 		int parameterAmount = this.encoding.getParameterBatchSize() * 6;

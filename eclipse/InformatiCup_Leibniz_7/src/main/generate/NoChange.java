@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 
-public class NoChange implements IModuleIterate {
+public class NoChange implements IGenerator {
 
 	BufferedImage image;
 	

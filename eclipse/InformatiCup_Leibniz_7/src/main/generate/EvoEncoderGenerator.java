@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import main.evolution.ga.encoding.EncodingSearch;
 import main.io.ImageSaver;
 import main.utils.ImageUtil;
 
-public class EncodingSearchModule implements IModuleIterate {
+public class EvoEncoderGenerator implements IGenerator {
 	
 	private final int POPULATION_SIZE = 20;
 	private final int GENERATION_CAP = 25;
@@ -24,7 +24,7 @@ public class EncodingSearchModule implements IModuleIterate {
 	private BufferedImage current;
 	private boolean started = false;
 	
-	public EncodingSearchModule(IImageEncoding encoding) {
+	public EvoEncoderGenerator(IImageEncoding encoding) {
 		this.encoding = encoding;
 	}
 

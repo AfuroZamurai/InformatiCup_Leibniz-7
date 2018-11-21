@@ -53,16 +53,17 @@ import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
+import main.generate.CheckerGenerator;
+import main.generate.EvoEncoderGenerator;
+import main.generate.IGenerator;
+import main.generate.GeneratorFramework;
+import main.generate.NoChange;
+import main.generate.Parameter;
+import main.generate.RecursiveSquareGenerator;
+import main.generate.SimpleGenerator;
+import main.generate.Parameter.ParameterType;
 import main.io.ImageLoader;
 import main.io.ImageSaver;
-import main.module.EncodingSearchModule;
-import main.module.IModuleIterate;
-import main.module.ModuleFramework;
-import main.module.NoChange;
-import main.module.Parameter;
-import main.module.SimpleIterationModule;
-import main.module.Parameter.ParameterType;
-import main.module.RecursiveSquareModule;
 
 /**
  * This class is the Controller for the GUI
@@ -85,8 +86,8 @@ public class Controller implements Initializable {
 	Thread thread;
 	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
 	public Task<Void> task;
-	private ModuleFramework moduleFramework = new ModuleFramework(this);
-	private IModuleIterate module;
+	private GeneratorFramework moduleFramework = new GeneratorFramework(this);
+	private IGenerator module;
 	private ArrayList<Pair<Parameter, TextField>> parameterTextFieldList = new ArrayList<>();
 
 	Series series = new Series();
@@ -210,7 +211,7 @@ public class Controller implements Initializable {
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		module = new PixelSearchCancellationProcess();
+		module = new CheckerGenerator();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		generateParameterLayout();
@@ -232,7 +233,7 @@ public class Controller implements Initializable {
 			enableButton(generateButton);
 		}
 
-		module = new SimpleIterationModule();
+		module = new SimpleGenerator();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		generateParameterLayout();
@@ -253,7 +254,7 @@ public class Controller implements Initializable {
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		module = new RecursiveSquareModule();
+		module = new RecursiveSquareGenerator();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		generateParameterLayout();
@@ -265,7 +266,7 @@ public class Controller implements Initializable {
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		module = new EncodingSearchModule(new CircleEncoding());
+		module = new EvoEncoderGenerator(new CircleEncoding());
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		generateParameterLayout();

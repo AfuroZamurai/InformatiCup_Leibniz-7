@@ -12,13 +12,13 @@ import main.evaluate.IClassification;
 import main.evaluate.IEvaluator;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
-import main.gui.PixelSearchCancellationProcess;
+import main.generate.CheckerGenerator;
+import main.generate.CuckooSearchGenerator;
+import main.generate.EncoderGenerator;
+import main.generate.EvoEncoderGenerator;
+import main.generate.IGenerator;
+import main.generate.NoChange;
 import main.io.ImageSaver;
-import main.module.CuckooSearchModule;
-import main.module.EncoderModule;
-import main.module.EncodingSearchModule;
-import main.module.IModuleIterate;
-import main.module.NoChange;
 
 public class CmdLineStart {
 
@@ -101,7 +101,7 @@ public class CmdLineStart {
 		}
 		
 		IEvaluator evaluator;
-		IModuleIterate algorithm;
+		IGenerator algorithm;
 		int targetClass;
 		
 		if(params.containsKey("-a")) {
@@ -114,14 +114,14 @@ public class CmdLineStart {
 				algorithm = new NoChange();
 			}
 			else if(params.get("-a").get(0).equals("pixelsearch")) {
-				algorithm = new PixelSearchCancellationProcess();
+				algorithm = new CheckerGenerator();
 			}
 			else if(params.get("-a").get(0).equals("encodingsearch")) {
 				
-				algorithm = new EncoderModule(new CircleEncoding());
+				algorithm = new EncoderGenerator(new CircleEncoding());
 			}
 			else if(params.get("-a").get(0).equals("cuckoosearch")) {
-				algorithm = new CuckooSearchModule(64, 64);
+				algorithm = new CuckooSearchGenerator(64, 64);
 			}
 			else {
 				System.out.println("Error: argument \""+ params.get("-a").get(0) +" \" for option -a is invalid");
@@ -183,7 +183,7 @@ public class CmdLineStart {
 	 * @param maxIterations The maxium number of iterations before the algorithm stops
 	 * @throws Exception
 	 */
-	public static void runAlgorithm(IEvaluator evaluator, IModuleIterate algo, IClassification targetClass, int maxIterations) throws Exception {
+	public static void runAlgorithm(IEvaluator evaluator, IGenerator algo, IClassification targetClass, int maxIterations) throws Exception {
 		
 		algo.setInitImage(targetClass.getExampleImage(), targetClass);
 		

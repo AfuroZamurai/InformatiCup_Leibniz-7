@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -14,7 +14,7 @@ import main.evaluate.IClassification;
  * @author Fredo
  *
  */
-public interface IModuleIterate {
+public interface IGenerator {
 
 	/**
 	 * The module generates the next image, which is then evaluated and the result
