@@ -19,6 +19,8 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	private final IClassification targetClass;
 	
 	private final BufferedImage original;
+	
+	private int geneAmount = 1; 
 
 	public EncodingSearch(int populationSize, float targetFitness, int generationCap, IImageEncoding encoding, 
 			IClassification targetClass, BufferedImage original) {
@@ -29,14 +31,20 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	}
 	
 	public BufferedImage getImageFromGenom(EncodingGenom genom) {
-		return encoding.addToImage(original, genom.getAllParameters());
+		return ImageUtil.drawOnTop(original, getEncodingImage(genom));
+	}
+	
+	public BufferedImage getEncodingImage(EncodingGenom genom) {
+		return this.encoding.createImage(64, 64, genom.getAllParameters());
 	}
 
 	@Override
 	protected void createPopulation() {
 		for(int i = 0; i < populationSize; i++) {
 			List<EncodingGene> genes = new ArrayList<>();
-			genes.add(new EncodingGene(encoding.getParameterBatchSize()));
+			for(int j = 0; j < geneAmount; j++) {
+				genes.add(new EncodingGene(encoding.getParameterBatchSize()));
+			}
 			EncodingGenom genom = new EncodingGenom(-1.0f, genes);
 			population.addGenom(genom);
 		}
@@ -49,6 +57,7 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	protected void createOffspring() {
 		//List<EncodingGenom> newPopulation = new ArrayList<>();
 		population.getGenoms().clear();
+		geneAmount++;
 		createPopulation();
 	}
 
@@ -63,12 +72,13 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
 		for(EncodingGenom genom : genoms) {
 			BufferedImage image = getImageFromGenom(genom);
+			BufferedImage encodingImage = getEncodingImage(genom);
 			EvaluationResult<IClassification> result;
 			try {
 				result = evaluator.evaluateImage(image);
 				if (result != null) {
 					float confidence = result.getConfidenceForClass(targetClass);
-					float coverage = ImageUtil.getTransparentPercent(image);
+					float coverage = ImageUtil.getTransparentPercent(encodingImage);
 					float fitness = 1.0f - (1.0f - confidence) - (1.0f - coverage);
 					genom.setFitness(fitness);
 				} else {
