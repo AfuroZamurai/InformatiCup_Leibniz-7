@@ -52,9 +52,21 @@ class CmdLineTester {
 		CmdLineStart.main(args);
 	}
 	
-	@Test
+	//@Test
 	void testEncoder() throws Exception {
 		String[] args = new String[] {"-e trasiweb -a encodingsearch -c 4"};
+		CmdLineStart.main(args);
+	}
+	
+	//@Test
+	void testPixelSearch() throws Exception {
+		String[] args = new String[] {"-e trasiweb -a pixelsearch -c 4"};
+		CmdLineStart.main(args);
+	}
+	
+	@Test
+	void testCuckooSearch() throws Exception {
+		String[] args = new String[] {"-e trasiweb -a cuckoosearch -c 4"};
 		CmdLineStart.main(args);
 	}
 

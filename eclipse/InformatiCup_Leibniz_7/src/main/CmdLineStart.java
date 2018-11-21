@@ -12,9 +12,11 @@ import main.evaluate.IClassification;
 import main.evaluate.IEvaluator;
 import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
+import main.gui.PixelSearchCancellationProcess;
 import main.io.ImageSaver;
 import main.module.CuckooSearchModule;
 import main.module.EncoderModule;
+import main.module.EncodingSearchModule;
 import main.module.IModuleIterate;
 import main.module.TestModule;
 
@@ -22,6 +24,11 @@ public class CmdLineStart {
 
 	private static final String COMMAND_NAME = "icfooler";
 
+	/**
+	 * Main entry Point for Command Line usage
+	 * @param args Arguments called when running the program, refer to the -help message for a list of commands
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 
 		// Parses out all Args in a convenient HashMap Structure
@@ -79,6 +86,7 @@ public class CmdLineStart {
 					"\tpixelsearch\t<filterSize=0-64>\tPuts black or white boxes on the image depending on evaluation.");
 			System.out.println("\tcirclesearch\t\t\t\tPuts colored circles on the image depending on evaluation.");
 			System.out.println("\tencodingsearch\t\t\t\tUses any image encoding to generate new images.");
+			System.out.println("\tcuckoosearch\t\t\t\tUses cuckoosearch to generate new images.");
 
 			System.out.println("");
 			System.out.println("Target class:");
@@ -106,14 +114,7 @@ public class CmdLineStart {
 				algorithm = new TestModule();
 			}
 			else if(params.get("-a").get(0).equals("pixelsearch")) {
-				//TODO Implement Pixelsearch
-				System.out.println("Error: PixelSearch not yet implemented for command line interface");
-				return;
-			}
-			else if(params.get("-a").get(0).equals("circlesearch")) {
-				//TODO Implement CircleSearch
-				System.out.println("Error: CircleSearch not yet implemented for command line interface");
-				return;
+				algorithm = new PixelSearchCancellationProcess();
 			}
 			else if(params.get("-a").get(0).equals("encodingsearch")) {
 				
@@ -174,6 +175,14 @@ public class CmdLineStart {
 		runAlgorithm(evaluator, algorithm, sign, 60);
 	}
 	
+	/**
+	 * Runs the programm with the given config
+	 * @param evaluator The Evaluation implementation, which retrieves confidence scores for images
+	 * @param algo The algorithm that generates Images
+	 * @param targetClass The class of the classifier which is tried to be approximated
+	 * @param maxIterations The maxium number of iterations before the algorithm stops
+	 * @throws Exception
+	 */
 	public static void runAlgorithm(IEvaluator evaluator, IModuleIterate algo, IClassification targetClass, int maxIterations) throws Exception {
 		
 		algo.setInitImage(targetClass.getExampleImage(), targetClass);
