@@ -19,7 +19,6 @@ import main.module.EncoderModule;
 import main.module.EncodingSearchModule;
 import main.module.IModuleIterate;
 import main.module.NoChange;
-import main.module.TestModule;
 
 public class CmdLineStart {
 
