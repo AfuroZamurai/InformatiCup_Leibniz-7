@@ -18,6 +18,7 @@ import main.module.CuckooSearchModule;
 import main.module.EncoderModule;
 import main.module.EncodingSearchModule;
 import main.module.IModuleIterate;
+import main.module.NoChange;
 import main.module.TestModule;
 
 public class CmdLineStart {
@@ -111,7 +112,7 @@ public class CmdLineStart {
 			}
 			
 			if(params.get("-a").get(0).equals("nochange")) {
-				algorithm = new TestModule();
+				algorithm = new NoChange();
 			}
 			else if(params.get("-a").get(0).equals("pixelsearch")) {
 				algorithm = new PixelSearchCancellationProcess();
@@ -129,7 +130,7 @@ public class CmdLineStart {
 			}
 		}
 		else {
-			algorithm = new TestModule();
+			algorithm = new NoChange();
 		}
 		
 		if(params.containsKey("-e")) {
