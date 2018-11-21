@@ -48,7 +48,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import main.IModule;
 import main.encodings.CircleEncoding;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
@@ -59,6 +58,7 @@ import main.io.ImageSaver;
 import main.module.EncodingSearchModule;
 import main.module.IModuleIterate;
 import main.module.ModuleFramework;
+import main.module.NoChange;
 import main.module.Parameter;
 import main.module.SimpleIterationModule;
 import main.module.Parameter.ParameterType;
@@ -183,16 +183,14 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	void menuItem1clicked(ActionEvent event) {
-		explanationArea.setText(
-				"Erklärungstext zu dem ausgewählten Algorithmus:\n\nDieser Algorithmus sendet das Eingabebild\nan die künstliche Inteligenz.\n"
-						+ "Das Bild ist auch wieder das Ausgabebild,\nda keine Veränderung vorgenommen wurde\n"
-						+ "und die dazugeöhrige Konfidenz wird ausgegeben.");
 		selectedAlgorithmn = menuItem1;
 		// textField1.setVisible(false);
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		module = null;
+		module = new NoChange();
+		explanationArea.setText(module.getModuleDescription());
+		parameterTextFieldList.clear();
 		generateParameterLayout();
 	}
 
@@ -320,13 +318,10 @@ public class Controller implements Initializable {
 		iterationCounter = 0;
 
 		if (selectedAlgorithmn == menuItem1) {
-			startAlgorithm(new TestModule());
+			parseParameters();
+			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+					listView.getSelectionModel().getSelectedItem());
 		} else if (selectedAlgorithmn == menuItem2) {
-			/*
-			 * if (filter == 0) {
-			 * showAlertError("Es muss eine Filtergröße angegeben werden");
-			 * disableButton(cancellationButton); listView.setDisable(false); return; }
-			 */
 			parseParameters();
 			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
@@ -408,7 +403,7 @@ public class Controller implements Initializable {
 		if (file == null) {
 			return;
 		}
-		
+
 		try {
 			String fileName = file + "";
 			String[] split = fileName.split(Pattern.quote("."));
@@ -436,8 +431,9 @@ public class Controller implements Initializable {
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
 
-		for(ImageLoader.FileExtension ext : ImageLoader.FileExtension.values()) {
-			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(ext.toString(), "*." + ext.toString().toLowerCase()));
+		for (ImageLoader.FileExtension ext : ImageLoader.FileExtension.values()) {
+			fileChooser.getExtensionFilters()
+					.add(new FileChooser.ExtensionFilter(ext.toString(), "*." + ext.toString().toLowerCase()));
 		}
 
 		File file = fileChooser.showOpenDialog(stage);
@@ -464,77 +460,6 @@ public class Controller implements Initializable {
 		} catch (Exception e) {
 			showAlertError("Es muss eine ganze Zahl zwischen 1 und 64 sein!");
 		}
-	}
-
-	/**
-	 * This method start the generation of an Image with an given algorithm. The
-	 * program generates only one picture at time and runs as a separate thread.
-	 * After generating the image it will be shown on the screen as well as the
-	 * confidence.
-	 * 
-	 * @param module
-	 *            algorithm for generating images
-	 * @see IModule
-	 * @see Service
-	 */
-	void startAlgorithm(IModule module) {
-
-		if (generationLocked == true) {
-			showAlertError("Es läuft bereits ein Algorithmus");
-			return;
-		}
-
-		generationLocked = true;
-		progressIndicator.setVisible(true);
-		classLabel.setText("Class:" + imageClass);
-
-		BufferedImage img = SwingFXUtils.fromFXImage(inputImage.getImage(), null);
-
-		task = new Task<Void>() {
-			@Override
-			public Void call() {
-
-				// Background work
-				Image output = SwingFXUtils.toFXImage(module.generateImage(img), null);
-				outputImage.setImage(output);
-				TrasiWebEvaluator twb = new TrasiWebEvaluator();
-				EvaluationResult er;
-				try {
-					// get confidence from outputImage for the selected sign
-
-					er = twb.evaluateImage(SwingFXUtils.fromFXImage(output, null));
-					confidence = er.getConfidenceForClass(listView.getSelectionModel().getSelectedItem());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				return null;
-			}
-		};
-
-		ProgressBar bar = new ProgressBar();
-		bar.progressProperty().bind(task.progressProperty());
-
-		thread = new Thread(task);
-		thread.setDaemon(true);
-		thread.start();
-
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				progressIndicator.setProgress(progressIndicator.INDETERMINATE_PROGRESS);
-				progressIndicator.setVisible(false);
-				generationLocked = false;
-
-				enableButton(generateButton);
-				disableButton(cancellationButton);
-				enableButton(SaveImageButton);
-				listView.setDisable(false);
-
-				setConfidence(confidence);
-			}
-		});
 	}
 
 	/**
