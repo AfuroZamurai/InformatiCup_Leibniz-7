@@ -37,7 +37,7 @@ public class EncoderModule implements IModuleIterate {
 	public EncoderModule(IImageEncoding encoding) {
 		this.encoding = encoding;
 
-		int parameterAmount = this.encoding.getParameterBatchSize()*6;
+		int parameterAmount = this.encoding.getParameterBatchSize() * 6;
 
 		this.parameters = new float[parameterAmount];
 
@@ -48,20 +48,20 @@ public class EncoderModule implements IModuleIterate {
 	public BufferedImage generateNextImage() {
 
 		float coverage = getTransparentPercent(current);
-		
+
 		float newCoverage = 0;
-		
-		while(newCoverage <= coverage && coverage < 1.0f)
-		{
+
+		while (newCoverage <= coverage && coverage < 1.0f) {
 			for (int i = 0; i < parameters.length; i++) {
 				parameters[i] = rand.nextFloat();
 			}
-			
-			BufferedImage newImg = drawOnTop(current, this.encoding.createImage(original.getWidth(), original.getHeight(), parameters));
-			
+
+			BufferedImage newImg = drawOnTop(current,
+					this.encoding.createImage(original.getWidth(), original.getHeight(), parameters));
+
 			newCoverage = getTransparentPercent(newImg);
 		}
-		
+
 		current = drawOnTop(current, this.encoding.createImage(original.getWidth(), original.getHeight(), parameters));
 
 		return drawOnTop(original, current);
@@ -136,6 +136,11 @@ public class EncoderModule implements IModuleIterate {
 		return result;
 	}
 
+	/**
+	 * Method calculates the percentage of transparent pixels in the image
+	 * @param img the image which percentage should be calculated
+	 * @return an float value between 1 and 0 showing the percentage of transparent pixels
+	 */
 	private float getTransparentPercent(BufferedImage img) {
 
 		int transparentPixel = findTransparentPixels(img).length / 2;
@@ -145,6 +150,14 @@ public class EncoderModule implements IModuleIterate {
 		return (float) transparentPixel / (float) allPixel;
 	}
 
+	/**
+	 * Method finds the coordinates of Transparent Pixels
+	 * 
+	 * @param img
+	 *            The image which pixels will be checked
+	 * @return An array of integers, with length 2*amount of transparent pixels.
+	 *         Each pixel is represented through an x and y cooridinate
+	 */
 	private int[] findTransparentPixels(BufferedImage img) {
 
 		List<Integer> freePixelList = new ArrayList<Integer>();
