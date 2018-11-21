@@ -88,12 +88,6 @@ public class Controller implements Initializable {
 	private ModuleFramework moduleFramework = new ModuleFramework(this);
 	private IModuleIterate module;
 	private ArrayList<Pair<Parameter, TextField>> parameterTextFieldList = new ArrayList<>();
-	
-	List<String> fileExtensions = new ArrayList<String>(){{
-		add("JPG");
-		add("PNG");
-		add("GIF");  
-	}};
 
 	Series series = new Series();
 	private int iterationCounter = 0;
@@ -114,7 +108,7 @@ public class Controller implements Initializable {
 
 	@FXML
 	private MenuItem menuItem4;
-	
+
 	@FXML
 	private MenuItem menuItem5;
 
@@ -266,7 +260,7 @@ public class Controller implements Initializable {
 		parameterTextFieldList.clear();
 		generateParameterLayout();
 	}
-	
+
 	@FXML
 	void menuItem5clicked(ActionEvent event) {
 		selectedAlgorithmn = menuItem5;
@@ -376,7 +370,7 @@ public class Controller implements Initializable {
 		disableButton(cancellationButton);
 		enableButton(SaveImageButton);
 		listView.setDisable(false);
-		//setConfidence(confidence);
+		// setConfidence(confidence);
 
 	}
 
@@ -402,18 +396,23 @@ public class Controller implements Initializable {
 		BufferedImage image = SwingFXUtils.fromFXImage(outputImage.getImage(), null);
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
-		
-		for(String s : fileExtensions) {
-			fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter(s, "*."+ s.toLowerCase()));
-		}
-		
+
+		String extension = ImageSaver.FileExtension.PNG.toString();
+
+		fileChooser.getExtensionFilters()
+				.add(new FileChooser.ExtensionFilter(extension, "*." + extension.toLowerCase()));
+
 		File file = fileChooser.showSaveDialog(stage);
 		configuringFileChooser(fileChooser);
 
+		if (file == null) {
+			return;
+		}
+		
 		try {
-			String fileName = file+"";
+			String fileName = file + "";
 			String[] split = fileName.split(Pattern.quote("."));
-			ImageSaver.saveImage(image, split[split.length - 2], split[split.length - 1]);
+			ImageSaver.saveImage(image, split[split.length - 2]);
 		} catch (IOException e) {
 			e.printStackTrace();
 			showAlertError("Es hat einen Fehler beim speichern des Bildes gegeben.");
@@ -436,22 +435,22 @@ public class Controller implements Initializable {
 		// BufferedImage image = SwingFXUtils.fromFXImage(outputImage.getImage(), null);
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
-		
-		for(String s : fileExtensions) {
-			fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter(s, "*."+ s.toLowerCase()));
+
+		for(ImageLoader.FileExtension ext : ImageLoader.FileExtension.values()) {
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(ext.toString(), "*." + ext.toString().toLowerCase()));
 		}
-		
+
 		File file = fileChooser.showOpenDialog(stage);
 		configuringFileChooser(fileChooser);
-		
-		if(file == null) {
+
+		if (file == null) {
 			return;
 		}
 
 		try {
 			BufferedImage image = ImageLoader.loadImage(file + "");
 			inputImage.setImage(SwingFXUtils.toFXImage(image, null));
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			showAlertError("Es hat einen Fehler beim laden des Bildes gegeben.");
 		}
