@@ -209,18 +209,20 @@ public class RecursiveSquareGenerator implements IGenerator {
 						confidenceColors[j] = res;
 					}
 				}
-				int index = 0;
+				int indexMax = 0;
+				int indexMax2 = 0;
 				float max = 0f;
 				if (i % colors.length == colors.length - 1) {
 					for (int j = 0; j < colors.length; j++) {// selecting the color with max confidence
 						if (confidenceColors[j] >= max) {
 							max = confidenceColors[j];
-							index = j;
+							indexMax2 = indexMax;
+							indexMax = j;
 						}
 					}
 
 					if (blockCounter < 4) {
-						block = new WorkingBlock(x, y, blockSize, max, colors[index]);
+						block = new WorkingBlock(x, y, blockSize, max, colors[indexMax]);
 						queue.add(block);
 						blocks[blockCounter] = block;
 						block.paint(g);
@@ -237,11 +239,16 @@ public class RecursiveSquareGenerator implements IGenerator {
 							position = 0;
 						}
 						if (blockCounter < 8) {
-							block.addChild(position, colors[index]);
+							Color childColor = colors[indexMax];
+							if (colors[indexMax] == block.color)
+								childColor = colors[indexMax2];
+							block.addChild(position, childColor);
 							block.paint(g);
 						} else {
 							block = block.children[position];
-							Color blockColor = colors[index];
+							Color blockColor = colors[indexMax];
+							if (colors[indexMax] == block.color)
+								blockColor = colors[indexMax2];
 							if (blockCounter >= 16) {
 								position = ThreadLocalRandom.current().nextInt(4);
 								int rnd = ThreadLocalRandom.current().nextInt(colors.length);
@@ -252,7 +259,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 							block.paint(g);
 						}
 					}
-					//blockCounter++;
+					blockCounter++;
 
 				}
 
@@ -262,32 +269,32 @@ public class RecursiveSquareGenerator implements IGenerator {
 					x += blockSize;
 					int endX = width;
 					// quick try out! this has to be changed if it works out
-					/*
+					
 					if (blockSize == 16)
 						endX = 48;
 					if (blockSize == 8)
 						endX = 40;
-					*/
+					
 					if (x >= endX) {
 						int startX = 0;
-						/*
+						
 						if (blockSize == 16)
 							startX = 16;
 						if (blockSize == 8)
 							startX = 24;
-						*/
+						
 						x = startX;
 						y += blockSize;
 						int endY = height;
-						/*
+						
 						if (blockSize == 16)
 							endY = 48;
 						if (blockSize == 8)
 							endY = 40;
-						*/
+						
 						if (y >= endY) {
 							int startY = 0;
-							/*
+							
 							if (blockSize == 32) {
 								startY = 16;
 								startX = 16;
@@ -297,7 +304,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 								startY = 24;
 								startX = 24;
 							}
-							*/
+							
 							y = startY;
 							x = startX;
 							isDone = true;
@@ -317,7 +324,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 				if (overallConfidence <= 0.01f) {
 					discoveryPhase = true;
 					blockSize = blockSize / 2;
-					queue.clear();
+					//queue.clear();
 				}
 			} else {
 				if (overallConfidence >= 0.9f)
