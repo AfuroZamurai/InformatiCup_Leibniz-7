@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 	private float overallConfidence;
 	private float[] confidenceColors = new float[colors.length];
 	private Graphics2D g;
+	private Parameter fastExploParameter = new Parameter("Fast Mode", "Faster exploration phase", false);
 
 	private PriorityQueue<WorkingBlock> queue = new PriorityQueue<>();
 
@@ -370,6 +372,9 @@ public class RecursiveSquareGenerator implements IGenerator {
 		y = 0;
 		i = 0;
 		blockCounter = 0;
+		
+		if (fastExploParameter.getBoolValue())
+			System.out.println("test");
 
 		workingImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		g = workingImage.createGraphics();
@@ -379,7 +384,9 @@ public class RecursiveSquareGenerator implements IGenerator {
 
 	@Override
 	public List<Parameter> getParameterList() {
-		return null;
+		ArrayList<Parameter> list = new ArrayList<>();
+		list.add(fastExploParameter);
+		return list;
 	}
 
 	@Override
