@@ -13,7 +13,7 @@ import main.utils.ImageUtil;
 
 public class EvoEncoderGenerator implements IGenerator {
 	
-	private final int POPULATION_SIZE = 20;
+	private final int POPULATION_SIZE = 10;
 	private final int GENERATION_CAP = 25;
 	private final float TARGET_FITNESS = 0.9f;
 	
@@ -50,7 +50,14 @@ public class EvoEncoderGenerator implements IGenerator {
 	@Override
 	public void setEvalResult(EvaluationResult<IClassification> result) {
 		float confidence = result.getConfidenceForClass(targetClass);
-		float coverage = ImageUtil.getTransparentPercent(current);
+		BufferedImage encoded;
+		try {
+			encoded = searcher.getEncodingImage(searcher.getBestGenom());
+		} catch (Exception e) {
+			encoded = current;
+		}
+		
+		float coverage = ImageUtil.getTransparentPercent(encoded);
 		System.out.println("After generation " + searcher.currentGeneration() + ":\nconfidence: " +
 							confidence + "\ncoverage: " + coverage);
 	}

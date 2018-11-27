@@ -14,6 +14,7 @@ import main.encodings.IImageEncoding;
 import main.evaluate.EvaluationResult;
 import main.evaluate.Sign;
 import main.io.ImageSaver;
+import main.utils.ImageUtil;
 
 public class EncodingTester {
 	
@@ -78,6 +79,8 @@ public class EncodingTester {
 		BufferedImage baustelle = Sign.BAUSTELLE.getExampleImage();
 		
 		BufferedImage img = encoding.addToImage(baustelle, parameters);
+		
+		System.out.println(ImageUtil.getTransparentPercent(img));
 		
 		ImageSaver.saveImage(img, "data/test/grid");
 	}

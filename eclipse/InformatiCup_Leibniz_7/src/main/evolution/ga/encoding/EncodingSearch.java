@@ -3,7 +3,10 @@ package main.evolution.ga.encoding;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.math3.util.Pair;
 
 import main.encodings.IImageEncoding;
 import main.evaluate.EvaluationResult;
@@ -55,10 +58,27 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 
 	@Override
 	protected void createOffspring() {
-		//List<EncodingGenom> newPopulation = new ArrayList<>();
+		List<Pair<EncodingGenom, EncodingGenom>> parents = selectParents();
+		List<EncodingGenom> newPopulation = new ArrayList<>();
+		for (Iterator<Pair<EncodingGenom, EncodingGenom>> iterator = parents.iterator(); iterator.hasNext();) {
+			Pair<EncodingGenom, EncodingGenom> pair = iterator.next();
+			List<EncodingGenom> offspring = EncodingGenom.reproduce(pair.getFirst(), pair.getSecond());
+			newPopulation.addAll(offspring);
+		}
+		
+		for(EncodingGenom genom : newPopulation) {
+			genom.mutate();
+		}
+		
 		population.getGenoms().clear();
-		geneAmount++;
-		createPopulation();
+		population.getGenoms().addAll(newPopulation);
+		calculateFitness();
+	}
+	
+	private List<Pair<EncodingGenom, EncodingGenom>> selectParents() {
+		List<Pair<EncodingGenom, EncodingGenom>> parents = new ArrayList<>();
+		//TODO: make a roulette selection
+		return parents;
 	}
 
 	@Override
