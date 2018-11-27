@@ -35,8 +35,10 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -89,6 +91,7 @@ public class Controller implements Initializable {
 	private GeneratorFramework moduleFramework = new GeneratorFramework(this);
 	private IGenerator module;
 	private ArrayList<Pair<Parameter, TextField>> parameterTextFieldList = new ArrayList<>();
+	private ArrayList<Pair<Parameter, RadioButton>> parameterRadioButtonList = new ArrayList<>();
 
 	Series series = new Series();
 	private int iterationCounter = 0;
@@ -192,6 +195,7 @@ public class Controller implements Initializable {
 		module = new NoChange();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
+		parameterRadioButtonList.clear();
 		generateParameterLayout();
 	}
 
@@ -214,6 +218,7 @@ public class Controller implements Initializable {
 		module = new CheckerGenerator();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
+		parameterRadioButtonList.clear();
 		generateParameterLayout();
 	}
 
@@ -236,6 +241,7 @@ public class Controller implements Initializable {
 		module = new SimpleGenerator();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
+		parameterRadioButtonList.clear();
 		generateParameterLayout();
 	}
 
@@ -257,6 +263,7 @@ public class Controller implements Initializable {
 		module = new RecursiveSquareGenerator();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
+		parameterRadioButtonList.clear();
 		generateParameterLayout();
 	}
 
@@ -269,6 +276,7 @@ public class Controller implements Initializable {
 		module = new EvoEncoderGenerator(new CircleEncoding());
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
+		parameterRadioButtonList.clear();
 		generateParameterLayout();
 	}
 
@@ -339,7 +347,7 @@ public class Controller implements Initializable {
 			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
 					listView.getSelectionModel().getSelectedItem());
 		} else {
-			showAlertError("Es wurde kein Verfahren ausgewählt");
+			showAlertError("Es wurde kein Verfahren ausgewï¿½hlt");
 			disableButton(cancellationButton);
 			listView.setDisable(false);
 			return;
@@ -589,20 +597,35 @@ public class Controller implements Initializable {
 
 					switch (parameter.getType()) {
 					case P_BOOL:
+						RadioButton parameterButton1 = new RadioButton("Ja");
+						RadioButton parameterButton2 = new RadioButton("Nein");
+						parameterButton1.setTooltip(new Tooltip(parameter.getDescription()));
+						parameterButton2.setTooltip(new Tooltip(parameter.getDescription()));
+						ToggleGroup tg = new ToggleGroup();
+						parameterButton1.setToggleGroup(tg);
+						parameterButton2.setToggleGroup(tg);
+						if (parameter.getBoolValue()) {
+							parameterButton1.setSelected(true);
+							
+						} else {
+							parameterButton2.setSelected(true);
+						}
+						parameterRadioButtonList.add(new Pair<Parameter, RadioButton>(parameter, parameterButton1));
+						hbox.getChildren().addAll(parameterLabel, parameterButton1, parameterButton2);
 						break;
 					case P_FLOAT:
 						parameterTextfield.setText("" + parameter.getFloatValue());
 						parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
+						hbox.getChildren().addAll(parameterLabel, parameterTextfield);
 						break;
 					case P_INT:
 						parameterTextfield.setText("" + parameter.getIntValue());
 						parameterTextFieldList.add(new Pair<Parameter, TextField>(parameter, parameterTextfield));
+						hbox.getChildren().addAll(parameterLabel, parameterTextfield);
 						break;
 					default:
 						break;
 					}
-
-					hbox.getChildren().addAll(parameterLabel, parameterTextfield);
 					parameterBox.getChildren().add(hbox);
 				}
 			}
@@ -623,6 +646,17 @@ public class Controller implements Initializable {
 			} catch (Exception e) {
 				showAlertError("Please enter valid Parameters!");
 				return;
+			}
+		}
+		
+		if (parameterRadioButtonList != null) {
+			for (Pair<Parameter, RadioButton> pair : parameterRadioButtonList) {
+				RadioButton rb = pair.getValue();
+				if (rb.isSelected()) {
+					pair.getKey().setBoolValue(true);
+				} else {
+					pair.getKey().setBoolValue(false);
+				}
 			}
 		}
 	}

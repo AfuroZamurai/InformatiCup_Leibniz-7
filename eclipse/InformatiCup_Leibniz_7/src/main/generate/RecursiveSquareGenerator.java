@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,9 +30,11 @@ public class RecursiveSquareGenerator implements IGenerator {
 	private WorkingBlock[] blocks = new WorkingBlock[4];
 	private boolean isFirst, isFinished = false, isDone = false;
 	private boolean discoveryPhase;
+	private boolean randomPhase = false;
 	private float overallConfidence;
 	private float[] confidenceColors = new float[colors.length];
 	private Graphics2D g;
+	private Parameter fastExploParameter = new Parameter("Fast Mode", "Faster exploration phase", false);
 
 	private PriorityQueue<WorkingBlock> queue = new PriorityQueue<>();
 
@@ -172,6 +175,30 @@ public class RecursiveSquareGenerator implements IGenerator {
 			g.fillRect(x, y, blockSize, blockSize);
 
 			return res;
+		} else if (randomPhase) {
+			BufferedImage res = copyImage(workingImage);
+			Graphics2D g = res.createGraphics();
+			int position = ThreadLocalRandom.current().nextInt(4);
+			WorkingBlock block = blocks[position];
+			currentBlock = block;
+			Color childColor = colors[ThreadLocalRandom.current().nextInt(colors.length)];
+			if (position == 0) {
+				block = block.children[3];
+			} else if (position == 1) {
+				block = block.children[2];
+			} else if (position == 2) {
+				block = block.children[1];
+			} else if (position == 3) {
+				block = block.children[0];
+			} 
+			//block.addChild(ThreadLocalRandom.current().nextInt(4), childColor);
+			block.addRandomChild();
+			block.paint(g);
+			
+			g.setColor(Color.DARK_GRAY);
+			g.drawLine(0, height - 1, width, height - 1);
+			g.drawLine(width - 1, 0, width - 1, height);
+			return res;
 		} else {
 			BufferedImage res = copyImage(workingImage);
 			Graphics2D g = res.createGraphics();
@@ -209,18 +236,20 @@ public class RecursiveSquareGenerator implements IGenerator {
 						confidenceColors[j] = res;
 					}
 				}
-				int index = 0;
+				int indexMax = 0;
+				int indexMax2 = 0;
 				float max = 0f;
 				if (i % colors.length == colors.length - 1) {
 					for (int j = 0; j < colors.length; j++) {// selecting the color with max confidence
 						if (confidenceColors[j] >= max) {
 							max = confidenceColors[j];
-							index = j;
+							indexMax2 = indexMax;
+							indexMax = j;
 						}
 					}
 
 					if (blockCounter < 4) {
-						block = new WorkingBlock(x, y, blockSize, max, colors[index]);
+						block = new WorkingBlock(x, y, blockSize, max, colors[indexMax]);
 						queue.add(block);
 						blocks[blockCounter] = block;
 						block.paint(g);
@@ -237,22 +266,22 @@ public class RecursiveSquareGenerator implements IGenerator {
 							position = 0;
 						}
 						if (blockCounter < 8) {
-							block.addChild(position, colors[index]);
+							Color childColor = colors[indexMax];
+							if (colors[indexMax] == block.color)
+								childColor = colors[indexMax2];
+							block.addChild(position, childColor);
 							block.paint(g);
 						} else {
 							block = block.children[position];
-							Color blockColor = colors[index];
-							if (blockCounter >= 16) {
-								position = ThreadLocalRandom.current().nextInt(4);
-								int rnd = ThreadLocalRandom.current().nextInt(colors.length);
-								blockColor = colors[rnd];
-								//TODO: here should be a new random phase + alternating colors
-							}
+							Color blockColor = colors[indexMax];
+							if (colors[indexMax] == block.color)
+								blockColor = colors[indexMax2];
 							block.addChild(position, blockColor);
 							block.paint(g);
+								
 						}
 					}
-					//blockCounter++;
+					blockCounter++;
 
 				}
 
@@ -262,32 +291,32 @@ public class RecursiveSquareGenerator implements IGenerator {
 					x += blockSize;
 					int endX = width;
 					// quick try out! this has to be changed if it works out
-					/*
+					
 					if (blockSize == 16)
 						endX = 48;
 					if (blockSize == 8)
 						endX = 40;
-					*/
+					
 					if (x >= endX) {
 						int startX = 0;
-						/*
+						
 						if (blockSize == 16)
 							startX = 16;
 						if (blockSize == 8)
 							startX = 24;
-						*/
+						
 						x = startX;
 						y += blockSize;
 						int endY = height;
-						/*
+						
 						if (blockSize == 16)
 							endY = 48;
 						if (blockSize == 8)
 							endY = 40;
-						*/
+						
 						if (y >= endY) {
 							int startY = 0;
-							/*
+							
 							if (blockSize == 32) {
 								startY = 16;
 								startX = 16;
@@ -297,7 +326,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 								startY = 24;
 								startX = 24;
 							}
-							*/
+							
 							y = startY;
 							x = startX;
 							isDone = true;
@@ -316,14 +345,23 @@ public class RecursiveSquareGenerator implements IGenerator {
 				bestImage = copyImage(workingImage);
 				if (overallConfidence <= 0.01f) {
 					discoveryPhase = true;
+					if (blockSize == 8) {
+						randomPhase = true;
+						discoveryPhase = false;
+					}
 					blockSize = blockSize / 2;
-					queue.clear();
+					//queue.clear();
 				}
+			//} else if (randomPhase) {
+				
 			} else {
+				if (res > overallConfidence && res >= 0.01f) {
+					overallConfidence = res;
+					randomPhase = false;
+				}
+					
 				if (overallConfidence >= 0.9f)
 					isFinished = true;
-				if (res > overallConfidence)
-					overallConfidence = res;
 				if (res >= overallConfidence) {
 					currentBlock.rating = 1 - res;
 					currentBlock.paint(g);
@@ -351,6 +389,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 		isFinished = false;
 		isDone = false;
 		discoveryPhase = true;
+		randomPhase = false;
 		colors[0] = Color.WHITE;
 		colors[1] = Color.RED;
 		colors[2] = Color.BLUE;
@@ -363,6 +402,9 @@ public class RecursiveSquareGenerator implements IGenerator {
 		y = 0;
 		i = 0;
 		blockCounter = 0;
+		
+		if (fastExploParameter.getBoolValue())
+			System.out.println("test");
 
 		workingImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		g = workingImage.createGraphics();
@@ -372,7 +414,9 @@ public class RecursiveSquareGenerator implements IGenerator {
 
 	@Override
 	public List<Parameter> getParameterList() {
-		return null;
+		ArrayList<Parameter> list = new ArrayList<>();
+		list.add(fastExploParameter);
+		return list;
 	}
 
 	@Override
