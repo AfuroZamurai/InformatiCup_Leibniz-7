@@ -41,12 +41,12 @@ public class ImageSaver {
 	 *             permissions)
 	 *
 	 */
-	public static File saveImage(BufferedImage img, String savePath, String format) throws IOException {
+	public static File saveImage(BufferedImage img, String savePath, FileExtension ext) throws IOException {
 
-		File outputfile = new File(savePath + "." + format);
+		File outputfile = new File(savePath + "." + ext.toString().toLowerCase());
 
 		// ImageIO write returns false when image could not be saved
-		boolean success = ImageIO.write(img, format, outputfile);
+		boolean success = ImageIO.write(img, ext.toString().toLowerCase(), outputfile);
 
 		if (!success) {
 			throw new IOException("Could not save Image!");

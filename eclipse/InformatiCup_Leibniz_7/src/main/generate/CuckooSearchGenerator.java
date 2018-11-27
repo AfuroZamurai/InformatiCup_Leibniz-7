@@ -1,10 +1,9 @@
-package main.module;
+package main.generate;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.IModule;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.Sign;
@@ -18,7 +17,7 @@ import main.evolution.network.Config;
  * @author Felix
  *
  */
-public class CuckooSearchModule implements IModuleIterate {
+public class CuckooSearchGenerator implements IGenerator {
 	
 	private final int POPULATION_SIZE = 60;
 	private final int GENERATION_CAP = 25;
@@ -35,7 +34,7 @@ public class CuckooSearchModule implements IModuleIterate {
 	 * @param imageWidth width of the input image
 	 * @param imageHeight height of the input image
 	 */
-	public CuckooSearchModule(int imageWidth, int imageHeight) {
+	public CuckooSearchGenerator(int imageWidth, int imageHeight) {
 		this.net = new CPPN(0, 0, new Config(imageWidth, imageHeight, 0, 50));
 	}
 

@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 /**
  * The Parameter class represents one parameter for a module. It is intended

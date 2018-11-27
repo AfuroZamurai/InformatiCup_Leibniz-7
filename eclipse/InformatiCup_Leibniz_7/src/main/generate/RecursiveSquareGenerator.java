@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -14,7 +14,7 @@ import javafx.util.Pair;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 
-public class RecursiveSquareModule implements IModuleIterate {
+public class RecursiveSquareGenerator implements IGenerator {
 
 	private BufferedImage originalImage;
 	private BufferedImage workingImage;

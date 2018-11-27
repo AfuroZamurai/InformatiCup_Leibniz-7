@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,7 +19,7 @@ import main.evaluate.IClassification;
  * @author Fredo
  *
  */
-public class SimpleIterationModule implements IModuleIterate {
+public class SimpleGenerator implements IGenerator {
 
 	/** The image that is generated in the current step */
 	private BufferedImage currentImage;

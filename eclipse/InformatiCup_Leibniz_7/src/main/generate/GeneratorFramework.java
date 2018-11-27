@@ -1,4 +1,4 @@
-package main.module;
+package main.generate;
 
 import java.awt.image.BufferedImage;
 
@@ -15,7 +15,7 @@ import main.gui.Controller;
  * @author Fredo
  *
  */
-public class ModuleFramework implements Runnable {
+public class GeneratorFramework implements Runnable {
 
 	/**
 	 * A boolean indicating whether the currently running module should stop. It is
@@ -30,7 +30,7 @@ public class ModuleFramework implements Runnable {
 	private IEvaluator evaluator;
 
 	/** The module that is run by this framework */
-	private IModuleIterate module;
+	private IGenerator module;
 
 	/**
 	 * The controller of the GUI, which is called to update its interface when a new
@@ -46,7 +46,7 @@ public class ModuleFramework implements Runnable {
 	 *            The controller of the GUI that is updated when an image is
 	 *            generated
 	 */
-	public ModuleFramework(Controller controller) {
+	public GeneratorFramework(Controller controller) {
 		evaluator = new TrasiWebEvaluator();
 		this.controller = controller;
 	}
@@ -62,7 +62,7 @@ public class ModuleFramework implements Runnable {
 	 * @param sign
 	 *            The Sign of the initial image
 	 */
-	public void startModule(IModuleIterate module, BufferedImage initImage, IClassification imageClass) {
+	public void startModule(IGenerator module, BufferedImage initImage, IClassification imageClass) {
 		if (!isRunning) {
 			module.setInitImage(initImage, imageClass);
 			this.module = module;

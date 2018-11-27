@@ -29,6 +29,17 @@ public class ImageLoader {
 	public static final int TARGET_WIDTH = 64;
 	public static final int TARGET_HEIGHT = 64;
 	
+	public enum FileExtension {
+		PNG,
+		GIF,
+		JPG,
+		BMP,
+		JPEG,
+		WBMP,
+		PPM
+	}
+	
+	
 	/**
 	 * This methods loads an image from the file system and returns a buffered Image
 	 * object

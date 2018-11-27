@@ -1,4 +1,4 @@
-package main.gui;
+package main.generate;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,8 +9,6 @@ import javax.swing.ImageIcon;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.TrasiWebEvaluator;
-import main.module.IModuleIterate;
-import main.module.Parameter;
 
 /**
  * This class contains the implementation of an image manipulate algorithm. From
@@ -22,7 +20,7 @@ import main.module.Parameter;
  *
  */
 
-public class PixelSearchCancellationProcess implements IModuleIterate {
+public class CheckerGenerator implements IGenerator {
 
 	final int IMAGEHEIGHT = 64;
 	final int IMAGEWIDTH = 64;
