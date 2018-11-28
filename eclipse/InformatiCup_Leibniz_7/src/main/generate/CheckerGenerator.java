@@ -145,7 +145,7 @@ public class CheckerGenerator implements IGenerator {
 				}
 			}
 
-			if (i >= IMAGEHEIGHT - filter && j >= IMAGEWIDTH - filter) {
+			if (i >= IMAGEHEIGHT) {
 				isFinished = true;
 				return outputImage;
 			}

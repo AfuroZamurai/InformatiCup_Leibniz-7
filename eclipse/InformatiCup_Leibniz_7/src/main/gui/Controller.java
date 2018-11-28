@@ -85,6 +85,8 @@ public class Controller implements Initializable {
 	boolean disableSave = true;
 	boolean disableLoad = false;
 	int filter = 0;
+	private int delayTime;
+	private int maxIterations;
 	Thread thread;
 	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
 	public Task<Void> task;
@@ -175,6 +177,12 @@ public class Controller implements Initializable {
 
 	@FXML
 	private VBox parameterBox;
+	
+	@FXML
+	private TextField textFieldDelayTime;
+	
+	@FXML
+	private TextField textFieldMaxIterations;
 
 	/**
 	 * This method is an ActionEvent of a MenuItem. If a Sign is selected, the
@@ -326,26 +334,10 @@ public class Controller implements Initializable {
 		lineChart.getData().add(series);
 		iterationCounter = 0;
 
-		if (selectedAlgorithmn == menuItem1) {
+		if (selectedAlgorithmn != null) {
 			parseParameters();
 			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
-					listView.getSelectionModel().getSelectedItem());
-		} else if (selectedAlgorithmn == menuItem2) {
-			parseParameters();
-			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
-					listView.getSelectionModel().getSelectedItem());
-		} else if (selectedAlgorithmn == menuItem3) {
-			parseParameters();
-			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
-					listView.getSelectionModel().getSelectedItem());
-		} else if (selectedAlgorithmn == menuItem4) {
-			parseParameters();
-			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
-					listView.getSelectionModel().getSelectedItem());
-		} else if (selectedAlgorithmn == menuItem5) {
-			parseParameters();
-			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
-					listView.getSelectionModel().getSelectedItem());
+					listView.getSelectionModel().getSelectedItem(), delayTime, maxIterations);
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgew�hlt");
 			disableButton(cancellationButton);
@@ -644,7 +636,7 @@ public class Controller implements Initializable {
 					pair.getKey().setIntValue(value);
 				}
 			} catch (Exception e) {
-				showAlertError("Please enter valid Parameters!");
+				showAlertError("Bitte valide Parameter eingeben!");
 				return;
 			}
 		}
@@ -658,6 +650,14 @@ public class Controller implements Initializable {
 					pair.getKey().setBoolValue(false);
 				}
 			}
+		}
+		
+		//Parse input for the two parameters (processing delay and max iterations)
+		try {
+			delayTime = Integer.parseInt(textFieldDelayTime.getText());
+			maxIterations = Integer.parseInt(textFieldMaxIterations.getText());
+		} catch (Exception e) {
+			showAlertError("Bitte positive ganze Zahlen als Parameter eingeben!");
 		}
 	}
 
