@@ -8,7 +8,7 @@ import main.CmdLineStart;
 
 class CmdLineTester {
 
-	//@Test
+	@Test
 	void testMain() throws Exception {
 		
 		System.out.println("Test 0: No arguments");
@@ -27,47 +27,30 @@ class CmdLineTester {
 		args = new String[] {"-e trasiweb"};
 		CmdLineStart.main(args);
 		
-		System.out.println("Test 4: a pixelsearc");
-		args = new String[] {"-a pixelsearch"};
-		CmdLineStart.main(args);
-		
-		System.out.println("Test 5: a circlesearch");
-		args = new String[] {"-a circlesearch"};
-		CmdLineStart.main(args);
-		
-		System.out.println("Test 6: a nochange");
-		args = new String[] {"-a nochange"};
-		CmdLineStart.main(args);
-		
-		System.out.println("Test 7: c 0");
-		args = new String[] {"-c 0"};
-		CmdLineStart.main(args);
-		
-		System.out.println("Test 8: Too many arguments c");
+		System.out.println("Test 4: Too many arguments c");
 		args = new String[] {"-c 5 10"};
 		CmdLineStart.main(args);
 		
-		System.out.println("Test 9: Wrong argument evaluator");
+		System.out.println("Test 5: Wrong argument evaluator");
 		args = new String[] {"-e saadsd"};
 		CmdLineStart.main(args);
-	}
-	
-	//@Test
-	void testEncoder() throws Exception {
-		String[] args = new String[] {"-e trasiweb -a encodingsearch -c 4"};
+		
+		System.out.println("Test 6: Custom Output path");
+		args = new String[] {"-e test -c 8 -o ../../image"};
 		CmdLineStart.main(args);
+		
+		//Test all algorithms with all classes
+		String[] algorithms = new String[] {"nochange","checkersearch","encodingsearch","cuckoosearch","recursivesquare"};
+		int classes = 43;
+		
+		for(int a = 0; a < algorithms.length; a++) {
+			
+			for(int c = 0; c < classes;c++) {
+				
+				System.out.println("Testing: " + algorithms[a] + " with Class " + c);
+				args = new String[] {"-e test -c " + c + " -a " + algorithms[a]};
+				CmdLineStart.main(args);
+			}
+		}
 	}
-	
-	//@Test
-	void testPixelSearch() throws Exception {
-		String[] args = new String[] {"-e trasiweb -a pixelsearch -c 4"};
-		CmdLineStart.main(args);
-	}
-	
-	@Test
-	void testCuckooSearch() throws Exception {
-		String[] args = new String[] {"-e trasiweb -a cuckoosearch -c 4"};
-		CmdLineStart.main(args);
-	}
-
 }
