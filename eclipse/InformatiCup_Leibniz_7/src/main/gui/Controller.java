@@ -177,10 +177,10 @@ public class Controller implements Initializable {
 
 	@FXML
 	private VBox parameterBox;
-	
+
 	@FXML
 	private TextField textFieldDelayTime;
-	
+
 	@FXML
 	private TextField textFieldMaxIterations;
 
@@ -335,9 +335,12 @@ public class Controller implements Initializable {
 		iterationCounter = 0;
 
 		if (selectedAlgorithmn != null) {
-			parseParameters();
-			moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
-					listView.getSelectionModel().getSelectedItem(), delayTime, maxIterations);
+			if (parseParameters()) {
+				moduleFramework.startModule(module, SwingFXUtils.fromFXImage(inputImage.getImage(), null),
+						listView.getSelectionModel().getSelectedItem(), delayTime, maxIterations);
+			} else {
+				cancellation(null);
+			}
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgew�hlt");
 			disableButton(cancellationButton);
@@ -598,7 +601,7 @@ public class Controller implements Initializable {
 						parameterButton2.setToggleGroup(tg);
 						if (parameter.getBoolValue()) {
 							parameterButton1.setSelected(true);
-							
+
 						} else {
 							parameterButton2.setSelected(true);
 						}
@@ -624,7 +627,7 @@ public class Controller implements Initializable {
 		}
 	}
 
-	private void parseParameters() {
+	private boolean parseParameters() {
 		for (Pair<Parameter, TextField> pair : parameterTextFieldList) {
 			TextField textField = pair.getValue();
 			try {
@@ -637,10 +640,10 @@ public class Controller implements Initializable {
 				}
 			} catch (Exception e) {
 				showAlertError("Bitte valide Parameter eingeben!");
-				return;
+				return false;
 			}
 		}
-		
+
 		if (parameterRadioButtonList != null) {
 			for (Pair<Parameter, RadioButton> pair : parameterRadioButtonList) {
 				RadioButton rb = pair.getValue();
@@ -651,14 +654,16 @@ public class Controller implements Initializable {
 				}
 			}
 		}
-		
-		//Parse input for the two parameters (processing delay and max iterations)
+
+		// Parse input for the two parameters (processing delay and max iterations)
 		try {
 			delayTime = Integer.parseInt(textFieldDelayTime.getText());
 			maxIterations = Integer.parseInt(textFieldMaxIterations.getText());
 		} catch (Exception e) {
-			showAlertError("Bitte positive ganze Zahlen als Parameter eingeben!");
+			showAlertError("Bitte ganze Zahlen als Parameter eingeben!");
+			return false;
 		}
+		return true;
 	}
 
 }

@@ -39,11 +39,11 @@
                <GridPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin></Button>
-            <Button fx:id="generateButton" disable="true" mnemonicParsing="false" onAction="#generateImage" prefHeight="40.0" prefWidth="166.0" text="Generate" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Button fx:id="generateButton" disable="true" mnemonicParsing="false" onAction="#generateImage" prefHeight="40.0" prefWidth="166.0" text="Start" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin></Button>
-            <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" text="Save Result" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" text="Bild speichern" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin></Button>
@@ -105,7 +105,7 @@
                         </Label>
                      </children>
                   </VBox>
-                  <Label fx:id="classLabel" prefHeight="30.0" prefWidth="292.0" text="Class:" />
+                  <Label fx:id="classLabel" prefHeight="30.0" prefWidth="292.0" text="Klasse:" />
                   <Label fx:id="confidenceLabel" prefHeight="30.0" prefWidth="292.0" text="Konfidenz:" />
                   <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="292.0" progress="0.0" />
                   <ProgressIndicator fx:id="progressIndicator" prefHeight="52.0" prefWidth="57.0" visible="false" />
@@ -142,7 +142,7 @@
                      </children>
                   </VBox>
                   <ListView fx:id="listView" onMouseClicked="#ClickedListView" prefWidth="300.0" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="loadImage" graphicTextGap="0.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="166.0" text="Lade Bild">
+                  <Button fx:id="loadImage" graphicTextGap="0.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="166.0" text="Bild laden">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>

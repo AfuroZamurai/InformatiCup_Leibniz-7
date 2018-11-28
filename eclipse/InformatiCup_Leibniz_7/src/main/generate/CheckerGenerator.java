@@ -135,7 +135,7 @@ public class CheckerGenerator implements IGenerator {
 							+ " Sekunden(");
 			System.out.println((int) percent + "%)\n");
 
-			for (int k = 0; k < filter * filter; k++) { //set pixel in input image on black
+			for (int k = 0; k < filter * filter; k++) { // set pixel in input image on black
 
 				int x = k % filter;
 				int y = k / filter;

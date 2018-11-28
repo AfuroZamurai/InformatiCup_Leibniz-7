@@ -174,9 +174,4 @@ public class GeneratorFramework implements Runnable {
 			}
 		}
 	}
-
-	public void setParameters(int delayTime, int maxIterations) {
-		// TODO Auto-generated method stub
-
-	}
 }
