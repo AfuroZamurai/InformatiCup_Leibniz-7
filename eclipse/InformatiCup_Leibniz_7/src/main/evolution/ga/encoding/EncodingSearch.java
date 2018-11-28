@@ -2,6 +2,7 @@ package main.evolution.ga.encoding;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,7 @@ import main.evaluate.IClassification;
 import main.evaluate.TrasiWebEvaluator;
 import main.evolution.ga.GeneticAlgorithm;
 import main.evolution.ga.cppn.CPPNGenom;
+import main.utils.Evolutionhelper;
 import main.utils.ImageUtil;
 
 public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
@@ -77,7 +79,38 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	
 	private List<Pair<EncodingGenom, EncodingGenom>> selectParents() {
 		List<Pair<EncodingGenom, EncodingGenom>> parents = new ArrayList<>();
-		//TODO: make a roulette selection
+		
+		float[] cumulativeFitnesses = new float[populationSize];
+        cumulativeFitnesses[0] = population.getGenoms().get(0).getFitness();
+        
+        for (int i = 1; i < populationSize; i++)
+        {
+            float fitness = population.getGenoms().get(i).getFitness();
+            cumulativeFitnesses[i] = cumulativeFitnesses[i - 1] + fitness;
+        }
+        
+        for(int i = 0; i < populationSize / 2; i++) {
+        	float randomFitness1 = Evolutionhelper.randomFloat() * cumulativeFitnesses[cumulativeFitnesses.length - 1];
+        	float randomFitness2 = Evolutionhelper.randomFloat() * cumulativeFitnesses[cumulativeFitnesses.length - 1];
+            int index1 = Arrays.binarySearch(cumulativeFitnesses, randomFitness1);
+            int index2 = Arrays.binarySearch(cumulativeFitnesses, randomFitness2);
+            
+            if (index1 < 0)
+            {
+                // Convert negative insertion point to array index.
+                index1 = Math.abs(index1 + 1);
+            }
+            if (index2 < 0)
+            {
+                // Convert negative insertion point to array index.
+                index2 = Math.abs(index2 + 1);
+            }
+            EncodingGenom selected1 = population.getGenoms().get(index1);
+            EncodingGenom selected2 = population.getGenoms().get(index2);
+            Pair<EncodingGenom, EncodingGenom> selectedParents = new Pair<EncodingGenom, EncodingGenom>(selected1, selected2);
+            parents.add(selectedParents);
+        }
+		
 		return parents;
 	}
 
