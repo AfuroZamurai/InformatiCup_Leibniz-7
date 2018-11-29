@@ -11,6 +11,7 @@ import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.IEvaluator;
 import main.evaluate.Sign;
+import main.evaluate.TestEvaluator;
 import main.evaluate.TrasiWebEvaluator;
 import main.generate.CheckerGenerator;
 import main.generate.CuckooSearchGenerator;
@@ -18,6 +19,7 @@ import main.generate.EncoderGenerator;
 import main.generate.EvoEncoderGenerator;
 import main.generate.IGenerator;
 import main.generate.NoChange;
+import main.generate.RecursiveSquareGenerator;
 import main.io.ImageSaver;
 
 public class CmdLineStart {
@@ -83,10 +85,11 @@ public class CmdLineStart {
 			System.out.println(
 					"\tnochange\t\t(default)\tSimply sends the example start Image of the class to be evaluated.");
 			System.out.println(
-					"\tpixelsearch\t<filterSize=0-64>\tPuts black or white boxes on the image depending on evaluation.");
+					"\tcheckersearch\t\tPuts black or white boxes on the image depending on evaluation.");
 			System.out.println("\tcirclesearch\t\t\t\tPuts colored circles on the image depending on evaluation.");
 			System.out.println("\tencodingsearch\t\t\t\tUses any image encoding to generate new images.");
 			System.out.println("\tcuckoosearch\t\t\t\tUses cuckoosearch to generate new images.");
+			System.out.println("\trecursivesquare\t\t\t\tUses squares recursively to generate images");
 
 			System.out.println("");
 			System.out.println("Target class:");
@@ -96,13 +99,17 @@ public class CmdLineStart {
 			System.out.println("");
 			System.out.println("Optional Arguments:");
 			System.out.println("\t-v\t\t\t\t\tVerbose, prints information of current process to the command line.");
+			System.out.println("\t-o <path/filename>\t\t\tSpecify where the output will be saved. Default is under data/results/resultImage");
+			
 			
 			return;
 		}
 		
+		//Default values
 		IEvaluator evaluator;
 		IGenerator algorithm;
 		int targetClass;
+		String output = "data/results/resultImage";
 		
 		if(params.containsKey("-a")) {
 			if(params.get("-a").size() != 1) {
@@ -113,7 +120,7 @@ public class CmdLineStart {
 			if(params.get("-a").get(0).equals("nochange")) {
 				algorithm = new NoChange();
 			}
-			else if(params.get("-a").get(0).equals("pixelsearch")) {
+			else if(params.get("-a").get(0).equals("checkersearch")) {
 				algorithm = new CheckerGenerator();
 			}
 			else if(params.get("-a").get(0).equals("encodingsearch")) {
@@ -122,6 +129,9 @@ public class CmdLineStart {
 			}
 			else if(params.get("-a").get(0).equals("cuckoosearch")) {
 				algorithm = new CuckooSearchGenerator(64, 64);
+			}
+			else if(params.get("-a").get(0).equals("recursivesquare")) {
+				algorithm = new RecursiveSquareGenerator();
 			}
 			else {
 				System.out.println("Error: argument \""+ params.get("-a").get(0) +" \" for option -a is invalid");
@@ -140,6 +150,9 @@ public class CmdLineStart {
 			
 			if(params.get("-e").get(0).equals("trasiweb")) {
 				evaluator = new TrasiWebEvaluator();
+			}
+			else if(params.get("-e").get(0).equals("test")) {
+				evaluator = new TestEvaluator();
 			}
 			else {
 				System.out.println("Error: argument \""+ params.get("-e").get(0) +" \" for option -e is invalid");
@@ -171,8 +184,17 @@ public class CmdLineStart {
 			targetClass = 0;
 		}
 		
+		if(params.containsKey("-o")) {
+			if(params.get("-o").size() != 1) {
+				System.out.println("Error: Exptected 1 argument for option -o, but got " + params.get("-o").size());
+				return;
+			}
+			
+			output = params.get("-o").get(0);
+		}
+		
 		IClassification sign = Sign.values()[targetClass];
-		runAlgorithm(evaluator, algorithm, sign, 60);
+		runAlgorithm(evaluator, algorithm, sign, 60, output);
 	}
 	
 	/**
@@ -181,9 +203,10 @@ public class CmdLineStart {
 	 * @param algo The algorithm that generates Images
 	 * @param targetClass The class of the classifier which is tried to be approximated
 	 * @param maxIterations The maxium number of iterations before the algorithm stops
+	 * @Param outputPath The path where the output will be saved
 	 * @throws Exception
 	 */
-	public static void runAlgorithm(IEvaluator evaluator, IGenerator algo, IClassification targetClass, int maxIterations) throws Exception {
+	public static void runAlgorithm(IEvaluator evaluator, IGenerator algo, IClassification targetClass, int maxIterations, String outputPath) throws Exception {
 		
 		algo.setInitImage(targetClass.getExampleImage(), targetClass);
 		
@@ -207,6 +230,6 @@ public class CmdLineStart {
 		
 		System.out.println("Score: "+ score);
 		
-		ImageSaver.saveImage(result, "data/results/resultImage");
+		ImageSaver.saveImage(result, outputPath);
 	}
 }

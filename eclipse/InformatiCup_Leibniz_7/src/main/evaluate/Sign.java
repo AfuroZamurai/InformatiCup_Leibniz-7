@@ -2,6 +2,7 @@ package main.evaluate;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 
 import main.io.ImageLoader;
 
@@ -91,7 +92,7 @@ public enum Sign implements IClassification {
 		BufferedImage example;
 
 		try {
-			example = ImageLoader.loadImage("data/images/000" + numString + ".ppm");
+			example = ImageLoader.loadInternalImage("/images/000" + numString + ".ppm");
 		} catch (IOException e) {
 
 			e.printStackTrace();

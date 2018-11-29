@@ -39,6 +39,21 @@ public class GeneratorFramework implements Runnable {
 	private Controller controller;
 
 	/**
+	 * The time the framework waits between iterations, if it is -1, the default
+	 * implementation is chosen (one iteration takes exactly one second)
+	 */
+	private int delayTime;
+
+	/**
+	 * The maximum number of iterations for one generator, if it is -1, there is no
+	 * limit
+	 */
+	private int maxIterations;
+
+	/** Counter of the current iteration */
+	private int iterationCounter;
+
+	/**
 	 * Creates a new ModuleFramework and initializes the evaluator using the
 	 * TrasiWebEvaluator.
 	 * 
@@ -62,11 +77,15 @@ public class GeneratorFramework implements Runnable {
 	 * @param sign
 	 *            The Sign of the initial image
 	 */
-	public void startModule(IGenerator module, BufferedImage initImage, IClassification imageClass) {
+	public void startModule(IGenerator module, BufferedImage initImage, IClassification imageClass, int delayTime,
+			int maxIterations) {
 		if (!isRunning) {
 			module.setInitImage(initImage, imageClass);
 			this.module = module;
 			this.isRunning = true;
+			this.delayTime = delayTime;
+			this.maxIterations = maxIterations;
+			iterationCounter = 1;
 
 			Thread thread = new Thread(this);
 			thread.setDaemon(true);
@@ -112,16 +131,24 @@ public class GeneratorFramework implements Runnable {
 					}
 				});
 
-				long sleeptime = 1000 - System.currentTimeMillis() + startTime;
+				long sleeptime = 0;
+				if (delayTime >= 0) {
+					sleeptime = delayTime - System.currentTimeMillis() + startTime;
+				} else {
+					sleeptime = 1000 - System.currentTimeMillis() + startTime;
+				}
 				if (sleeptime > 0)
 					Thread.sleep(sleeptime);
+
+				if (maxIterations >= 0)
+					iterationCounter++;
 			} catch (Exception e) {
 				e.printStackTrace();
 				stopModule();
 				System.out.println("The image could not be evaluated!");
 			}
 
-			if (module.isFinished()) {
+			if (module.isFinished() || iterationCounter == maxIterations) {
 				// this may not be the most elegant way to stop the module
 				// (this is just simulating the stop button)
 				controller.cancellation(null);
@@ -129,12 +156,12 @@ public class GeneratorFramework implements Runnable {
 		}
 		shouldStop = false;
 		isRunning = false;
-		
+
 		BufferedImage resultImage = module.getResult();
 		if (resultImage != null) {
 			try {
 				EvaluationResult<IClassification> evalResult = evaluator.evaluateImage(resultImage);
-				
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
