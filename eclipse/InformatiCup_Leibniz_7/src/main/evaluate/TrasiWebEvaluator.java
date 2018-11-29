@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
@@ -109,14 +110,14 @@ public class TrasiWebEvaluator implements IEvaluator {
 	 *             When the api_key file is not there
 	 */
 	private void loadKey() throws IOException {
-
-		File keyFile = new File("data/api_key.txt");
-
-		BufferedReader reader = null;
-
+		
+		InputStream keyIn = getClass().getResourceAsStream("/api_key.txt");
+		InputStreamReader reader = new InputStreamReader(keyIn, "UTF-8");
+		BufferedReader 	bReader = new BufferedReader(reader);
+		
 		try {
-			reader = new BufferedReader(new FileReader(keyFile));
-			API_KEY = reader.readLine();
+			
+			API_KEY = bReader.readLine();
 		} catch (FileNotFoundException e) {
 
 			e.printStackTrace();
