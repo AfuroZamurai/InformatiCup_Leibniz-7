@@ -40,7 +40,7 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 		
 		int geneSizeLower = p1GeneSize < p2GeneSize ? p1GeneSize : p2GeneSize;
 		int geneSizeUpper = p1GeneSize > p2GeneSize ? p1GeneSize : p2GeneSize;
-		int geneCrossoverSize = Evolutionhelper.randomInt(0, geneSizeLower);
+		int geneCrossoverSize = Evolutionhelper.randomInt(0, geneSizeLower - 1);
 		int geneValueCrossoverSize = Evolutionhelper.randomInt(0, parent1.getGenes().get(0).getGeneLength() - 1);
 		
 		int i, j;

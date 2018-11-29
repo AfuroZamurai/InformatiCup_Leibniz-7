@@ -105,6 +105,14 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
                 // Convert negative insertion point to array index.
                 index2 = Math.abs(index2 + 1);
             }
+            
+            if(index1 == populationSize) {
+            	index1--;
+            }
+            if(index2 == populationSize) {
+            	index2--;
+            }
+            
             EncodingGenom selected1 = population.getGenoms().get(index1);
             EncodingGenom selected2 = population.getGenoms().get(index2);
             Pair<EncodingGenom, EncodingGenom> selectedParents = new Pair<EncodingGenom, EncodingGenom>(selected1, selected2);

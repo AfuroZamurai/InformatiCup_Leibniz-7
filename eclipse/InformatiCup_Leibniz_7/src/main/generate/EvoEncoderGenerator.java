@@ -81,7 +81,8 @@ public class EvoEncoderGenerator implements IGenerator {
 
 	@Override
 	public String getModuleDescription() {
-		return "Genetic algorithm using encoding to create falsely detected images";
+		return "Dieses Verfahren verwendet einen genetischen Algorithmus, um Irrbilder"
+				+ " auf Basis eines Encodings zu optimieren.";
 	}
 
 	@Override

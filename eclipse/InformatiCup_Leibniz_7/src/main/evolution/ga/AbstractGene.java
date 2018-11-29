@@ -29,6 +29,7 @@ public abstract class AbstractGene<T> {
 	
 	public AbstractGene(List<T> values) {
 		this.values = values;
+		this.length = values.size();
 	}
 	
 	abstract protected void initializeGene();
