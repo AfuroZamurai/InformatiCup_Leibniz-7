@@ -12,7 +12,7 @@ public class CuckooSearchTester {
 	
 	//@Test
 	public void testCuckooSearch() {
-		CuckooSearch searcher = new CuckooSearch(new CPPN(0, 0, new Config(64, 64, 0, 50)), 30, 0.9f, 20, Sign.VORFAHRT);
+		CuckooSearch searcher = new CuckooSearch(new CPPN(0, 0, new Config(64, 64, 0, 50)), 30, 0.9f, 20, 2, Sign.VORFAHRT);
 		searcher.searchForImage();
 	}
 	

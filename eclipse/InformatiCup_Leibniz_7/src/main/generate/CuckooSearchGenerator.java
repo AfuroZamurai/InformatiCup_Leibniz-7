@@ -21,6 +21,7 @@ public class CuckooSearchGenerator implements IGenerator {
 	
 	private final int POPULATION_SIZE = 60;
 	private final int GENERATION_CAP = 25;
+	private final int ELITISM = 2;
 	private final float TARGET_FITNESS = 0.9f;
 	
 	private CPPN net;
@@ -51,7 +52,7 @@ public class CuckooSearchGenerator implements IGenerator {
 	@Override
 	public void setInitImage(BufferedImage img, IClassification imageClass) {
 		searcher = new CuckooSearch(this.net, POPULATION_SIZE, TARGET_FITNESS, 
-				GENERATION_CAP, imageClass);
+				GENERATION_CAP, ELITISM, imageClass);
 	}
 
 	@Override

@@ -45,8 +45,9 @@ public class CuckooSearch extends GeneticAlgorithm<CPPNGenom> {
 	 * @param targetFitness minimum fitness which must be reached for the algorithm to terminate
 	 * @param generationCap maximum number of generations the algorithm will search 
 	 */
-	public CuckooSearch(CPPN net, int populationSize, float targetFitness, int generationCap, IClassification target) {
-		super(populationSize, targetFitness, generationCap);
+	public CuckooSearch(CPPN net, int populationSize, float targetFitness, int generationCap, int elitism, 
+			IClassification target) {
+		super(populationSize, targetFitness, generationCap, elitism);
 		this.net = net;
 		this.target = target;
 	}

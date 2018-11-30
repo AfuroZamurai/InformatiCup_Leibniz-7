@@ -26,7 +26,7 @@ public class EncodingSearchTester {
 	public void testImageGeneration() throws IOException {
 		IImageEncoding encoding = new CircleEncoding();
 		BufferedImage baustelle = Sign.BAUSTELLE.getExampleImage();
-		EncodingSearch es = new EncodingSearch(60, 0.9f, 30, encoding, Sign.BAUSTELLE, baustelle);
+		EncodingSearch es = new EncodingSearch(60, 0.9f, 30, 2, encoding, Sign.BAUSTELLE, baustelle);
 		
 		List<EncodingGene> genes = new ArrayList<>();
 		for(int i = 0; i < 10; i++) {
@@ -59,7 +59,7 @@ public class EncodingSearchTester {
 	public void testEncodingSearch() throws IOException {
 		CircleEncoding encoding = new CircleEncoding();
 		BufferedImage baustelle = Sign.BAUSTELLE.getExampleImage();
-		EncodingSearch es = new EncodingSearch(60, 0.9f, 30, encoding, Sign.BAUSTELLE, baustelle);
+		EncodingSearch es = new EncodingSearch(60, 0.9f, 30, 2, encoding, Sign.BAUSTELLE, baustelle);
 
 		while(!es.isFinished()) {
 			es.run(1);

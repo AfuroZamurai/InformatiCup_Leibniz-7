@@ -15,6 +15,7 @@ public class EvoEncoderGenerator implements IGenerator {
 	
 	private final int POPULATION_SIZE = 10;
 	private final int GENERATION_CAP = 25;
+	private final int ELITISM = 2;
 	private final float TARGET_FITNESS = 0.9f;
 	
 	private EncodingSearch searcher;
@@ -66,7 +67,8 @@ public class EvoEncoderGenerator implements IGenerator {
 	public void setInitImage(BufferedImage img, IClassification imageClass) {
 		current = img;
 		targetClass = imageClass;
-		searcher = new EncodingSearch(POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP, encoding, imageClass, img);
+		searcher = new EncodingSearch(POPULATION_SIZE, TARGET_FITNESS, GENERATION_CAP, ELITISM, encoding, 
+				imageClass, img);
 	}
 
 	@Override

@@ -16,6 +16,7 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	protected final int populationSize;
 	protected final float targetFitness;
 	protected final int generationCap;
+	protected final int elitism;
 	protected Population<T> population;
 	
 	protected boolean finished = false;
@@ -32,10 +33,11 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	 * @param targetFitness threshold which will terminate the genetic algorithm if reached
 	 * @param generationCap limit of the number of iterations the genetic algorithm will run
 	 */
-	public GeneticAlgorithm(int populationSize, float targetFitness, int generationCap) {
+	public GeneticAlgorithm(int populationSize, float targetFitness, int generationCap, int elitism) {
 		this.populationSize = populationSize;
 		this.targetFitness = targetFitness;
 		this.generationCap = generationCap;
+		this.elitism = elitism;
 		this.population = new Population<>();
 	}
 	
@@ -53,9 +55,9 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 			createOffspring();
 			System.out.println("Created new population!");
 			selectSurvivors();
-			System.out.println("Selected the survivors!");
+			//System.out.println("Selected the survivors!");
 			generation++;
-			System.out.println("Highest fitness fo far: " + getHighestFitness());
+			System.out.println("Highest fitness so far: " + getHighestFitness());
 			
 			if(generation >= pauseCap) {
 				return;

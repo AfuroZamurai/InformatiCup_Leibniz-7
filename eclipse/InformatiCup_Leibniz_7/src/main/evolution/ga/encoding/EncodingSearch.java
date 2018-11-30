@@ -25,11 +25,11 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	
 	private final BufferedImage original;
 	
-	private int geneAmount = 1; 
+	private int geneAmount = 50; 
 
-	public EncodingSearch(int populationSize, float targetFitness, int generationCap, IImageEncoding encoding, 
-			IClassification targetClass, BufferedImage original) {
-		super(populationSize, targetFitness, generationCap);
+	public EncodingSearch(int populationSize, float targetFitness, int generationCap, int elitism, 
+			IImageEncoding encoding, IClassification targetClass, BufferedImage original) {
+		super(populationSize, targetFitness, generationCap, elitism);
 		this.encoding = encoding;
 		this.targetClass = targetClass;
 		this.original = original;
@@ -61,6 +61,8 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	@Override
 	protected void createOffspring() {
 		List<Pair<EncodingGenom, EncodingGenom>> parents = selectParents();
+		List<EncodingGenom> survivors = getElite(elitism);
+		
 		List<EncodingGenom> newPopulation = new ArrayList<>();
 		for (Iterator<Pair<EncodingGenom, EncodingGenom>> iterator = parents.iterator(); iterator.hasNext();) {
 			Pair<EncodingGenom, EncodingGenom> pair = iterator.next();
@@ -72,9 +74,14 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 			genom.mutate();
 		}
 		
+		calculateFitness(newPopulation);
+		for(int i = 0; i < elitism; i++) {
+			newPopulation.remove(0);
+		}
 		population.getGenoms().clear();
 		population.getGenoms().addAll(newPopulation);
-		calculateFitness();
+		population.getGenoms().addAll(survivors);
+		
 	}
 	
 	private List<Pair<EncodingGenom, EncodingGenom>> selectParents() {
@@ -121,10 +128,55 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		
 		return parents;
 	}
+	
+	private List<EncodingGenom> getElite(int survivors) {
+		List<EncodingGenom> elite = new ArrayList<>();
+		List<EncodingGenom> genoms = population.getGenoms();
+		Collections.sort(genoms);
+		for(int i = 0; i < survivors; i++) {
+			elite.add(genoms.get(genoms.size() - 1 - i));
+		}
+		
+		return elite;
+	}
 
 	@Override
 	protected void selectSurvivors() {
 		// maybe some sort of elitism?
+	}
+	
+	private void calculateFitness(List<EncodingGenom> genoms) {
+		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
+		for(EncodingGenom genom : genoms) {
+			BufferedImage image = getImageFromGenom(genom);
+			BufferedImage encodingImage = getEncodingImage(genom);
+			EvaluationResult<IClassification> result;
+			try {
+				result = evaluator.evaluateImage(image);
+				if (result != null) {
+					float confidence = result.getConfidenceForClass(targetClass);
+					float coverage = ImageUtil.getTransparentPercent(encodingImage);
+					float fitness = 1.0f - (1.0f - confidence) - (1.0f - coverage);
+					genom.setFitness(fitness);
+				} else {
+					genom.setFitness(0.0f);
+					System.out.println("Evaluation currently impossible!");
+				}
+			} catch (Exception e) {
+				//wrong image size, shouldn't happen
+				genom.setFitness(0.0f);
+			}	
+		}
+		
+		try {
+			Collections.sort(genoms);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		EncodingGenom best = (genoms.get(genoms.size() - 1));
+		if(best.getFitness() > population.getBest().getFitness()) {
+			population.setBest(best);
+		}
 	}
 
 	@Override
