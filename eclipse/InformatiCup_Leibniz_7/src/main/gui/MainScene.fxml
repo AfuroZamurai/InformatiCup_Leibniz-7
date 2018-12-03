@@ -55,7 +55,7 @@
                </GridPane.margin></Button>
             <VBox alignment="TOP_CENTER" spacing="10.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <children>
-                  <MenuButton fx:id="menuButton" alignment="CENTER" cache="true" contentDisplay="CENTER" prefHeight="40.0" prefWidth="166.0" text="Wähle Algorithmus">
+                  <MenuButton fx:id="menuButton" alignment="CENTER" cache="true" contentDisplay="CENTER" prefHeight="40.0" prefWidth="166.0" text="Wähle Generator">
                      <items>
                         <MenuItem fx:id="menuItem1" mnemonicParsing="false" onAction="#menuItem1clicked" text="Unverändert" />
                         <MenuItem fx:id="menuItem2" mnemonicParsing="false" onAction="#menuItem2clicked" text="Checker Search" />
