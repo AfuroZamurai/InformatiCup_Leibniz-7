@@ -5,6 +5,13 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A utility class which provides methods to retrieve information about images and
+ * manipulate images.
+ * 
+ * @author Felix
+ *
+ */
 public class ImageUtil {
 
 	/**

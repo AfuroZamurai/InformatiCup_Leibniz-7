@@ -11,30 +11,54 @@ import main.evolution.ga.cppn.CPPNGene;
 import main.utils.Evolutionhelper;
 
 /**
- * Genom representation of an arbitrary encoding
+ * Genom representation of an arbitrary encoding.
  * 
  * @author Felix
  *
  */
 public class EncodingGenom extends GenericGenom<EncodingGene> {
 	
+	/**
+	 * The number of floats to represent a single encoding instance.
+	 */
+	private final int ENCODING_SIZE;
+	
+	/**
+	 * Create a new genom with a given list of genes.
+	 * @param initialFitness the initial fitness of this genom
+	 * @param genes the list of genes the new genom will hold
+	 */
 	public EncodingGenom(float initialFitness, List<EncodingGene> genes) {
 		super(initialFitness, genes);
+		this.ENCODING_SIZE = genes.get(0).getGeneLength();
 	}
 	
-	public EncodingGenom() {
+	/**
+	 * Create a genom without genes but for a selected encoding.
+	 * @param encodingSize The length of a single gene
+	 */
+	public EncodingGenom(int encodingSize) {
 		super();
+		this.ENCODING_SIZE = encodingSize;
 	}
 	
-	public static List<EncodingGenom> reproduce(EncodingGenom parent1, EncodingGenom parent2) {
-		if(parent1.getGenes().size() != parent2.getGenes().size()) {
-			System.out.println("Trying to reproduce with genoms of different gene length!");
-			return null;
+	/**
+	 * Creates two children from the given genoms. It will perform a crossover of the gene lists and of the gene values.
+	 * @param parent1 First genom from which genes the children will be created
+	 * @param parent2 Second genom from which genes the children will be created
+	 * @return A list of two newly created genoms 
+	 * @throws Exception if the genoms are for encodings of different size
+	 */
+	public static List<EncodingGenom> reproduce(EncodingGenom parent1, EncodingGenom parent2) throws Exception {
+		if(parent1.getGenes().get(0).getGeneLength() != parent2.getGenes().get(0).getGeneLength()) {
+			throw new Exception("Trying to reproduce with different encoding size!");
 		}
 		
+		int encodingSize = parent1.ENCODING_SIZE;
+		
 		List<EncodingGenom> offspring = new ArrayList<>(2);
-		EncodingGenom child1 = new EncodingGenom();
-		EncodingGenom child2 = new EncodingGenom();
+		EncodingGenom child1 = new EncodingGenom(encodingSize);
+		EncodingGenom child2 = new EncodingGenom(encodingSize);
 		int p1GeneSize = parent1.getGenes().size();
 		int p2GeneSize = parent2.getGenes().size();
 		
@@ -84,6 +108,10 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 		return offspring;
 	}
 	
+	/**
+	 * Retrieve the complete list of all gene values for this genom.
+	 * @return An array containing all gene values in order.
+	 */
 	public float[] getAllParameters() {
 		int size = parameterSize();
 		float[] params = new float[size];
@@ -101,13 +129,24 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 		return params;
 	}
 	
+	/**
+	 * Mutate this genom. It will randomly mutate a gene value with a probability of the selected mutation rate.
+	 * Also it will add a new gene with a probability of the selected gene add probability.
+	 */
 	public void mutate() {
+		//try to replace a single gene value
 		for(EncodingGene gene : genes) {
 			for(int i = 0; i < gene.getGeneLength(); i++) {
 				if (Evolutionhelper.randomFloat() < GeneticAlgorithm.MUTATION_RATE) {
 					gene.replaceValue(i, Evolutionhelper.randomFloat());
 				}
 			}
+		}
+		
+		//try to add a new randomly initialised gene
+		if(Evolutionhelper.randomFloat() < EncodingSearch.GENE_ADD_PROBABILITY) {
+			EncodingGene addedGene = new EncodingGene(ENCODING_SIZE);
+			genes.add(addedGene);
 		}
 	}
 	

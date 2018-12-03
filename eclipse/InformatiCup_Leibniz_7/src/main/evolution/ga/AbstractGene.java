@@ -6,11 +6,11 @@ import java.util.List;
 import main.utils.Evolutionhelper;
 
 /**
- * Representation of a single gene. A gene consists of a number of integer values.
- * The values are randomly initialized from 0 to MAX_GENE_VALUE.
+ * Abstract implementation of a gene. A gene has a list of values.
  * 
  * @author Felix
  *
+ * @param <T> The type of the values
  */
 public abstract class AbstractGene<T> {
 	protected List<T> values;
@@ -27,6 +27,10 @@ public abstract class AbstractGene<T> {
 		initializeGene();
 	}
 	
+	/**
+	 * Creates a new gene from a list of given values.
+	 * @param values the values this new gene will have
+	 */
 	public AbstractGene(List<T> values) {
 		this.values = values;
 		this.length = values.size();
@@ -47,7 +51,11 @@ public abstract class AbstractGene<T> {
 		return values;
 	}
 	
-	public int getGeneLength( ) {
+	/**
+	 * Retrieves the number of gene values this gene holds.
+	 * @return the length of the list of values
+	 */
+	public int getGeneLength() {
 		return length;
 	}
 }

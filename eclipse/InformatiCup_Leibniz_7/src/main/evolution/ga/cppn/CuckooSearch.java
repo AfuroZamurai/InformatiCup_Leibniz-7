@@ -30,6 +30,10 @@ public class CuckooSearch extends GeneticAlgorithm<CPPNGenom> {
 	
 	private int currentGeneration = 1;
 	
+	/**
+	 * Maximum integer value that a single gene value can have
+	 */
+	public static final int MAX_GENE_VALUE = Integer.MAX_VALUE;
 	public static final float ABANDONED_NESTS = 0.1f;
 	private static final double LEVY_ALPHA = 0.01 * MAX_GENE_VALUE;
 	private static final double LEVY_BETA = 3.0 / 2.0;

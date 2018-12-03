@@ -5,16 +5,32 @@ import java.util.List;
 
 import main.utils.Evolutionhelper;
 
+/**
+ * Generic implementation of a genom. A genom is part of a population, which gets optimized.
+ * Genoms consist of a list of genes and have a fitness score assigned to them.
+ * 
+ * @author Felix
+ *
+ * @param <T> The implementation of a gene
+ */
 public class GenericGenom<T extends AbstractGene<?>> implements Comparable<GenericGenom<T>>{
 	
 	protected float fitness;
 	protected List<T> genes;
 	
+	/**
+	 * Create a genom with an initial fitness and a given list of genes.
+	 * @param fitness the fitness of this new genom
+	 * @param genes a list of genes
+	 */
 	public GenericGenom(float fitness, List<T> genes) {
 		this.fitness = fitness;
 		this.genes = genes;
 	}
 	
+	/**
+	 * Create a new genom without any genes. It will have an initial fitness of -1.
+	 */
 	public GenericGenom() {
 		fitness = -1.0f;
 		genes = new ArrayList<>();
@@ -102,6 +118,11 @@ public class GenericGenom<T extends AbstractGene<?>> implements Comparable<Gener
 		this.genes = genes;
 	}
 	
+	/**
+	 * Compares another genom to this genom instance.
+	 * @param o the genom to which this genom gets compared to
+	 * @return 1 if this genoms fitness is higher, -1 if it is lower and 0 if the fitness is equal
+	 */
 	public int compareTo(GenericGenom<T> o) {
 		return this.fitness - o.fitness > 0 ? 1 : this.fitness - o.fitness < 0 ? -1 : 0;
 	}

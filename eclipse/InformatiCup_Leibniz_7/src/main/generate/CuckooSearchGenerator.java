@@ -13,6 +13,7 @@ import main.evolution.network.Config;
 
 /**
  * This class will evolve a fooling image for a given input image.
+ * Currently this algorithm is suspended.
  * 
  * @author Felix
  *
