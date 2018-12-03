@@ -658,9 +658,15 @@ public class Controller implements Initializable {
 		// Parse input for the two parameters (processing delay and max iterations)
 		try {
 			delayTime = Integer.parseInt(textFieldDelayTime.getText());
+		} catch (Exception e) {
+			showAlertError("Bitte ganze Zahlen als Parameter für die Verzögerungszeit eingeben!");
+			return false;
+		}
+		
+		try {
 			maxIterations = Integer.parseInt(textFieldMaxIterations.getText());
 		} catch (Exception e) {
-			showAlertError("Bitte ganze Zahlen als Parameter eingeben!");
+			showAlertError("Bitte ganze Zahlen als Parameter für die max. Iterationen eingeben!");
 			return false;
 		}
 		return true;

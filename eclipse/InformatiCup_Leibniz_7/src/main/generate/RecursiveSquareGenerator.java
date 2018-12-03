@@ -34,39 +34,38 @@ public class RecursiveSquareGenerator implements IGenerator {
 	private float overallConfidence;
 	private float[] confidenceColors = new float[colors.length];
 	private Graphics2D g;
-	private Parameter fastExploParameter = new Parameter("Fast Mode", "Faster exploration phase", false);
+	private Parameter stoppingParameter = new Parameter("Automatisches Stoppen", "Ja: der Generator"
+			+ " stoppt bei einem Bild über 90% - Nein: der Generator stoppt nur bei "
+			+ "Betätigung des Stop-Buttons", true);
 
 	private PriorityQueue<WorkingBlock> queue = new PriorityQueue<>();
 
 	private class WorkingBlock implements Comparable<WorkingBlock> {
 		/** The top left x coordinate of the block */
 		private int x;
-		
+
 		/** The top left y coordinate of the block */
 		private int y;
-		
+
 		/** The block size */
 		private int size;
-		
+
 		/** The rating of the block given by the neural net */
 		public float rating;
-		
+
 		/** The color of the block */
 		private Color color;
-		
-		/** 
-		 * The children of this block:
-		 * Index 0: top left child,
-		 * Index 1: top right child,
-		 * Index 2: bottom left child,
-		 * Index 3: bottom right child
+
+		/**
+		 * The children of this block: Index 0: top left child, Index 1: top right
+		 * child, Index 2: bottom left child, Index 3: bottom right child
 		 */
 		private WorkingBlock[] children = new WorkingBlock[4];
-		
-		/** 
+
+		/**
 		 * A Pair of Block and index, that indicate the child that has be added last.
-		 * The WorkingBlock is the parent of the last added child and the Integer is
-		 * the index of the child in the children array.
+		 * The WorkingBlock is the parent of the last added child and the Integer is the
+		 * index of the child in the children array.
 		 */
 		private Pair<WorkingBlock, Integer> lastAddedChild;
 
@@ -257,7 +256,8 @@ public class RecursiveSquareGenerator implements IGenerator {
 			int position = ThreadLocalRandom.current().nextInt(4);
 			WorkingBlock block = blocks[position];
 			currentBlock = block;
-			//Color childColor = colors[ThreadLocalRandom.current().nextInt(colors.length)];
+			// Color childColor =
+			// colors[ThreadLocalRandom.current().nextInt(colors.length)];
 			if (position == 0) {
 				block = block.children[3];
 			} else if (position == 1) {
@@ -479,9 +479,6 @@ public class RecursiveSquareGenerator implements IGenerator {
 		i = 0;
 		blockCounter = 0;
 
-		if (fastExploParameter.getBoolValue())
-			System.out.println("test");
-
 		workingImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		g = workingImage.createGraphics();
 		g.setColor(Color.WHITE);
@@ -491,13 +488,17 @@ public class RecursiveSquareGenerator implements IGenerator {
 	@Override
 	public List<Parameter> getParameterList() {
 		ArrayList<Parameter> list = new ArrayList<>();
-		list.add(fastExploParameter);
+		list.add(stoppingParameter);
 		return list;
 	}
 
 	@Override
 	public boolean isFinished() {
-		return isFinished;
+		if (stoppingParameter.getBoolValue()) {
+			return isFinished;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

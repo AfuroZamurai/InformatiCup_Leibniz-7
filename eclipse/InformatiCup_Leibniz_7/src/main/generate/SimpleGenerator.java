@@ -43,7 +43,7 @@ public class SimpleGenerator implements IGenerator {
 	 * The chance to draw a circle over other previously drawn circles without
 	 * drawing over an area that has not been drawn over before
 	 */
-	private Parameter diversionChance = new Parameter("Diversion Chance",
+	private Parameter diversionChance = new Parameter("Diversions Chance",
 			"Die Chance einen Kreis über einen anderen zu zeichnen (Wert zwischen 0 und 1)", 0.1f);
 
 	@Override
@@ -170,7 +170,7 @@ public class SimpleGenerator implements IGenerator {
 				+ "gezeichnet. Der Algorithmus benutzt dabei eine Heuristik, dass "
 				+ "er versucht Kreise über eine noch unbemalte Fläche zu zeichnen, "
 				+ "um das Bild schneller zu füllen. Die Chance trotzdem einen Kreis "
-				+ "zu zeichen kann über den Parameter \"Diversion Chance\" eingestellt "
+				+ "zu zeichen kann über den Parameter \"Diversions Chance\" eingestellt "
 				+ "werden."
 				+ "";
 	}
