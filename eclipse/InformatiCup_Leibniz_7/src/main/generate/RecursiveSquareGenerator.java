@@ -39,12 +39,51 @@ public class RecursiveSquareGenerator implements IGenerator {
 	private PriorityQueue<WorkingBlock> queue = new PriorityQueue<>();
 
 	private class WorkingBlock implements Comparable<WorkingBlock> {
-		private int x, y, size;
+		/** The top left x coordinate of the block */
+		private int x;
+		
+		/** The top left y coordinate of the block */
+		private int y;
+		
+		/** The block size */
+		private int size;
+		
+		/** The rating of the block given by the neural net */
 		public float rating;
+		
+		/** The color of the block */
 		private Color color;
+		
+		/** 
+		 * The children of this block:
+		 * Index 0: top left child,
+		 * Index 1: top right child,
+		 * Index 2: bottom left child,
+		 * Index 3: bottom right child
+		 */
 		private WorkingBlock[] children = new WorkingBlock[4];
+		
+		/** 
+		 * A Pair of Block and index, that indicate the child that has be added last.
+		 * The WorkingBlock is the parent of the last added child and the Integer is
+		 * the index of the child in the children array.
+		 */
 		private Pair<WorkingBlock, Integer> lastAddedChild;
 
+		/**
+		 * Creates a new WorkingBlock.
+		 * 
+		 * @param x
+		 *            The top left x coordinate of the block
+		 * @param y
+		 *            The top left y coordinate of the block
+		 * @param size
+		 *            The block size
+		 * @param rating
+		 *            The rating of the block
+		 * @param color
+		 *            The color of the block
+		 */
 		public WorkingBlock(int x, int y, int size, float rating, Color color) {
 			this.x = x;
 			this.y = y;
@@ -53,6 +92,14 @@ public class RecursiveSquareGenerator implements IGenerator {
 			this.color = color;
 		}
 
+		/**
+		 * Adds a child of random color, that is not the color of this block, at a given
+		 * position.
+		 * 
+		 * @param position
+		 *            The position the child is added to
+		 * @return The child block
+		 */
 		public WorkingBlock addChild(int position) {
 			if (position >= 0 && position < 4) {
 				int childSize = size / 2;
@@ -66,6 +113,15 @@ public class RecursiveSquareGenerator implements IGenerator {
 			return null;
 		}
 
+		/**
+		 * Adds a child of given color to this block at a given position.
+		 * 
+		 * @param position
+		 *            The position the child is added to
+		 * @param color
+		 *            The color of the child
+		 * @return The child block
+		 */
 		public WorkingBlock addChild(int position, Color color) {
 			if (position >= 0 && position < 4) {
 				int childSize = size / 2;
@@ -79,6 +135,9 @@ public class RecursiveSquareGenerator implements IGenerator {
 			return null;
 		}
 
+		/**
+		 * Adds a child at a random free position in this block or any of its children.
+		 */
 		public void addRandomChild() {
 			LinkedList<Pair<WorkingBlock, Integer>> list = new LinkedList<>();
 			getAllChildren(list);
@@ -88,6 +147,10 @@ public class RecursiveSquareGenerator implements IGenerator {
 			lastAddedChild = pair;
 		}
 
+		/**
+		 * Removes the child that has last been added to this block or one of its
+		 * children.
+		 */
 		public void removeLastAddedChild() {
 			if (lastAddedChild != null) {
 				lastAddedChild.getKey().children[lastAddedChild.getValue()] = null;
@@ -95,6 +158,13 @@ public class RecursiveSquareGenerator implements IGenerator {
 			}
 		}
 
+		/**
+		 * Returns a list of all free child positions of this block and its children.
+		 * 
+		 * @param list
+		 *            The list of free child positions found so far
+		 * @return The list of free child positions
+		 */
 		private LinkedList<Pair<WorkingBlock, Integer>> getAllChildren(LinkedList<Pair<WorkingBlock, Integer>> list) {
 			if (size == 2) {
 				return list;
@@ -144,6 +214,12 @@ public class RecursiveSquareGenerator implements IGenerator {
 			return "(" + x + ", " + y + ", " + rating + ")";
 		}
 
+		/**
+		 * Returns a random Color of the color array that is different from the color of
+		 * this block.
+		 *
+		 * @return A random Color
+		 */
 		private Color pickNewColor() {
 			int rnd = ThreadLocalRandom.current().nextInt(colors.length - 1);
 			int counter = 0;
@@ -181,7 +257,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 			int position = ThreadLocalRandom.current().nextInt(4);
 			WorkingBlock block = blocks[position];
 			currentBlock = block;
-			Color childColor = colors[ThreadLocalRandom.current().nextInt(colors.length)];
+			//Color childColor = colors[ThreadLocalRandom.current().nextInt(colors.length)];
 			if (position == 0) {
 				block = block.children[3];
 			} else if (position == 1) {
@@ -190,11 +266,11 @@ public class RecursiveSquareGenerator implements IGenerator {
 				block = block.children[1];
 			} else if (position == 3) {
 				block = block.children[0];
-			} 
-			//block.addChild(ThreadLocalRandom.current().nextInt(4), childColor);
+			}
+			// block.addChild(ThreadLocalRandom.current().nextInt(4), childColor);
 			block.addRandomChild();
 			block.paint(g);
-			
+
 			g.setColor(Color.DARK_GRAY);
 			g.drawLine(0, height - 1, width, height - 1);
 			g.drawLine(width - 1, 0, width - 1, height);
@@ -278,7 +354,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 								blockColor = colors[indexMax2];
 							block.addChild(position, blockColor);
 							block.paint(g);
-								
+
 						}
 					}
 					blockCounter++;
@@ -291,32 +367,32 @@ public class RecursiveSquareGenerator implements IGenerator {
 					x += blockSize;
 					int endX = width;
 					// quick try out! this has to be changed if it works out
-					
+
 					if (blockSize == 16)
 						endX = 48;
 					if (blockSize == 8)
 						endX = 40;
-					
+
 					if (x >= endX) {
 						int startX = 0;
-						
+
 						if (blockSize == 16)
 							startX = 16;
 						if (blockSize == 8)
 							startX = 24;
-						
+
 						x = startX;
 						y += blockSize;
 						int endY = height;
-						
+
 						if (blockSize == 16)
 							endY = 48;
 						if (blockSize == 8)
 							endY = 40;
-						
+
 						if (y >= endY) {
 							int startY = 0;
-							
+
 							if (blockSize == 32) {
 								startY = 16;
 								startX = 16;
@@ -326,7 +402,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 								startY = 24;
 								startX = 24;
 							}
-							
+
 							y = startY;
 							x = startX;
 							isDone = true;
@@ -350,16 +426,16 @@ public class RecursiveSquareGenerator implements IGenerator {
 						discoveryPhase = false;
 					}
 					blockSize = blockSize / 2;
-					//queue.clear();
+					// queue.clear();
 				}
-			//} else if (randomPhase) {
-				
+				// } else if (randomPhase) {
+
 			} else {
 				if (res > overallConfidence && res >= 0.01f) {
 					overallConfidence = res;
 					randomPhase = false;
 				}
-					
+
 				if (overallConfidence >= 0.9f)
 					isFinished = true;
 				if (res >= overallConfidence) {
@@ -402,7 +478,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 		y = 0;
 		i = 0;
 		blockCounter = 0;
-		
+
 		if (fastExploParameter.getBoolValue())
 			System.out.println("test");
 
@@ -426,7 +502,12 @@ public class RecursiveSquareGenerator implements IGenerator {
 
 	@Override
 	public String getModuleDescription() {
-		return "Blockrekursion: ";
+		return "Blockrekursion: \n\n" + "Dieser Algorithmus generiert Bilder aus verschiedenfarbigen Quadraten"
+				+ ", welche durch eine rekursive Struktur angeordnet sind. Der Algorithmus arbeitet "
+				+ "dabei in zwei Phasen: In der Explorationsphase wird versucht mithilfe eines gut "
+				+ "erkannten Bildes ein Startbild für die zweite Phase zu finden. In dieser Phase "
+				+ "werden dann zufällig neue Blöcke hinzugefügt. Durch ein greedy Verfahren konvergieren "
+				+ "die Bilder dann gegen ein Bild mit 90% Konfidenz.";
 	}
 
 	/**
