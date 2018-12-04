@@ -45,11 +45,11 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	/**
 	 * Number of genes the genoms of the initial population will have.
 	 */
-	private int geneAmount = 100; 
+	private int geneAmount = 70; 
 	/**
 	 * The probability that a gene will be added to a genom during mutation.
 	 */
-	public static final float GENE_ADD_PROBABILITY = 0.2f;
+	public static final float GENE_ADD_PROBABILITY = 0.9f;
 
 	/**
 	 * Creates a new instance of this genetic algorithm.
@@ -153,6 +153,11 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		printGeneLengthData();
+		EncodingGenom best = population.getBest();
+		System.out.println("Best genom of the new population has a fitness score of " + best.getFitness() +
+				"\nFitness comes from a confidence of " + best.getConfidence() + " and a coverage of " + best.getCoverage());
 	}
 	
 	/**
@@ -209,6 +214,23 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		return parents;
 	}
 	
+	private void printGeneLengthData() {
+		int maxGeneLength = geneAmount;
+		float average = 0.0f;
+		for (Iterator<EncodingGenom> iterator = population.getGenoms().iterator(); iterator.hasNext();) {
+			EncodingGenom genom = iterator.next();
+			int length = genom.getGenes().size();
+			if(length > maxGeneLength) {
+				maxGeneLength = length;
+			}
+			average += length;
+		}
+		
+		average /= populationSize;
+		
+		System.out.println("Maximal gene length: " + maxGeneLength + "\nAverage gene length: " + average);
+	}
+	
 	/**
 	 * Selects a given number of the best genoms of the current population.
 	 * @param survivors The number of genoms which will be selected
@@ -248,8 +270,8 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 					float coverage = ImageUtil.getTransparentPercent(encodingImage);
 					//calculate fitness from confidence and coverage. Maybe one of them should be more important
 					//TODO: create a method for fitness calculation
-					float fitness = 1.0f - (1.0f - confidence) - (1.0f - coverage);
-					genom.setFitness(fitness);
+					float fitness = EncodingFitness.getCombinedFitness(confidence, coverage);
+					genom.updateFitness(fitness, confidence, coverage);
 				} else {
 					//shouldn't happen
 					genom.setFitness(0.0f);
@@ -268,8 +290,9 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		}
 		EncodingGenom best = (genoms.get(genoms.size() - 1));
 
-		//make sure we really have a new best genom as we are no assigning a fitness score to the whole population
+		//make sure we really have a new best genom as we are not assigning a fitness score to the whole population
 		if(best.getFitness() > population.getBest().getFitness()) {
+			System.out.println("New best with fitness of " + best.getFitness() + " to old fitness " + population.getBest().getFitness());
 			population.setBest(best);
 		}
 	}
@@ -291,8 +314,8 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 					float confidence = result.getConfidenceForClass(targetClass);
 					float coverage = ImageUtil.getTransparentPercent(encodingImage);
 					//calculate fitness from confidence and coverage. Maybe one of them should be more important
-					float fitness = 1.0f - (1.0f - confidence) - (1.0f - coverage);
-					genom.setFitness(fitness);
+					float fitness = EncodingFitness.getCombinedFitness(confidence, coverage);
+					genom.updateFitness(fitness, confidence, coverage);
 				} else {
 					//shouldn't happen
 					genom.setFitness(0.0f);

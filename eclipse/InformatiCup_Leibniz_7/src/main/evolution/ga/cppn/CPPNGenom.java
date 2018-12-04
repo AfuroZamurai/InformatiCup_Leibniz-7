@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import main.evolution.ga.AbstractGene;
+import main.evolution.ga.Fitness;
 import main.evolution.ga.GenericGenom;
 import main.evolution.ga.GeneticAlgorithm;
 import main.evolution.network.CPPN;
@@ -15,15 +16,14 @@ public class CPPNGenom extends GenericGenom<CPPNGene> {
 	private CPPN net;
 
 	public CPPNGenom(float initialFitness, CPPNGene initialGene, CPPN net) {
-		fitness = initialFitness;
+		fitness = new Fitness(initialFitness);
 		genes = new ArrayList<>();
 		genes.add(initialGene);
 		this.net = net;
 	}
 	
 	public CPPNGenom() {
-		fitness = -1.0f;
-		genes = new ArrayList<>();
+		super();
 	}
 	
 	/**

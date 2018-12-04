@@ -1,6 +1,7 @@
 package main.evolution.ga;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,5 +42,12 @@ public class Population<T extends GenericGenom<? extends AbstractGene<?>>> {
 	public void setBest(T best) {
 		this.best = best;
 	}
-
+	
+	/**
+	 * Sort the genoms of this population according to their fitness.
+	 * The will be sorted in ascending order.
+	 */
+	public void sortGenoms() {
+		Collections.sort(genoms);
+	}
 }

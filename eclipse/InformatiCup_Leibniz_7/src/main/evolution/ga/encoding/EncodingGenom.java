@@ -23,13 +23,16 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 	 */
 	private final int ENCODING_SIZE;
 	
+	private EncodingFitness fitness;
+	
 	/**
 	 * Create a new genom with a given list of genes.
 	 * @param initialFitness the initial fitness of this genom
 	 * @param genes the list of genes the new genom will hold
 	 */
 	public EncodingGenom(float initialFitness, List<EncodingGene> genes) {
-		super(initialFitness, genes);
+		this.fitness = new EncodingFitness(initialFitness);
+		this.genes = genes;
 		this.ENCODING_SIZE = genes.get(0).getGeneLength();
 	}
 	
@@ -38,7 +41,8 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 	 * @param encodingSize The length of a single gene
 	 */
 	public EncodingGenom(int encodingSize) {
-		super();
+		fitness = new EncodingFitness(-1.0f);
+		genes = new ArrayList<>();
 		this.ENCODING_SIZE = encodingSize;
 	}
 	
@@ -157,5 +161,29 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 		}
 		
 		return size;
+	}
+
+	@Override
+	public float getFitness() {
+		return fitness.getFitnessScore();
+	}
+	
+	public float getConfidence() {
+		return fitness.getConfidence();
+	}
+	
+	public float getCoverage() {
+		return fitness.getCoverage();
+	}
+	
+	public void updateFitness(float newFitness, float confidence, float coverage) {
+		fitness.setFitnessScore(newFitness);
+		fitness.setConfidence(confidence);
+		fitness.setCoverage(coverage);
+	}
+	
+	public int compareTo(EncodingGenom o) {
+		return this.fitness.getFitnessScore() - o.fitness.getFitnessScore() > 0 ? 1 : 
+			this.fitness.getFitnessScore() - o.fitness.getFitnessScore() < 0 ? -1 : 0;
 	}
 }
