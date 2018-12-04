@@ -15,31 +15,112 @@ import javafx.util.Pair;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 
+/**
+ * This Generator tries to create images consisting of many colored squared
+ * blocks. These blocks are arranged in a recursive structure using the private
+ * class WorkingBlock.
+ * 
+ * The Generator works in two main phases: exploration phase and convergence
+ * phase. The goal of the exploration phase is to find a starting image of
+ * confidence greater 0 using a starting image of very high confidence. Then in
+ * the convergence phase the starting image is altered by adding blocks to find
+ * an image of confidence greater 0.9 . During this phase the generator uses a
+ * greedy approach: Changes that increase the confidence are stored while those
+ * that decrease it are discarded.
+ * 
+ * 
+ * @author Fredo
+ */
 public class RecursiveSquareGenerator implements IGenerator {
 
+	/** The starting Image */
 	private BufferedImage originalImage;
-	private BufferedImage workingImage;
-	private BufferedImage bestImage;
-	private IClassification imageClass;
-	private Color[] colors = new Color[3];
-	private int x = 0, y = 0;
-	private int blockSize = 32;
-	private int width, height;
-	private int i, blockCounter;
-	private WorkingBlock currentBlock;
-	private WorkingBlock[] blocks = new WorkingBlock[4];
-	private boolean isFirst, isFinished = false, isDone = false;
-	private boolean discoveryPhase;
-	private boolean randomPhase = false;
-	private float overallConfidence;
-	private float[] confidenceColors = new float[colors.length];
-	private Graphics2D g;
-	private Parameter stoppingParameter = new Parameter("Automatisches Stoppen", "Ja: der Generator"
-			+ " stoppt bei einem Bild über 90% - Nein: der Generator stoppt nur bei "
-			+ "Betätigung des Stop-Buttons", true);
 
+	/** Current working image */
+	private BufferedImage workingImage;
+
+	/** Best image found so far */
+	private BufferedImage bestImage;
+
+	/** Target class for the image */
+	private IClassification imageClass;
+
+	/** Array of available colors for the blocks */
+	private Color[] colors = new Color[3];
+
+	/** Current x coordinate of blocks */
+	private int x = 0;
+
+	/** Current y coordinate of blocks */
+	private int y = 0;
+
+	/** Current working block size */
+	private int blockSize = 32;
+
+	/** width of the images */
+	private int width;
+
+	/** Height of the images */
+	private int height;
+
+	/** Counter for iterations */
+	private int i;
+
+	/** Counter blocks in discovery phase */
+	private int blockCounter;
+
+	/** The current WorkingBlock - used after exploration phase */
+	private WorkingBlock currentBlock;
+
+	/** An array of the four main blocks in each corner */
+	private WorkingBlock[] blocks = new WorkingBlock[4];
+
+	/** Indicates the first iteration. */
+	private boolean isFirst;
+
+	/** Indicates whether the generator is finished. */
+	private boolean isFinished = false; // true when confidence > 90%
+
+	/** Indicates whether a step in the exploration phase is done. */
+	private boolean isDone = false;
+
+	/** Indicates whether the discovery phase in the exploration phase is active. */
+	private boolean discoveryPhase;
+
+	/** Indicates whether the random phase in the exploration phase is active. */
+	private boolean randomPhase = false;
+
+	/** The highest confidence found so far */
+	private float overallConfidence;
+
+	/**
+	 * An array to store confidence values for the available colors when iterating
+	 * through them
+	 */
+	private float[] confidenceColors = new float[colors.length];
+
+	/** The graphics object of the workingImage */
+	private Graphics2D g;
+
+	/**
+	 * The parameter that can be set by the user via the GUI; it enables automatic
+	 * stopping of the generator
+	 */
+	private Parameter stoppingParameter = new Parameter("Automatisches Stoppen", "Ja: der Generator"
+			+ " stoppt bei einem Bild über 90% - Nein: der Generator stoppt nur bei " + "Betätigung des Stop-Buttons",
+			true);
+
+	/** A priority queue used for ordering the four main blocks via their rating */
 	private PriorityQueue<WorkingBlock> queue = new PriorityQueue<>();
 
+	/**
+	 * The WorkingBlock defines a block or square of a specific color. Each block
+	 * can contain four smaller WorkingBlocks making this a recursive structure. The
+	 * idea is that the generator creates images of four WorkingBlocks in each
+	 * corner which each can have multiple sub blocks.
+	 * 
+	 * @author Fredo
+	 */
 	private class WorkingBlock implements Comparable<WorkingBlock> {
 		/** The top left x coordinate of the block */
 		private int x;
@@ -503,8 +584,8 @@ public class RecursiveSquareGenerator implements IGenerator {
 
 	@Override
 	public String getModuleDescription() {
-		return "Blockrekursion: \n\n" + "Dieser Algorithmus generiert Bilder aus verschiedenfarbigen Quadraten"
-				+ ", welche durch eine rekursive Struktur angeordnet sind. Der Algorithmus arbeitet "
+		return "Blockrekursion: \n\n" + "Dieser Generator generiert Bilder aus verschiedenfarbigen Quadraten"
+				+ ", welche durch eine rekursive Struktur angeordnet sind. Der Generator arbeitet "
 				+ "dabei in zwei Phasen: In der Explorationsphase wird versucht mithilfe eines gut "
 				+ "erkannten Bildes ein Startbild für die zweite Phase zu finden. In dieser Phase "
 				+ "werden dann zufällig neue Blöcke hinzugefügt. Durch ein greedy Verfahren konvergieren "
