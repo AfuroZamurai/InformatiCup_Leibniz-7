@@ -25,9 +25,7 @@ public class CheckerGenerator implements IGenerator {
 	final int IMAGEHEIGHT = 64;
 	final int IMAGEWIDTH = 64;
 	int filter;
-	final double ERROR_TOLERANCE = 0.0000005;
 	float newConfidenceValue = 0;
-	double percent;
 
 	IClassification imageClass;
 	BufferedImage inputImage, initialImage;
@@ -72,14 +70,6 @@ public class CheckerGenerator implements IGenerator {
 		// its original color
 		for (int i = 0; i < IMAGEHEIGHT; i += filter) {
 			for (int j = 0; j < IMAGEWIDTH; j += filter) {
-				percent = (((((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j))
-						/ ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) filter) * 100);
-				System.out.print("\nEs dauert noch "
-						+ ((int) ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) (filter * filter)
-								- (((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j) / filter))
-						+ " Sekunden(");
-				System.out.println((int) percent + "%)\n");
-
 				for (int k = 0; k < filter * filter; k++) {
 					int x = k % filter;
 					int y = k / filter;
@@ -126,15 +116,6 @@ public class CheckerGenerator implements IGenerator {
 	@Override
 	public BufferedImage generateNextImage() {
 		if (!isFirstStep) {
-			percent = (((((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j))
-					/ ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) filter) * 100);
-			System.out
-					.print("\nEs dauert noch "
-							+ ((int) ((double) (IMAGEHEIGHT * IMAGEWIDTH) / (double) (filter * filter)
-									- (((double) (i * IMAGEHEIGHT) / (double) filter) + (double) j) / filter))
-							+ " Sekunden(");
-			System.out.println((int) percent + "%)\n");
-
 			for (int k = 0; k < filter * filter; k++) { // set pixel in input image on black
 
 				int x = k % filter;

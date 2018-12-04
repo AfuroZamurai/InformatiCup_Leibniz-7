@@ -10,13 +10,10 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,7 +37,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
@@ -54,7 +50,6 @@ import main.encodings.CircleEncoding;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.Sign;
-import main.evaluate.TrasiWebEvaluator;
 import main.generate.CheckerGenerator;
 import main.generate.EvoEncoderGenerator;
 import main.generate.IGenerator;
@@ -90,8 +85,10 @@ public class Controller implements Initializable {
 	Thread thread;
 	public EventType<Event> update = new EventType<Event>(EventType.ROOT);
 	public Task<Void> task;
+
 	private GeneratorFramework moduleFramework = new GeneratorFramework(this);
 	private IGenerator module;
+
 	private ArrayList<Pair<Parameter, TextField>> parameterTextFieldList = new ArrayList<>();
 	private ArrayList<Pair<Parameter, RadioButton>> parameterRadioButtonList = new ArrayList<>();
 
@@ -167,7 +164,7 @@ public class Controller implements Initializable {
 	private CategoryAxis xAxis;
 
 	@FXML
-	private Button cancellationButton;
+	private Button stopButton;
 
 	@FXML
 	private Button generateButton;
@@ -219,7 +216,6 @@ public class Controller implements Initializable {
 	@FXML
 	void menuItem2clicked(ActionEvent event) {
 		selectedAlgorithmn = menuItem2;
-		// textField1.setVisible(true);
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
@@ -326,8 +322,10 @@ public class Controller implements Initializable {
 	void generateImage(ActionEvent event) {
 
 		listView.setDisable(true);
-		enableButton(cancellationButton);
+		enableButton(stopButton);
 		disableButton(generateButton);
+		progressIndicator.setVisible(true);
+		classLabel.setText("Klasse: " + listView.getSelectionModel().getSelectedItem());
 
 		lineChart.getData().clear();
 		series = new Series();
@@ -343,7 +341,7 @@ public class Controller implements Initializable {
 			}
 		} else {
 			showAlertError("Es wurde kein Verfahren ausgewï¿½hlt");
-			disableButton(cancellationButton);
+			disableButton(stopButton);
 			listView.setDisable(false);
 			return;
 		}
@@ -366,7 +364,7 @@ public class Controller implements Initializable {
 		progressIndicator.setVisible(false);
 		generationLocked = false;
 		enableButton(generateButton);
-		disableButton(cancellationButton);
+		disableButton(stopButton);
 		enableButton(SaveImageButton);
 		listView.setDisable(false);
 		// setConfidence(confidence);
@@ -450,6 +448,7 @@ public class Controller implements Initializable {
 		try {
 			BufferedImage image = ImageLoader.loadImage(file + "");
 			inputImage.setImage(SwingFXUtils.toFXImage(image, null));
+			enableButton(generateButton);
 		} catch (IOException e) {
 			e.printStackTrace();
 			showAlertError("Es hat einen Fehler beim laden des Bildes gegeben.");
@@ -548,6 +547,10 @@ public class Controller implements Initializable {
 		outputImage.setImage(image);
 	}
 
+	/**
+	 * Updated the confidence value, is displayed in green if the value exceeds a
+	 * limit, otherwise red
+	 */
 	public void setConfidence(float newConfidenceValue) {
 
 		if (newConfidenceValue >= LIMIT_CONFIDENCE) {
@@ -565,6 +568,9 @@ public class Controller implements Initializable {
 
 	}
 
+	/**
+	 * Updated the Image and the confidence
+	 */
 	public void updateResultImage(BufferedImage newImg, EvaluationResult evalResult) {
 		setOutputImage(SwingFXUtils.toFXImage(newImg, null));
 		setConfidence(evalResult.getConfidenceForClass(listView.getSelectionModel().getSelectedItem()));
@@ -662,7 +668,7 @@ public class Controller implements Initializable {
 			showAlertError("Bitte ganze Zahlen als Parameter für die Verzögerungszeit eingeben!");
 			return false;
 		}
-		
+
 		try {
 			maxIterations = Integer.parseInt(textFieldMaxIterations.getText());
 		} catch (Exception e) {
