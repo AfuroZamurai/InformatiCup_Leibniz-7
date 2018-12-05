@@ -53,7 +53,7 @@ class CmdLineTester {
 			for(int c = 0; c < classes;c++) {
 				
 				System.out.println("Testing: " + generators[a] + " with Class " + c);
-				args = new String[] {"-test -c " + c + " -g " + generators[a] + " -d 10"};
+				args = new String[] {"-test -c " + c + " -g " + generators[a] + " -d 1 -i 10"};
 				CmdLineStart.main(args);
 			}
 		}
