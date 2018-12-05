@@ -20,6 +20,7 @@ import main.generate.EvoEncoderGenerator;
 import main.generate.IGenerator;
 import main.generate.NoChange;
 import main.generate.RecursiveSquareGenerator;
+import main.generate.SimpleGenerator;
 import main.io.ImageSaver;
 
 public class CmdLineStart {
@@ -74,93 +75,72 @@ public class CmdLineStart {
 			System.out.println("Usage:");
 
 			System.out.println("\t" + COMMAND_NAME
-					+ " -e <evaluator> [parameters] -a <algorithm> [parameters] -c <targetclass> [optional arguments]");
+					+ " -g [generator]  -c [targetclass] [optional arguments]");
 			System.out.println("");
-			System.out.println("Evaluators:");
+			System.out.println("Generators:");
 			System.out.println(
-					"\ttrasiweb\t\t(default)\tSends Requests to the Web Interface and receives evaluations as respone.");
-
-			System.out.println("");
-			System.out.println("Algorithms:");
-			System.out.println(
-					"\tnochange\t\t(default)\tSimply sends the example start Image of the class to be evaluated.");
+					"\tnochange\t\t\tSimply sends the example start Image of the class to be evaluated.");
 			System.out.println(
 					"\tcheckersearch\t\tPuts black or white boxes on the image depending on evaluation.");
 			System.out.println("\tcirclesearch\t\t\t\tPuts colored circles on the image depending on evaluation.");
 			System.out.println("\tencodingsearch\t\t\t\tUses any image encoding to generate new images.");
-			System.out.println("\tcuckoosearch\t\t\t\tUses cuckoosearch to generate new images.");
+			System.out.println("\tevoencoding\t\t\t\tUses evolutionary algorithm to generate new images.");
 			System.out.println("\trecursivesquare\t\t\t\tUses squares recursively to generate images");
-
 			System.out.println("");
 			System.out.println("Target class:");
 			System.out.println(
-					"\t<Number >= 0>\t\t\t\tThe index of the target class that is being used to fool the classifier. Default=0");
+					"\t<0 - 42>\t\t\t\tThe index of the target class that is being used to fool the classifier. Default=0");
 
 			System.out.println("");
 			System.out.println("Optional Arguments:");
-			System.out.println("\t-v\t\t\t\t\tVerbose, prints information of current process to the command line.");
-			System.out.println("\t-o <path/filename>\t\t\tSpecify where the output will be saved. Default is under data/results/resultImage");
+			System.out.println("\t-o <path/filename>\t\t\tSpecify where the output will be saved. Default is \"result.png\"");
 			
 			
 			return;
 		}
 		
 		//Default values
-		IEvaluator evaluator;
-		IGenerator algorithm;
+		IEvaluator evaluator = new TrasiWebEvaluator();
+		IGenerator generator;
 		int targetClass;
-		String output = "data/results/resultImage";
+		String output = "result";
+		int requestDelay = 0;
+		int maxIterations = 600;
 		
-		if(params.containsKey("-a")) {
-			if(params.get("-a").size() != 1) {
-				System.out.println("Error: Exptected 1 argument for option -a, but got " + params.get("-a").size());
+		if(params.containsKey("-g")) {
+			if(params.get("-g").size() != 1) {
+				System.out.println("Error: Exptected 1 argument for option -g, but got " + params.get("-g").size());
 				return;
 			}
 			
-			if(params.get("-a").get(0).equals("nochange")) {
-				algorithm = new NoChange();
+			if(params.get("-g").get(0).equals("nochange")) {
+				generator = new NoChange();
 			}
-			else if(params.get("-a").get(0).equals("checkersearch")) {
-				algorithm = new CheckerGenerator();
+			else if(params.get("-g").get(0).equals("checkersearch")) {
+				generator = new CheckerGenerator();
 			}
-			else if(params.get("-a").get(0).equals("encodingsearch")) {
+			else if(params.get("-g").get(0).equals("circlesearch")) {
 				
-				algorithm = new EncoderGenerator(new CircleEncoding());
+				generator = new SimpleGenerator();
 			}
-			else if(params.get("-a").get(0).equals("cuckoosearch")) {
-				algorithm = new CuckooSearchGenerator(64, 64);
+			else if(params.get("-g").get(0).equals("evoencoding")) {
+				generator = new EvoEncoderGenerator(new CircleEncoding());
 			}
-			else if(params.get("-a").get(0).equals("recursivesquare")) {
-				algorithm = new RecursiveSquareGenerator();
+			else if(params.get("-g").get(0).equals("recursivesquare")) {
+				generator = new RecursiveSquareGenerator();
 			}
 			else {
-				System.out.println("Error: argument \""+ params.get("-a").get(0) +" \" for option -a is invalid");
+				System.out.println("Error: argument \""+ params.get("-g").get(0) +" \" for option -g is invalid");
 				return;
 			}
 		}
 		else {
-			algorithm = new NoChange();
+			System.out.println("Error: Argument for Generator -g must be set.");
+			return;
 		}
 		
-		if(params.containsKey("-e")) {
-			if(params.get("-e").size() != 1) {
-				System.out.println("Error: Exptected 1 argument for option -e, but got " + params.get("-e").size());
-				return;
-			}
-			
-			if(params.get("-e").get(0).equals("trasiweb")) {
-				evaluator = new TrasiWebEvaluator();
-			}
-			else if(params.get("-e").get(0).equals("test")) {
-				evaluator = new TestEvaluator();
-			}
-			else {
-				System.out.println("Error: argument \""+ params.get("-e").get(0) +" \" for option -e is invalid");
-				return;
-			}
-		}
-		else {
-			evaluator = new TrasiWebEvaluator();
+		if(params.containsKey("-test")) {
+			evaluator = new TestEvaluator();
 		}
 		
 		if(params.containsKey("-c")) {
@@ -171,12 +151,12 @@ public class CmdLineStart {
 			
 			try {
 				targetClass = Integer.parseInt(params.get("-c").get(0));
-				if(targetClass < 0) {
+				if(targetClass < 0 || targetClass > 42) {
 					throw new NumberFormatException();
 				}
 			}
 			catch (NumberFormatException e) {
-				System.out.println("Error: argument \""+ params.get("-c").get(0) + "\" for option -c is invalid. Must be integer >= 0");
+				System.out.println("Error: argument \""+ params.get("-c").get(0) + "\" for option -c is invalid. Must be integer in range 0-42");
 				return;
 			}
 		}
@@ -193,37 +173,86 @@ public class CmdLineStart {
 			output = params.get("-o").get(0);
 		}
 		
+		if(params.containsKey("-i")) {
+			if(params.get("-i").size() != 1) {
+				System.out.println("Error: Exptected 1 argument for option -i, but got " + params.get("-i").size());
+				return;
+			}
+			try {
+				String value = params.get("-i").get(0);
+				maxIterations = Integer.parseInt(value);
+				
+				if(maxIterations <= 0) {
+					throw new NumberFormatException();
+				}
+			}
+			catch (NumberFormatException e) {
+				System.out.println("Error: Argument -i expects an integer > 0");
+				return;
+			}
+		}
+		
+		if(params.containsKey("-d")) {
+			if(params.get("-d").size() != 1) {
+				System.out.println("Error: Exptected 1 argument for option -d, but got " + params.get("-d").size());
+				return;
+			}
+			try {
+				String value = params.get("-d").get(0);
+				requestDelay = Integer.parseInt(value);
+				
+				if(requestDelay < -1) {
+					throw new NumberFormatException();
+				}
+			}
+			catch (NumberFormatException e) {
+				System.out.println("Error: Argument -d expects an integer >= 0");
+				return;
+			}
+		}
+		
 		IClassification sign = Sign.values()[targetClass];
-		runAlgorithm(evaluator, algorithm, sign, 60, output);
+		runAlgorithm(evaluator, generator, sign, maxIterations, requestDelay, output);
 	}
 	
 	/**
 	 * Runs the programm with the given config
 	 * @param evaluator The Evaluation implementation, which retrieves confidence scores for images
-	 * @param algo The algorithm that generates Images
+	 * @param generator The generator that generates Images
 	 * @param targetClass The class of the classifier which is tried to be approximated
 	 * @param maxIterations The maxium number of iterations before the algorithm stops
+	 * @param requestDelay The number of ms the algorithm waits between requests
 	 * @Param outputPath The path where the output will be saved
 	 * @throws Exception
 	 */
-	public static void runAlgorithm(IEvaluator evaluator, IGenerator algo, IClassification targetClass, int maxIterations, String outputPath) throws Exception {
+	public static void runAlgorithm(IEvaluator evaluator, IGenerator generator, IClassification targetClass, int maxIterations,int requestDelay, String outputPath) throws Exception {
 		
-		algo.setInitImage(targetClass.getExampleImage(), targetClass);
+		generator.setInitImage(targetClass.getExampleImage(), targetClass);
 		
 		int iterations = 1;
-		
-		BufferedImage next = algo.generateNextImage();
+		long lastRequest = 0;
 		
 		EvaluationResult<IClassification> evalResult;
+		BufferedImage next;
 		
-		while (!algo.isFinished() && iterations < maxIterations) {
+		while (!generator.isFinished() && iterations < maxIterations) {
+			next = generator.generateNextImage();
+			
+			long delay = System.currentTimeMillis() - lastRequest;
+			
+			if(delay < requestDelay) {
+				Thread.sleep(requestDelay - delay);
+			}
+			
+			lastRequest = System.currentTimeMillis();
 			evalResult = evaluator.evaluateImage(next);
-			algo.setEvalResult(evalResult);
-			next = algo.generateNextImage();
+			
+			
+			generator.setEvalResult(evalResult);
 			iterations++;
 		}
 		
-		BufferedImage result = algo.getResult();
+		BufferedImage result = generator.getResult();
 		
 		evalResult = evaluator.evaluateImage(result);
 		float score = evalResult.getConfidenceForClass(targetClass);
