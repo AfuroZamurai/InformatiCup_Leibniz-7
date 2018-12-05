@@ -44,7 +44,7 @@ public class SimpleGenerator implements IGenerator {
 	 * drawing over an area that has not been drawn over before
 	 */
 	private Parameter diversionChance = new Parameter("Diversions Chance",
-			"Die Chance einen Kreis über einen anderen zu zeichnen (Wert zwischen 0 und 1)", 0.1f);
+			"Die Chance einen Kreis ï¿½ber einen anderen zu zeichnen (Wert zwischen 0 und 1)", 0.1f);
 
 	@Override
 	public BufferedImage generateNextImage() {
@@ -164,20 +164,19 @@ public class SimpleGenerator implements IGenerator {
 	@Override
 	public String getModuleDescription() {
 		return "Zufallskreise: \n\n"
-				+ "Dieser Generator malt zufällig Kreise über das Eingabebild. "
+				+ "Dieser Generator malt zufï¿½llig Kreise ï¿½ber das Eingabebild. "
 				+ "Wenn die Konfidenz dabei zu stark oder"
 				+ " unter 90% sinkt, dann wird der Kreis entfernt und ein neuer "
 				+ "gezeichnet. Der Generator benutzt dabei eine Heuristik, dass "
-				+ "er versucht Kreise über eine noch unbemalte Fläche zu zeichnen, "
-				+ "um das Bild schneller zu füllen. Die Chance trotzdem einen Kreis "
-				+ "zu zeichen kann über den Parameter \"Diversions Chance\" eingestellt "
+				+ "er versucht Kreise ï¿½ber eine noch unbemalte Flï¿½che zu zeichnen, "
+				+ "um das Bild schneller zu fï¿½llen. Die Chance trotzdem einen Kreis "
+				+ "zu zeichen kann ï¿½ber den Parameter \"Diversions Chance\" eingestellt "
 				+ "werden."
 				+ "";
 	}
 
 	@Override
 	public BufferedImage getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		return currentImage;
 	}
 }

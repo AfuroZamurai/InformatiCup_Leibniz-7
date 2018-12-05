@@ -107,7 +107,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 	 * stopping of the generator
 	 */
 	private Parameter stoppingParameter = new Parameter("Automatisches Stoppen", "Ja: der Generator"
-			+ " stoppt bei einem Bild über 90% - Nein: der Generator stoppt nur bei " + "Betätigung des Stop-Buttons",
+			+ " stoppt bei einem Bild ï¿½ber 90% - Nein: der Generator stoppt nur bei " + "Betï¿½tigung des Stop-Buttons",
 			true);
 
 	/** A priority queue used for ordering the four main blocks via their rating */
@@ -587,8 +587,8 @@ public class RecursiveSquareGenerator implements IGenerator {
 		return "Blockrekursion: \n\n" + "Dieser Generator generiert Bilder aus verschiedenfarbigen Quadraten"
 				+ ", welche durch eine rekursive Struktur angeordnet sind. Der Generator arbeitet "
 				+ "dabei in zwei Phasen: In der Explorationsphase wird versucht mithilfe eines gut "
-				+ "erkannten Bildes ein Startbild für die zweite Phase zu finden. In dieser Phase "
-				+ "werden dann zufällig neue Blöcke hinzugefügt. Durch ein greedy Verfahren konvergieren "
+				+ "erkannten Bildes ein Startbild fï¿½r die zweite Phase zu finden. In dieser Phase "
+				+ "werden dann zufï¿½llig neue Blï¿½cke hinzugefï¿½gt. Durch ein greedy Verfahren konvergieren "
 				+ "die Bilder dann gegen ein Bild mit 90% Konfidenz.";
 	}
 
@@ -609,6 +609,8 @@ public class RecursiveSquareGenerator implements IGenerator {
 
 	@Override
 	public BufferedImage getResult() {
+		if (bestImage == null)
+			return originalImage;
 		return bestImage;
 	}
 }
