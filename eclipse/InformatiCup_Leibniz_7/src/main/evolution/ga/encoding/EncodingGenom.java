@@ -16,7 +16,7 @@ import main.utils.Evolutionhelper;
  * @author Felix
  *
  */
-public class EncodingGenom extends GenericGenom<EncodingGene> {
+public class EncodingGenom extends GenericGenom<EncodingGene> implements Comparable<EncodingGenom>{
 	
 	/**
 	 * The number of floats to represent a single encoding instance.
@@ -60,27 +60,43 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 		
 		int encodingSize = parent1.ENCODING_SIZE;
 		
+		//create the empty child genoms
 		List<EncodingGenom> offspring = new ArrayList<>(2);
 		EncodingGenom child1 = new EncodingGenom(encodingSize);
 		EncodingGenom child2 = new EncodingGenom(encodingSize);
-		int p1GeneSize = parent1.getGenes().size();
-		int p2GeneSize = parent2.getGenes().size();
 		
+		//calculate the maximum gene length
+		int p1GeneSize = parent1.getGenes().size();
+		int p2GeneSize = parent2.getGenes().size();		
 		int geneSizeLower = p1GeneSize < p2GeneSize ? p1GeneSize : p2GeneSize;
 		int geneSizeUpper = p1GeneSize > p2GeneSize ? p1GeneSize : p2GeneSize;
+		
+		//choose a random point where the genes and the gene values will be split
 		int geneCrossoverSize = Evolutionhelper.randomInt(0, geneSizeLower - 1);
 		int geneValueCrossoverSize = Evolutionhelper.randomInt(0, parent1.getGenes().get(0).getGeneLength() - 1);
 		
 		int i, j;
 		
+		//one child gets genes from first parent and the other from the second parent until the crossover point is reached
 		for(i = 0; i < geneCrossoverSize; i++) {
 			child1.getGenes().add(parent1.getGenes().get(i));
 			child2.getGenes().add(parent2.getGenes().get(i));
 		}
 		
+		//create the crossover for the gene values
+		/*TODO: try turning that off as currently one gene equals one encoding and splitting a good encoding
+		 * probably isn't that great
+		 */
 		List<Float> crossover1 = new ArrayList<>(parent1.getGenes().get(0).getGeneLength());
 		List<Float> crossover2 = new ArrayList<>(parent1.getGenes().get(0).getGeneLength());
 		for(j = 0; j < parent1.getGenes().get(0).getGeneLength(); j++) {
+			/*make sure, that childs are different by taking a different parent for both halfs:
+			 *  for example:
+			 *  parent 1: 0.2 0.5 0.4 | 0.9 0.1 0.5
+			 *  parent 2: 0.3 0.3 0.7 | 0.8 0.2 0.5
+			 *  child 1 : 0.2 0.5 0.4 | 0.8 0.2 0.5
+			 *  child 2 : 0.3 0.3 0.7 | 0.9 0.1 0.5
+			 */
 			if(i < geneValueCrossoverSize) {
 				crossover1.add(parent1.getGenes().get(i).getValues().get(j));
 				crossover2.add(parent2.getGenes().get(i).getValues().get(j));
@@ -90,12 +106,16 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 			}
 		}
 		
+		//add the mixed up parameters to a gene and the gene to a child
+		//TODO: make it possible to just create an empty gene and add the values
 		EncodingGene crossoverGene1 = new EncodingGene(crossover1);
 		EncodingGene crossoverGene2 = new EncodingGene(crossover2);
 		
 		child1.getGenes().add(crossoverGene1);
 		child2.getGenes().add(crossoverGene2);
 		
+		//add the other part of the genes, which means if there are no more genes left in one parent the belonging child
+		//will be smaller
 		for(i++; i < geneSizeUpper; i++) {
 			if(i < parent2.getGenes().size()) {
 				child1.getGenes().add(parent2.getGenes().get(i));
@@ -182,6 +202,11 @@ public class EncodingGenom extends GenericGenom<EncodingGene> {
 		fitness.setCoverage(coverage);
 	}
 	
+	/**
+	 * Compares another genom to this genom instance.
+	 * @param o the genom to which this genom gets compared to
+	 * @return 1 if this genoms fitness is higher, -1 if it is lower and 0 if the fitness is equal
+	 */
 	public int compareTo(EncodingGenom o) {
 		return this.fitness.getFitnessScore() - o.fitness.getFitnessScore() > 0 ? 1 : 
 			this.fitness.getFitnessScore() - o.fitness.getFitnessScore() < 0 ? -1 : 0;

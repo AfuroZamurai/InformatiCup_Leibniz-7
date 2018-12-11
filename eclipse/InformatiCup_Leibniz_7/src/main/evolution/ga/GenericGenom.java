@@ -13,7 +13,7 @@ import main.utils.Evolutionhelper;
  *
  * @param <T> The implementation of a gene
  */
-public class GenericGenom<T extends AbstractGene<?>> implements Comparable<GenericGenom<T>>{
+public class GenericGenom<T extends AbstractGene<?>> {
 	
 	protected Fitness fitness;
 	protected List<T> genes;
@@ -116,15 +116,5 @@ public class GenericGenom<T extends AbstractGene<?>> implements Comparable<Gener
 
 	public void setGenes(List<T> genes) {
 		this.genes = genes;
-	}
-	
-	/**
-	 * Compares another genom to this genom instance.
-	 * @param o the genom to which this genom gets compared to
-	 * @return 1 if this genoms fitness is higher, -1 if it is lower and 0 if the fitness is equal
-	 */
-	public int compareTo(GenericGenom<T> o) {
-		return this.fitness.getFitnessScore() - o.fitness.getFitnessScore() > 0 ? 1 : 
-			this.fitness.getFitnessScore() - o.fitness.getFitnessScore() < 0 ? -1 : 0;
 	}
 }

@@ -15,6 +15,7 @@ import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.TrasiWebEvaluator;
 import main.evolution.ga.GeneticAlgorithm;
+import main.evolution.ga.Population;
 import main.evolution.ga.cppn.CPPNGenom;
 import main.io.ImageSaver;
 import main.utils.Evolutionhelper;
@@ -45,11 +46,11 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 	/**
 	 * Number of genes the genoms of the initial population will have.
 	 */
-	private int geneAmount = 70; 
+	private int geneAmount = 64; 
 	/**
 	 * The probability that a gene will be added to a genom during mutation.
 	 */
-	public static final float GENE_ADD_PROBABILITY = 0.9f;
+	public static final float GENE_ADD_PROBABILITY = 0.0f;
 
 	/**
 	 * Creates a new instance of this genetic algorithm.
@@ -146,9 +147,25 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		population.getGenoms().addAll(newPopulation);
 		population.getGenoms().addAll(survivors);
 		
+		/*
+		int index = 0;
+		for (EncodingGenom encodingGenom : population.getGenoms()) {
+			System.out.println(encodingGenom.getFitness());
+			try {
+				ImageSaver.saveImage(getImageFromGenom(encodingGenom), "data/results/encodingsearch/completePopulation/gen" + currentGeneration() + "pos" + index);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			index++;
+		}
+		
 		//for debugging purposes
 		try {
 			ImageSaver.saveImage(getImageFromGenom(population.getBest()), "data/results/encodingsearch/bestbeforegen" + currentGeneration());
+			ImageSaver.saveImage(getImageFromGenom(population.getGenoms().get(populationSize - 1)), "data/results/encodingsearch/best2beforegen" + currentGeneration());
+			ImageSaver.saveImage(getImageFromGenom(population.getGenoms().get(populationSize - 2)), "data/results/encodingsearch/secondbestbeforegen" + currentGeneration());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,6 +175,7 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		EncodingGenom best = population.getBest();
 		System.out.println("Best genom of the new population has a fitness score of " + best.getFitness() +
 				"\nFitness comes from a confidence of " + best.getConfidence() + " and a coverage of " + best.getCoverage());
+		*/
 	}
 	
 	/**
@@ -245,12 +263,46 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 			elite.add(genoms.get(genoms.size() - 1 - i));
 		}
 		
+		Collections.reverse(elite);
+		
 		return elite;
 	}
 
 	@Override
 	protected void selectSurvivors() {
 		// maybe some sort of elitism?
+	}
+	
+	@Override
+	protected void calculateFitness(int genomIndex) {
+		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
+		EncodingGenom genom = population.getGenoms().get(genomIndex);
+		BufferedImage image = getImageFromGenom(genom);
+		BufferedImage encodingImage = getEncodingImage(genom);
+		EvaluationResult<IClassification> result;
+		
+		try {
+			result = evaluator.evaluateImage(image);
+			if (result != null) {
+				float confidence = result.getConfidenceForClass(targetClass);
+				float coverage = ImageUtil.getTransparentPercent(encodingImage);
+				//calculate fitness from confidence and coverage. Maybe one of them should be more important
+				//TODO: create a method for fitness calculation
+				float fitness = EncodingFitness.getCombinedFitness(confidence, coverage);
+				genom.updateFitness(fitness, confidence, coverage);
+			} else {
+				//shouldn't happen
+				genom.setFitness(0.0f);
+				System.out.println("Evaluation currently impossible!");
+			}
+		} catch (Exception e) {
+			//wrong image size, shouldn't happen
+			genom.setFitness(0.0f);
+		}
+		
+		if(genom.getFitness() > population.getBest().getFitness()) {
+			population.setBest(genom);
+		}
 	}
 	
 	/**
@@ -336,5 +388,7 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		population.setBest(genoms.get(genoms.size() - 1));
 	}
 	
-	
+	public Population<EncodingGenom> getPopulation() {
+		return population;
+	}
 }

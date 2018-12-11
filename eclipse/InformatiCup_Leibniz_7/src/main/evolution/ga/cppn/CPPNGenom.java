@@ -1,17 +1,15 @@
 package main.evolution.ga.cppn;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-import main.evolution.ga.AbstractGene;
 import main.evolution.ga.Fitness;
 import main.evolution.ga.GenericGenom;
 import main.evolution.ga.GeneticAlgorithm;
 import main.evolution.network.CPPN;
 import main.utils.Evolutionhelper;
 
-public class CPPNGenom extends GenericGenom<CPPNGene> {
+public class CPPNGenom extends GenericGenom<CPPNGene> implements Comparable<CPPNGenom> {
 	
 	private CPPN net;
 
@@ -47,5 +45,15 @@ public class CPPNGenom extends GenericGenom<CPPNGene> {
 
 	public void setNet(CPPN net) {
 		this.net = net;
+	}
+	
+	/**
+	 * Compares another genom to this genom instance.
+	 * @param o the genom to which this genom gets compared to
+	 * @return 1 if this genoms fitness is higher, -1 if it is lower and 0 if the fitness is equal
+	 */
+	public int compareTo(CPPNGenom o) {
+		return this.fitness.getFitnessScore() - o.fitness.getFitnessScore() > 0 ? 1 : 
+			this.fitness.getFitnessScore() - o.fitness.getFitnessScore() < 0 ? -1 : 0;
 	}
 }

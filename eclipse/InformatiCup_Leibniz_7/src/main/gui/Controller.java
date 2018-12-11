@@ -47,6 +47,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import main.encodings.CircleEncoding;
+import main.encodings.GridEncoding;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 import main.evaluate.Sign;
@@ -277,7 +278,7 @@ public class Controller implements Initializable {
 		if (imageClass != null) {
 			enableButton(generateButton);
 		}
-		module = new EvoEncoderGenerator(new CircleEncoding());
+		module = new EvoEncoderGenerator(new GridEncoding(8, 8));
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		parameterRadioButtonList.clear();
