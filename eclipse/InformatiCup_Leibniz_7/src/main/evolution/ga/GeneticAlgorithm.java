@@ -20,7 +20,8 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	protected Population<T> population;
 	
 	protected boolean finished = false;
-	protected int generation = 1;
+	protected int generation = 0;
+	protected int curGenom = 0;
 	
 	/**
 	 * The probability that a mutation happens
@@ -45,37 +46,45 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	}
 	
 	/**
-	 * Starts the genetic algorithm. It will run until either the target fitness or the generation cap was reached.
-	 * The current run can be paused and the current generation is saved, so the next call will continue from there.
-	 * @param pauseCap A generation number after which the algorithm will pause.
+	 * Creates and processes new genoms. It will create the initial population completely.
+	 * After that it will return the currently processed genom.
+	 * @return in generation 0 the best genom of the initial population, otherwise the currently processed genom
 	 */
-	public void run(int pauseCap) {
-		if(generation == 1) {
+	public T processNextGenom() {
+		if(generation == 0) {
 			System.out.println("Creating the initial population");
 			createPopulation();
-		}
-		
-		while(generation < generationCap && getHighestFitness() < targetFitness) {
-			System.out.println("Running generation " + generation + ":");
-			createOffspring();
-			System.out.println("Created new population!");
-			selectSurvivors();
-			//System.out.println("Selected the survivors!");
 			generation++;
-			System.out.println("Highest fitness so far: " + getHighestFitness());
-			
-			if(generation >= pauseCap) {
-				return;
-			}
+			return getBestGenom();
 		}
 		
-		finished = true;
+		if(curGenom == populationSize) {
+			curGenom = 0;
+			generation++;
+		}
+		
+		if(generation >= generationCap) {
+			System.out.println("Reached generation cap with a maximum fitness of " + getHighestFitness());
+			finished = true;
+			return getBestGenom();
+		}
 		
 		if(getHighestFitness() >= targetFitness) {
 			System.out.println("Successful run!");
-		} else {
-			System.out.println("Reached generation cap with a maximum fitness of " + getHighestFitness());
+			finished = true;
+			return getBestGenom();
 		}
+		
+		if(curGenom == 0) {
+			System.out.println("Starting generation " + generation + ":");
+			createOffspring();
+			selectSurvivors();
+		}
+		
+		int index = curGenom;
+		curGenom++;
+		
+		return population.getGenoms().get(index);
 	}
 	
 	/**
@@ -136,6 +145,14 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	}
 	
 	/**
+	 * Calculate the fitness for a specific genom.
+	 * @param genomIndex the index of the genom for which the fitness will be calculated
+	 */
+	protected void calculateFitness(int genomIndex) {
+		
+	}
+	
+	/**
 	 * Retrieves the current status of the run.
 	 * @return if the run is finished
 	 */
@@ -148,6 +165,6 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	 * @return The current generation number
 	 */
 	public int currentGeneration() {
-		return generation - 1;
+		return generation;
 	}
 }
