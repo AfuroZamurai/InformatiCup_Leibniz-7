@@ -136,6 +136,14 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	}
 	
 	/**
+	 * Calculate the fitness for a single genom
+	 * @param genomIndex index of the genom
+	 */
+	protected void calculateFitness(int genomIndex) {
+		
+	}
+	
+	/**
 	 * Retrieves the current status of the run.
 	 * @return if the run is finished
 	 */
