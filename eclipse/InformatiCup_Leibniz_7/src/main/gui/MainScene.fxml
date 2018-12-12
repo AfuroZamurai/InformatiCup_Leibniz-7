@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
@@ -17,6 +11,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
@@ -28,12 +23,14 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
    <children>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane styleClass="background" stylesheets="@BlueTheme.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" prefWidth="5.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" prefWidth="5.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
         </columnConstraints>
         <rowConstraints>
@@ -41,15 +38,11 @@
           <RowConstraints minHeight="10.0" vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <Button fx:id="stopButton" disable="true" mnemonicParsing="false" onAction="#cancellation" prefHeight="40.0" prefWidth="166.0" text="Stop" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <Button fx:id="stopButton" disable="true" mnemonicParsing="false" onAction="#cancellation" prefHeight="40.0" prefWidth="166.0" text="Stop" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin></Button>
-            <Button fx:id="generateButton" disable="true" mnemonicParsing="false" onAction="#generateImage" prefHeight="40.0" prefWidth="166.0" text="Start" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <GridPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </GridPane.margin></Button>
-            <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" text="Bild speichern" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Button fx:id="generateButton" disable="true" mnemonicParsing="false" onAction="#generateImage" prefHeight="40.0" prefWidth="166.0" text="Start" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin></Button>
@@ -88,11 +81,13 @@
                         <TextField fx:id="textFieldDelayTime" text="-1" GridPane.columnIndex="1">
                            <tooltip>
                               <Tooltip text="Zeit, die zwischen zwei Anfragen gewartet wird (es wird genau so lange gewartet, dass 60 Anfragen pro Minute nicht überschritten werden)" />
-                           </tooltip></TextField>
+                           </tooltip>
+                        </TextField>
                         <TextField fx:id="textFieldMaxIterations" text="-1" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <tooltip>
                               <Tooltip text="Anzahl der Iterationen, nach denen die Generation gestoppt wird (-1: unendlich viele Iterationen)" />
-                           </tooltip></TextField>
+                           </tooltip>
+                        </TextField>
                      </children>
                   </GridPane>
                   <VBox fx:id="parameterBox" alignment="TOP_CENTER" spacing="5.0" />
@@ -101,7 +96,7 @@
                   <Insets right="5.0" />
                </padding>
             </VBox>
-            <VBox alignment="TOP_CENTER" spacing="10.0" GridPane.columnIndex="2">
+            <VBox alignment="TOP_CENTER" spacing="10.0" GridPane.columnIndex="4">
                <children>
                   <VBox alignment="TOP_CENTER" spacing="5.0">
                      <children>
@@ -110,11 +105,12 @@
                               <Insets />
                            </VBox.margin>
                         </ImageView>
-                        <Label fx:id="outputImageLabel" prefHeight="17.0" prefWidth="150.0" text="Ausgabebild">
+                        <Label fx:id="outputImageLabel" prefHeight="21.0" prefWidth="179.0" text="Ausgabebild">
                            <padding>
                               <Insets left="50.0" />
                            </padding>
                         </Label>
+                        <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" stylesheets="@BlueTheme.css" text="Bild speichern" />
                      </children>
                   </VBox>
                   <Label fx:id="classLabel" prefHeight="30.0" prefWidth="292.0" text="Klasse:" />
@@ -137,7 +133,7 @@
                   <Insets left="5.0" />
                </padding>
             </VBox>
-            <VBox alignment="TOP_CENTER" spacing="20.0" GridPane.columnIndex="1">
+            <VBox alignment="TOP_CENTER" spacing="20.0" GridPane.columnIndex="2">
                <children>
                   <VBox alignment="TOP_CENTER" spacing="5.0">
                      <children>
@@ -146,19 +142,19 @@
                               <Image url="@../../../data/images/00000.jpeg" />
                            </image>
                         </ImageView>
-                        <Label fx:id="inputImageLabel" prefHeight="17.0" prefWidth="150.0" text="Eingabebild">
+                        <Label fx:id="inputImageLabel" prefHeight="21.0" prefWidth="174.0" text="Eingabebild">
                            <padding>
                               <Insets left="50.0" />
                            </padding>
                         </Label>
+                        <Button fx:id="loadImage" graphicTextGap="0.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="166.0" text="Bild laden">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Button>
                      </children>
                   </VBox>
                   <ListView fx:id="listView" onMouseClicked="#ClickedListView" prefWidth="300.0" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="loadImage" graphicTextGap="0.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="166.0" text="Bild laden">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Button>
                </children>
                <GridPane.margin>
                   <Insets />
@@ -166,6 +162,16 @@
                <padding>
                   <Insets bottom="20.0" left="5.0" right="5.0" />
                </padding>
+            </VBox>
+            <VBox alignment="TOP_CENTER" GridPane.columnIndex="1">
+               <children>
+                  <Separator maxWidth="5.0" orientation="VERTICAL" prefHeight="650.0" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" GridPane.columnIndex="3">
+               <children>
+                  <Separator maxWidth="5.0" orientation="VERTICAL" prefHeight="650.0" />
+               </children>
             </VBox>
          </children>
          <opaqueInsets>
