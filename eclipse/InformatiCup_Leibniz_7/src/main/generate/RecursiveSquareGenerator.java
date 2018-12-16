@@ -106,9 +106,17 @@ public class RecursiveSquareGenerator implements IGenerator {
 	 * The parameter that can be set by the user via the GUI; it enables automatic
 	 * stopping of the generator
 	 */
-	private Parameter stoppingParameter = new Parameter("Automatisches Stoppen", "Ja: der Generator"
-			+ " stoppt bei einem Bild �ber 90% - Nein: der Generator stoppt nur bei " + "Bet�tigung des Stop-Buttons",
+	private Parameter stoppingParameter = new Parameter("Automatisches Stoppen",
+			"Ja: der Generator" + " stoppt bei einem Bild �ber 90% - Nein: der Generator stoppt nur bei "
+					+ "Bet�tigung des Stop-Buttons",
 			true);
+
+	/**
+	 * The confidence when the generator stops (only possible when stoppingParameter
+	 * is true)
+	 */
+	private Parameter targetConfidenceParameter = new Parameter("Zielkonfidenz", "Die Zielkonfidenz, wann der "
+			+ "Generator stoppt (hat nur Auswirkungen, wenn automatisches Stoppen aktiv ist)", 0.9f);
 
 	/** A priority queue used for ordering the four main blocks via their rating */
 	private PriorityQueue<WorkingBlock> queue = new PriorityQueue<>();
@@ -517,7 +525,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 					randomPhase = false;
 				}
 
-				if (overallConfidence >= 0.9f)
+				if (overallConfidence >= targetConfidenceParameter.getFloatValue())
 					isFinished = true;
 				if (res >= overallConfidence) {
 					currentBlock.rating = 1 - res;
@@ -570,6 +578,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 	public List<Parameter> getParameterList() {
 		ArrayList<Parameter> list = new ArrayList<>();
 		list.add(stoppingParameter);
+		list.add(targetConfidenceParameter);
 		return list;
 	}
 
