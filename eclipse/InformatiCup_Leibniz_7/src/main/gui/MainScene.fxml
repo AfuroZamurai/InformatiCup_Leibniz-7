@@ -25,7 +25,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.gui.Controller">
    <children>
-      <GridPane styleClass="background" stylesheets="@BlueTheme.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane styleClass="background" stylesheets="@Stylesheet.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" prefWidth="5.0" />
@@ -110,7 +110,7 @@
                               <Insets left="50.0" />
                            </padding>
                         </Label>
-                        <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" stylesheets="@BlueTheme.css" text="Bild speichern" />
+                        <Button fx:id="SaveImageButton" disable="true" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="150.0" text="Bild speichern" />
                      </children>
                   </VBox>
                   <Label fx:id="classLabel" prefHeight="30.0" prefWidth="292.0" text="Klasse:" />
