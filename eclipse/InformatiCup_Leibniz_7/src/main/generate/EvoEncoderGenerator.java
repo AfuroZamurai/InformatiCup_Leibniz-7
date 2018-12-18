@@ -107,13 +107,6 @@ public class EvoEncoderGenerator implements IGenerator {
 			searcher.run(1);
 			current = getResult();
 			
-			//currently here for debugging purposes
-			String path = "data/results/encodingsearch/gen" + searcher.currentGeneration();
-			try {
-				ImageSaver.saveImage(current, path);
-			} catch (IOException e) {
-				System.out.println("Too bad, no saved image this time");
-			}
 			return current;
 		} else {
 			started = true;
