@@ -104,16 +104,9 @@ public class EvoEncoderGenerator implements IGenerator {
 		
 		//set the starting image before running the first generation
 		if(started) {
-			searcher.run(1);
+			searcher.processNextGenom();
 			current = getResult();
-			
-			//currently here for debugging purposes
-			String path = "data/results/encodingsearch/gen" + searcher.currentGeneration();
-			try {
-				ImageSaver.saveImage(current, path);
-			} catch (IOException e) {
-				System.out.println("Too bad, no saved image this time");
-			}
+		
 			return current;
 		} else {
 			started = true;
@@ -135,23 +128,6 @@ public class EvoEncoderGenerator implements IGenerator {
 		}
 		
 		float coverage = ImageUtil.getTransparentPercent(encoded);
-		float fitness = searcher.getHighestFitness();
-		float fitnessGenom;
-		int geneLength;
-		float average;
-		try {
-			fitnessGenom = searcher.getBestGenom().getFitness();
-			geneLength = searcher.getBestGenom().getGenes().size();
-			average = searcher.getAverageFitness();
-		} catch (Exception e) {
-			fitnessGenom = -1.0f;
-			geneLength = 0;
-			average = 0.0f;
-		}
-		
-		System.out.println("After generation " + searcher.currentGeneration() + ":\nfitness: " + fitness + 
-				"\nfitness from genom: " + fitnessGenom + "\nconfidence: " + confidence + "\ncoverage: " + coverage +
-				"\ngene length: " + geneLength + "\nAverage Fitness: " + average);
 	}
 
 	@Override

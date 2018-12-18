@@ -139,43 +139,12 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		}
 		
 		//calculate fitness only for the children and remove as many of the worst ones as old genoms are surviving 
-		calculateFitness(newPopulation);
 		for(int i = 0; i < elitism; i++) {
 			newPopulation.remove(0);
 		}
 		population.getGenoms().clear();
 		population.getGenoms().addAll(newPopulation);
 		population.getGenoms().addAll(survivors);
-		
-		/*
-		int index = 0;
-		for (EncodingGenom encodingGenom : population.getGenoms()) {
-			System.out.println(encodingGenom.getFitness());
-			try {
-				ImageSaver.saveImage(getImageFromGenom(encodingGenom), "data/results/encodingsearch/completePopulation/gen" + currentGeneration() + "pos" + index);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			index++;
-		}
-		
-		//for debugging purposes
-		try {
-			ImageSaver.saveImage(getImageFromGenom(population.getBest()), "data/results/encodingsearch/bestbeforegen" + currentGeneration());
-			ImageSaver.saveImage(getImageFromGenom(population.getGenoms().get(populationSize - 1)), "data/results/encodingsearch/best2beforegen" + currentGeneration());
-			ImageSaver.saveImage(getImageFromGenom(population.getGenoms().get(populationSize - 2)), "data/results/encodingsearch/secondbestbeforegen" + currentGeneration());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		printGeneLengthData();
-		EncodingGenom best = population.getBest();
-		System.out.println("Best genom of the new population has a fitness score of " + best.getFitness() +
-				"\nFitness comes from a confidence of " + best.getConfidence() + " and a coverage of " + best.getCoverage());
-		*/
 	}
 	
 	/**
@@ -232,23 +201,6 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		return parents;
 	}
 	
-	private void printGeneLengthData() {
-		int maxGeneLength = geneAmount;
-		float average = 0.0f;
-		for (Iterator<EncodingGenom> iterator = population.getGenoms().iterator(); iterator.hasNext();) {
-			EncodingGenom genom = iterator.next();
-			int length = genom.getGenes().size();
-			if(length > maxGeneLength) {
-				maxGeneLength = length;
-			}
-			average += length;
-		}
-		
-		average /= populationSize;
-		
-		System.out.println("Maximal gene length: " + maxGeneLength + "\nAverage gene length: " + average);
-	}
-	
 	/**
 	 * Selects a given number of the best genoms of the current population.
 	 * @param survivors The number of genoms which will be selected
@@ -303,89 +255,6 @@ public class EncodingSearch extends GeneticAlgorithm<EncodingGenom> {
 		if(genom.getFitness() > population.getBest().getFitness()) {
 			population.setBest(genom);
 		}
-	}
-	
-	/**
-	 * Calculates the fitness for all genoms in the given list.
-	 * @param genoms The list of genoms for which the fitness will be calculated
-	 */
-	private void calculateFitness(List<EncodingGenom> genoms) {
-		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
-		for(EncodingGenom genom : genoms) {
-			BufferedImage image = getImageFromGenom(genom);
-			BufferedImage encodingImage = getEncodingImage(genom);
-			EvaluationResult<IClassification> result;
-			try {
-				result = evaluator.evaluateImage(image);
-				if (result != null) {
-					float confidence = result.getConfidenceForClass(targetClass);
-					float coverage = ImageUtil.getTransparentPercent(encodingImage);
-					//calculate fitness from confidence and coverage. Maybe one of them should be more important
-					//TODO: create a method for fitness calculation
-					float fitness = EncodingFitness.getCombinedFitness(confidence, coverage);
-					genom.updateFitness(fitness, confidence, coverage);
-				} else {
-					//shouldn't happen
-					genom.setFitness(0.0f);
-					System.out.println("Evaluation currently impossible!");
-				}
-			} catch (Exception e) {
-				//wrong image size, shouldn't happen
-				genom.setFitness(0.0f);
-			}	
-		}
-		
-		try {
-			Collections.sort(genoms);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		EncodingGenom best = (genoms.get(genoms.size() - 1));
-
-		//make sure we really have a new best genom as we are not assigning a fitness score to the whole population
-		if(best.getFitness() > population.getBest().getFitness()) {
-			System.out.println("New best with fitness of " + best.getFitness() + " to old fitness " + population.getBest().getFitness());
-			population.setBest(best);
-		}
-	}
-
-	@Override
-	protected void calculateFitness() {
-		List<EncodingGenom> genoms = population.getGenoms();
-		TrasiWebEvaluator evaluator = new TrasiWebEvaluator();
-		
-		//this method calculates fitness for the whole population
-		for(EncodingGenom genom : genoms) {
-			BufferedImage image = getImageFromGenom(genom);
-			//to calculate fitness we need coverage from the transparent-based image
-			BufferedImage encodingImage = getEncodingImage(genom);
-			EvaluationResult<IClassification> result;
-			try {
-				result = evaluator.evaluateImage(image);
-				if (result != null) {
-					float confidence = result.getConfidenceForClass(targetClass);
-					float coverage = ImageUtil.getTransparentPercent(encodingImage);
-					//calculate fitness from confidence and coverage. Maybe one of them should be more important
-					float fitness = EncodingFitness.getCombinedFitness(confidence, coverage);
-					genom.updateFitness(fitness, confidence, coverage);
-				} else {
-					//shouldn't happen
-					genom.setFitness(0.0f);
-					System.out.println("Evaluation currently impossible!");
-				}
-			} catch (Exception e) {
-				//wrong image size, shouldn't happen
-				genom.setFitness(0.0f);
-			}	
-		}
-		
-		//best genom found by sorting
-		try {
-			Collections.sort(genoms);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		population.setBest(genoms.get(genoms.size() - 1));
 	}
 	
 	public Population<EncodingGenom> getPopulation() {

@@ -62,7 +62,7 @@ public class EncodingSearchTester {
 		EncodingSearch es = new EncodingSearch(60, 0.9f, 30, 2, encoding, Sign.BAUSTELLE, baustelle);
 
 		while(!es.isFinished()) {
-			es.run(1);
+			es.processNextGenom();
 			System.out.println("Current best genom has a fitness of " + es.getHighestFitness());
 			BufferedImage bestImage = es.getImageFromGenom(es.getBestGenom());
 			ImageSaver.saveImage(bestImage, "data/results/encodingsearch/gen" + es.currentGeneration());
