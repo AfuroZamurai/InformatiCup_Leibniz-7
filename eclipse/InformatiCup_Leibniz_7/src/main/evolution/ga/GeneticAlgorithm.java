@@ -158,4 +158,11 @@ public class GeneticAlgorithm<T extends GenericGenom<? extends AbstractGene<?>>>
 	public int currentGeneration() {
 		return generation - 1;
 	}
+	
+	public void reset() {
+		//TODO: find out if necessary
+		population.getGenoms().clear();
+		generation = 1;
+		finished = false;
+	}
 }
