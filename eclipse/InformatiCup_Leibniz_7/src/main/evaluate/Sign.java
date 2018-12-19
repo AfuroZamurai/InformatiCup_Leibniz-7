@@ -62,21 +62,21 @@ public enum Sign implements IClassification {
 	 * Names of the classes returned by the webAPI TODO: Input missing names(could
 	 * not be retrieved because no images reach high enough confidence)
 	 */
-	public static final String[] classNames = new String[] { "ZulÃ¤ssige HÃ¶chstgeschwindigkeit (20)",
-			"ZulÃ¤ssige HÃ¶chstgeschwindigkeit (30)", "ZulÃ¤ssige HÃ¶chstgeschwindigkeit (50)",
-			"ZulÃ¤ssige HÃ¶chstgeschwindigkeit (60)", "ZulÃ¤ssige HÃ¶chstgeschwindigkeit (70)",
-			"ZulÃ¤ssige HÃ¶chstgeschwindigkeit (80)", "Ende der Geschwindigkeitsbegrenzung (80)",
-			"ZulÃ¤ssige HÃ¶chstgeschwindigkeit (100)", "ZulÃ¤ssige HÃ¶chstgeschwindigkeit (120)",
-			"Ãœberholverbot fÃ¼r Kraftfahrzeuge aller Art",
-			"Ãœberholverbot fÃ¼r Kraftfahrzeuge mit einer zulÃ¤ssigen Gesamtmasse Ã¼ber 3,5t", "Einmalige Vorfahrt",
-			"Vorfahrt", "Vorfahrt gewÃ¤hren", "Stoppschild", "Verbot fÃ¼r Fahrzeuge aller Art",
-			"Verbot fÃ¼r Kraftfahrzeuge mit einer zulÃ¤ssigen Gesamtmasse von 3,5t", "Verbot der Einfahrt",
-			"Gefahrenstelle", "Kurve (links)", "Kurve (rechts)", "Doppelkurve (zunÃ¤chst links)", "Unebene Fahrbahn",
-			"Schleudergefahr bei NÃ¤sse oder Schmutz", "", "Baustelle", "", "FuÃŸgÃ¤nger", "", "Fahrradfahrer", "",
-			"Wildwechsel", "Ende aller Streckenverbote", "AusschlieÃŸlich rechts", "AusschlieÃŸlich links",
-			"AusschlieÃŸlich geradeaus", "", "", "Rechts vorbei", "Links vorbei", "Kreisverkehr",
-			"Ende des Ãœberholverbotes fÃ¼r Kraftfahrzeuge aller Art",
-			"Ende des Ãœberholverbotes fÃ¼r Kraftfahrzeuge mit einer zulÃ¤ssigen Gesamtmasse Ã¼ber 3,5t" };
+	public static final String[] classNames = new String[] { "Zulässige Höchstgeschwindigkeit (20)",
+			"Zulässige Höchstgeschwindigkeit (30)", "Zulässige Höchstgeschwindigkeit (50)",
+			"Zulässige Höchstgeschwindigkeit (60)", "Zulässige Höchstgeschwindigkeit (70)",
+			"Zulässige Höchstgeschwindigkeit (80)", "Ende der Geschwindigkeitsbegrenzung (80)",
+			"Zulässige Höchstgeschwindigkeit (100)", "Zulässige Höchstgeschwindigkeit (120)",
+			"Überholverbot für Kraftfahrzeuge aller Art",
+			"Überholverbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t", "Einmalige Vorfahrt",
+			"Vorfahrt", "Vorfahrt gewähren", "Stoppschild", "Verbot für Fahrzeuge aller Art",
+			"Verbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse von 3,5t", "Verbot der Einfahrt",
+			"Gefahrenstelle", "Kurve (links)", "Kurve (rechts)", "Doppelkurve (zunächst links)", "Unebene Fahrbahn",
+			"Schleudergefahr bei Nässe oder Schmutz", "", "Baustelle", "", "Fußgänger", "", "Fahrradfahrer", "",
+			"Wildwechsel", "Ende aller Streckenverbote", "Ausschließlich rechts", "Ausschließlich links",
+			"Ausschließlich geradeaus", "", "", "Rechts vorbei", "Links vorbei", "Kreisverkehr",
+			"Ende des Überholverbotes für Kraftfahrzeuge aller Art",
+			"Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t" };
 
 	@Override
 	public BufferedImage getExampleImage() throws IOException {
