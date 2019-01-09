@@ -213,9 +213,9 @@ public class CheckerGenerator implements IGenerator {
 
 	@Override
 	public String getModuleDescription() {
-		return "Pixelmanipulations-Algorithmus:\n\nEs gibt eine Gruppe von Pixel, die auf schwarz gesetzt wird."
+		return "Checker Search:\n\nEs gibt eine Gruppe von Pixel, die auf schwarz gesetzt wird."
 				+ "Steigt die Konfidenz, wird die Gruppe im Ausgabebild auf schwarz gesetzt, sonst weiß. "
-				+ "Das wird mit allen Gruppen gemacht. Die größe der Gruppe gibt der Filter an.\n\n";
+				+ "Das wird mit allen Gruppen gemacht. Die Größe der Gruppe gibt der Filter an.\n\n";
 	}
 
 	@Override
