@@ -7,7 +7,11 @@ import java.net.URL;
 import main.io.ImageLoader;
 
 /**
- * This enum contains all 42 classes of the Neural Network Using german names
+ * 
+ * Implementation of IClassification
+ * Represents Image classes of 43 german traffic signs
+ * 
+ * This enum contains all 43 classes of the Neural Network Using german names
  * since the request returns german names as well
  * 
  * @author Jannik

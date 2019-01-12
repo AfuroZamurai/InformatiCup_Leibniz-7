@@ -2,16 +2,23 @@ package main.evaluate;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Interface for a general Entity that can return confidence scores for images
+ * Examples are: 
+ * - A Web API that takes image requests and returns scores
+ * - A classifier on a local mashine
+ * - A user interface which lets users give confidence scores for images
+ * 
+ * @author Jannik
+ *
+ */
 public interface IEvaluator {
 
-	// TODO: Change so classes are considered when getting score, currently only
-	// highest score is returning
-
 	/**
-	 * Returns a score for the given image between 0 and 1, which rates how high the
-	 * confidence for this image is
+	 * Returns a score for the given image between 0 and 1, 
+	 * which is the highest confidence of this image in any Imageclass
 	 * 
-	 * Method is deprecated, use evaluateImage intead
+	 * Method is deprecated, use evaluateImage instead.
 	 * 
 	 * @param image
 	 *            The image to be scored
@@ -24,14 +31,12 @@ public interface IEvaluator {
 	public float evaluate(BufferedImage image) throws Exception;
 
 	/**
-	 * Returns a score for the given image between 0 and 1, which rates how high the
-	 * confidence for this image is
-	 * 
+	 * Retrieves an Evaluation for a given Image.
 	 * 
 	 * @param image
 	 *            The image to be scored
-	 * @return An EvaltionResult object, containing an array scores, which contains
-	 *         all confidence scores of all classes
+	 * @return An EvaltionResult object containing an array scores, which contains
+	 *         the confidence scores for each classes
 	 * @throws Exception
 	 *             see implementing class for detailed exception causes
 	 */

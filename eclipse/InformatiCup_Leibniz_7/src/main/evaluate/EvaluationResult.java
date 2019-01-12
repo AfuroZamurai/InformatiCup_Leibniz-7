@@ -23,8 +23,8 @@ public class EvaluationResult<T extends IClassification> {
 	/**
 	 * Creates an EvaluationResult from the json String of the Response
 	 * 
-	 * @param result
-	 *            The JsonString returned by the response
+	 * @param scores
+	 *            An array of confidence values, one for each Imageclass
 	 * @throws Exception
 	 *             When Json could not be parsed
 	 */
@@ -38,13 +38,13 @@ public class EvaluationResult<T extends IClassification> {
 	 * 
 	 * Returns the confidence of the given sign class
 	 * 
-	 * @param s
-	 *            The Sign class
+	 * @param imageClass
+	 *            The Imageclass from that the confidence is requested 
 	 * @return The confidence between 0 and 1
 	 */
-	public float getConfidenceForClass(T type) {
+	public float getConfidenceForClass(T imageClass) {
 
-		return scores[type.getOrdinal()];
+		return scores[imageClass.getOrdinal()];
 	}
 
 	/**
