@@ -6,18 +6,36 @@ import java.awt.image.BufferedImage;
 
 import com.sun.javafx.iio.ImageStorage.ImageType;
 
+/**
+ * Implementation of ImageEncoding.
+ * Generates Images by laying a Grid and filling the cells with certain colors
+ * Batchsize is 3: R, G, B
+ * Needs 3 Values per Cell
+ * @author Jannik
+ *
+ */
 public class GridEncoding implements IImageEncoding {
 
 	int boxWidth;
 	int boxHeight;
 	int batchSize;
 	
+	/**
+	 * Creates a new Enconding with the given cell size
+	 * @param boxWidth The cell width
+	 * @param boxHeight The cell height
+	 */
 	public GridEncoding(int boxWidth, int boxHeight) {
 		this.boxWidth = boxWidth;
 		this.boxHeight = boxHeight;
 		this.batchSize = 3;
 	}
-
+	
+	/**
+	 * Generates an Image with the given height and width filled with cells on a grid
+	 * Batchsize is 3: R, G, B
+	 * Needs 3 Values per Cell
+	 */
 	@Override
 	public BufferedImage createImage(int width, int height, float[] parameters) {
 
@@ -41,6 +59,11 @@ public class GridEncoding implements IImageEncoding {
 		return img;
 	}
 
+	/**
+	 * Generates grid cells and draws them intop the given image
+	 * Batchsize is 3: R, G, B
+	 * Needs 3 Values per Cell
+	 */
 	@Override
 	public BufferedImage addToImage(BufferedImage original, float[] parameters) {
 		
