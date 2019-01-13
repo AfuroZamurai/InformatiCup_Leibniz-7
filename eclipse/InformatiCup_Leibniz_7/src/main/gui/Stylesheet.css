@@ -30,6 +30,10 @@
     -fx-background-insets: 0 0 0 0, 0, 1, 2;  
 }
 
+.ImageView {
+	-fx-background-color: red;
+}
+
 .button:focused {
     -fx-border-width: 1, 1;
     -fx-border-style: solid, segments(1, 1);

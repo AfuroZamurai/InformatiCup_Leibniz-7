@@ -3,7 +3,7 @@ package main.evaluate;
 import java.awt.image.BufferedImage;
 
 /**
- * Evaluator Implementation that is only for testing, dont use it for actual Tasks
+ * Evaluator Implementation that is only for software testing, not to be used for actual evaluation
  * @author Jannik
  *
  */

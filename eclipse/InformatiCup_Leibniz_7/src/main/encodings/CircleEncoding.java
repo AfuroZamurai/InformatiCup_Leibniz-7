@@ -6,10 +6,22 @@ import java.awt.image.BufferedImage;
 
 import com.sun.javafx.iio.ImageStorage.ImageType;
 
+/**
+ * Implementation of ImageEncoding, generates Images with circles.
+ * Batchsize is 6, the numbers are interpreted this way:
+ * Xpos, YPos, Radius, Red, Blue, Green
+ * @author Jannik
+ *
+ */
 public class CircleEncoding implements IImageEncoding {
 	
 	int batchSize = 6;
 	
+	/**
+	 * Creates Circle Image with the given Parameters in the given height and width
+	 * Batchsize is 6, the numbers are interpreted this way:
+	 * Xpos, YPos, Radius, Red, Blue, Green
+	 */
 	@Override
 	public BufferedImage createImage(int width, int height, float[] parameters) {
 
@@ -34,6 +46,12 @@ public class CircleEncoding implements IImageEncoding {
 		return img;
 	}
 
+	
+	/**
+	 * Generates Circles and draws them ontop the given Image
+	 * Batchsize is 6, the numbers are interpreted this way:
+	 * Xpos, YPos, Radius, Red, Blue, Green
+	 */
 	@Override
 	public BufferedImage addToImage(BufferedImage original, float[] parameters) {
 

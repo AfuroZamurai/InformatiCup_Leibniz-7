@@ -13,6 +13,11 @@ import main.evaluate.IClassification;
 import main.io.ImageSaver;
 import main.utils.ImageUtil;
 
+/**
+ * A Generator for generating Images with the different Implementation of the IImageEncoding interface
+ * @author Jannik
+ *
+ */
 public class EncoderGenerator implements IGenerator {
 
 	private Parameter exampleParam = new Parameter("Example Parameter", "Example Explanation", 1);
@@ -32,6 +37,10 @@ public class EncoderGenerator implements IGenerator {
 
 	float[] parameters;
 
+	/**
+	 * Creates a new Generator for the given Encoding type
+	 * @param encoding
+	 */
 	public EncoderGenerator(IImageEncoding encoding) {
 		this.encoding = encoding;
 

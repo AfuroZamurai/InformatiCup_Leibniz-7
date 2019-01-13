@@ -4,10 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+/**
+ * Implementation of ImageEncoding. Generates Images with boxes.
+ * Batchsize is 6, the numbers are interpreted this way:
+ * Xpos, YPos, Size, Red, Blue, Green
+ * @author Jannik
+ *
+ */
 public class BoxEncoding implements IImageEncoding {
 
-	int batchSize = 7;
+	int batchSize = 6;
 
+	/**
+	 * Creates BoxImage with the given Parameters in the given height and width
+	 * Batchsize is 6, the numbers are interpreted this way:
+	 * Xpos, YPos, Size, Red, Blue, Green
+	 */
 	@Override
 	public BufferedImage createImage(int width, int height, float[] parameters) {
 
@@ -28,7 +40,12 @@ public class BoxEncoding implements IImageEncoding {
 
 		return img;
 	}
-
+	
+	/**
+	 * Generates Boxes and draws them ontop the given Image
+	 * Batchsize is 6, the numbers are interpreted this way:
+	 * Xpos, YPos, Size, Red, Blue, Green
+	 */
 	@Override
 	public BufferedImage addToImage(BufferedImage original, float[] parameters) {
 

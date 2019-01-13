@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -92,7 +93,7 @@ public class TrasiWebEvaluator implements IEvaluator {
 		// Parse Response
 		String responseCode = response.getStatusLine().getStatusCode() + "";
 
-		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8.name()));
 
 		StringBuffer result = new StringBuffer();
 		String line = "";

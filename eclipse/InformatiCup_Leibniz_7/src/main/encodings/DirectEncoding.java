@@ -4,10 +4,21 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+/**
+ * Implemetation of ImageEncoding.
+ * Generates Images by simply converting 4 numbers to an RGBA Pixel.
+ * Needs 4 Parameters per Pixel to fill complete Image
+ * @author Jannik
+ *
+ */
 public class DirectEncoding implements IImageEncoding {
 
 	int batchSize = 4;
 
+	/**
+	 * Generates Images by simply converting 4 numbers to an RGBA Pixel.
+	 * Needs 4 Parameters per Pixel to fill complete Image
+	 */
 	@Override
 	public BufferedImage createImage(int width, int height, float[] parameters) {
 
@@ -28,6 +39,10 @@ public class DirectEncoding implements IImageEncoding {
 		return img;
 	}
 
+	/**
+	 * Generates Pixel by simply converting 4 numbers to an RGBA Pixel and draws them ontop the original.
+	 * Needs 4 Parameters per Pixel to fill complete Image
+	 */
 	@Override
 	public BufferedImage addToImage(BufferedImage original, float[] parameters) {
 

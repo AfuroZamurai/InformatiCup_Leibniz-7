@@ -7,20 +7,24 @@ import java.util.List;
 import main.evaluate.EvaluationResult;
 import main.evaluate.IClassification;
 
+/**
+ * A simple Implementation of IGenerator, 
+ * simply always returns the Original Image.
+ * Contains mostly stubs.
+ * @author Jannik
+ *
+ */
 public class NoChange implements IGenerator {
 
 	BufferedImage image;
 	
 	@Override
 	public BufferedImage generateNextImage() {
-		// TODO Auto-generated method stub
 		return this.image;
 	}
 
 	@Override
 	public void setEvalResult(EvaluationResult<IClassification> result) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -31,27 +35,22 @@ public class NoChange implements IGenerator {
 
 	@Override
 	public List<Parameter> getParameterList() {
-		// TODO Auto-generated method stub
 		return new ArrayList<Parameter>();
 	}
 
 	@Override
 	public boolean isFinished() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public String getModuleDescription() {
-		// TODO Auto-generated method stub
-		return "Erklärungstext zu dem ausgewählten Algorithmus:\n\nDieser Algorithmus sendet das Eingabebild\nan die künstliche Inteligenz.\n"
-				+ "Das Bild ist auch wieder das Ausgabebild,\nda keine Veränderung vorgenommen wurde\n"
-				+ "und die dazugeöhrige Konfidenz wird ausgegeben.";
+		
+		return "Unverändert: \n\n" + "Dieser Generator verändert das Bild nicht, sondern evaluiert es nur einmal.";
 	}
 
 	@Override
 	public BufferedImage getResult() {
-		// TODO Auto-generated method stub
 		return this.image;
 	}
 
