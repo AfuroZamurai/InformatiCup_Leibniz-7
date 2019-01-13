@@ -68,13 +68,13 @@ public class EvoEncoderGenerator implements IGenerator {
 	/**
 	 * Parameter to let the user set the population size
 	 */
-	private Parameter popSize = new Parameter("Populationsgröße", "Anzahl an Genomen in einer Generation", 20);
+	private Parameter popSize = new Parameter("Populationsgröße", "Anzahl an Genomen in einer Generation", 60);
 	
 	/**
 	 * Parameter to let the user set the generation cap
 	 */
 	private Parameter genCap = new Parameter("Maximale Generationszahl", "Wie viele Durchläufe der genetische Algorithmus "
-			+ "ausgeführt wird. Aktuell äquivalent zur Anzahl an Iterationen", 30);
+			+ "ausgeführt wird. Aktuell äquivalent zur Anzahl an Iterationen", 100);
 	
 	/**
 	 * Parameter to let the user decide if elitism should be used
@@ -173,7 +173,9 @@ public class EvoEncoderGenerator implements IGenerator {
 	@Override
 	public String getModuleDescription() {
 		return "Dieses Verfahren verwendet einen genetischen Algorithmus, um Irrbilder"
-				+ " auf Basis eines Encodings zu optimieren.";
+				+ " auf Basis eines Gridencodings zu optimieren. Dabei wird über das Originalbild ein Gitter gelegt"
+				+ ", dessen Zellen unterschiedliche Farben zugeordnet haben. Die Genome repräsentieren eine "
+				+ "Konfiguration dieses Gitters.";
 	}
 
 	@Override

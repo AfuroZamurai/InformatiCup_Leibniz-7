@@ -38,7 +38,7 @@ public class CheckerGenerator implements IGenerator {
 	private EvaluationResult<IClassification> er;
 	private int i, j;
 
-	private Parameter filterParameter = new Parameter("Filtergröße", "Größe des Filters (Wert zwischen 1 und 64)", 16);
+	private Parameter filterParameter = new Parameter("Filtergröße", "Größe des Filters (Wert zwischen 1 und 64)", 8);
 
 	/**
 	 * This method get an Image and generate an new one.

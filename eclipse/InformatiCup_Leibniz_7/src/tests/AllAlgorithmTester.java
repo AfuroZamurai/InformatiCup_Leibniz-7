@@ -40,7 +40,7 @@ import main.io.ImageSaver;
  */
 public class AllAlgorithmTester {
 	
-	private static int maxIterations = 60;
+	private static int maxIterations = 70;
 	private final static int DELAY = 0;
 	private final static String PATH = "data/results/testingAll/";
 	
@@ -90,7 +90,7 @@ public class AllAlgorithmTester {
 		IEvaluator evaluator = new TrasiWebEvaluator();
 		List<String[]> csvEntries = new ArrayList<>();
 		
-		for(int i = 0; i < 2; i++) {
+		for(int i = 0; i < 43; i++) {
 			IClassification sign = Sign.values()[i];
 			AlgorithmResult result = runAlgorithm(evaluator, generator, sign, maxIterations, DELAY);
 			
@@ -122,7 +122,7 @@ public class AllAlgorithmTester {
 	}
 
 	public void testCheckerGenerator() throws Exception {
-		iterateClasses(new CheckerGenerator(), "CheckerGenerator", "checker");
+		iterateClasses(new CheckerGenerator(), "Checker8Generator", "checker_8filter");
 	}
 	
 	public void testRecursiveSquareGenerator() throws Exception {
@@ -180,11 +180,12 @@ public class AllAlgorithmTester {
 	@Test
 	public void testAllAlgorithms() throws Exception {
 		//testNoChangeGenerator();
-		testCheckerGenerator();
+		//testCheckerGenerator();
+		maxIterations = 300;
 		testRecursiveSquareGenerator();
-		testSimpleGenerator();
+		//testSimpleGenerator();
 		//testBoxEncodingGenerator(); //image only black
-		testCircleEncodingGenerator();
+		//testCircleEncodingGenerator();
 		//testDirectEncodingGenerator(); //not working
 		//testGridEncodingGenerator(); // not working
 		//testBoxEvoGenerator();
