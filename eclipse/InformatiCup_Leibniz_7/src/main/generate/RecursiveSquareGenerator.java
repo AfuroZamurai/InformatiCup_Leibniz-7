@@ -107,8 +107,8 @@ public class RecursiveSquareGenerator implements IGenerator {
 	 * stopping of the generator
 	 */
 	private Parameter stoppingParameter = new Parameter("Automatisches Stoppen",
-			"Ja: der Generator" + " stoppt bei einem Bild ï¿½ber 90% - Nein: der Generator stoppt nur bei "
-					+ "Betï¿½tigung des Stop-Buttons",
+			"Ja: der Generator" + " stoppt bei einem Bild über 90% - Nein: der Generator stoppt nur bei "
+					+ "Betätigung des Stop-Buttons",
 			true);
 
 	/**
