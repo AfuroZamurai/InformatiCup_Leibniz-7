@@ -74,8 +74,8 @@ public class GeneratorFramework implements Runnable {
 	 *            The module that is run
 	 * @param initImage
 	 *            The initial image that is given to the module
-	 * @param sign
-	 *            The Sign of the initial image
+	 * @param imageClass
+	 *            The Image Class of the initial image
 	 */
 	public void startModule(IGenerator module, BufferedImage initImage, IClassification imageClass, int delayTime,
 			int maxIterations) {

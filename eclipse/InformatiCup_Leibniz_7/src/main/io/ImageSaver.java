@@ -32,9 +32,8 @@ public class ImageSaver {
 	 *            The Image to be saved
 	 * @param savePath
 	 *            Path where it will be saved(including filename but no extension!)
-	 * @param format
-	 *            The format in which the file will be saved(use the constants of
-	 *            this class)
+	 * @param ext
+	 *            The FileExtension used for the image
 	 * @return File handle for the newly created file
 	 * @throws IOException
 	 *             When image could not be saved(path does not exist, no write

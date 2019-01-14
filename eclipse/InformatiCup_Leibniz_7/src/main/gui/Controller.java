@@ -495,7 +495,7 @@ public class Controller implements Initializable {
 	/**
 	 * This method is called by starting the GUI and initializes the listView
 	 * 
-	 * @param url
+	 * @param location
 	 *            an absolute URL giving the base location of the image
 	 * @param resources
 	 *            bundles contain locale-specific objects

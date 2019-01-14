@@ -45,7 +45,7 @@ public class CPPN {
 	
 	/**
 	 * Creates an image using the CPPN. 
-	 * @param gene
+	 * @param genom
 	 * @return the created image
 	 */
 	public BufferedImage createImage(CPPNGenom genom) {

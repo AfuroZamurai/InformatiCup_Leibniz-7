@@ -75,8 +75,8 @@ public class ImageLoader {
 	 * This methods loads an image from the internal jar files and returns a buffered Image
 	 * object
 	 * 
-	 * @param url
-	 *            The URL to the file(including file name and extension)
+	 * @param path
+	 *            The Path to the file(including file name and extension)
 	 * @return An BufferedImage Object containing the image data
 	 * @throws IOException
 	 *             If Image could not be loaded(wrong path, no read permission)
@@ -162,7 +162,7 @@ public class ImageLoader {
 	 * Method reads in an ppm image and returns it as bufferedImage. For more Info
 	 * about the ppm format, see http://netpbm.sourceforge.net/doc/ppm.html
 	 * 
-	 * @param inputs
+	 * @param input
 	 *            Filehandle to the ppm file
 	 * @return The image of the ppm file as bufferedImage
 	 * @throws IOException

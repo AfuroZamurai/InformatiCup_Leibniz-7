@@ -22,7 +22,7 @@ public interface IClassification {
 	public String getNameOfClass();
 
 	/**
-	 * Returns an integer >= 0 which is the index of this class in the array
+	 * Returns an integer greater or equal to 0 which is the index of this class in the array
 	 * 
 	 * @return The index number of this class
 	 */

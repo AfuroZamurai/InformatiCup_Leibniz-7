@@ -222,7 +222,7 @@ public class CmdLineStart {
 	 * @param targetClass The class of the classifier which is tried to be approximated
 	 * @param maxIterations The maxium number of iterations before the algorithm stops
 	 * @param requestDelay The number of ms the algorithm waits between requests
-	 * @Param outputPath The path where the output will be saved
+	 * @param outputPath The path where the output will be saved
 	 * @throws Exception
 	 */
 	public static void runAlgorithm(IEvaluator evaluator, IGenerator generator, IClassification targetClass, int maxIterations,int requestDelay, String outputPath) throws Exception {

@@ -37,8 +37,8 @@ public interface IGenerator {
 	 * 
 	 * @param img
 	 *            The initial image
-	 * @param sign
-	 *            The Sign of the initial image
+	 * @param imageClass
+	 *            The Image Class of the initial image
 	 */
 	public void setInitImage(BufferedImage img, IClassification imageClass);
 	
