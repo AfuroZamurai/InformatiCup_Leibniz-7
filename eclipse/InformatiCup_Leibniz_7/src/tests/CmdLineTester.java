@@ -45,7 +45,7 @@ class CmdLineTester {
 		
 		
 		//Test all algorithms with all classes
-		String[] generators = new String[] {"nochange","checkersearch","circlesearch","evoencoding","recursivesquare"};
+		String[] generators = new String[] {"nochange","checkersearch","circlesearch","recursivesquare","evoencoding"};
 		int classes = 43;
 		
 		for(int a = 0; a < generators.length; a++) {
