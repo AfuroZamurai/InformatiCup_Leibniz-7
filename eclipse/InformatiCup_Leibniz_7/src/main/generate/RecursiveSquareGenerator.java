@@ -598,7 +598,7 @@ public class RecursiveSquareGenerator implements IGenerator {
 				+ "dabei in zwei Phasen: In der Explorationsphase wird versucht mithilfe eines gut "
 				+ "erkannten Bildes ein Startbild für die zweite Phase zu finden. In dieser Phase "
 				+ "werden dann zufällig neue Blöcke hinzugefügt. Durch ein greedy Verfahren konvergieren "
-				+ "die Bilder dann gegen ein Bild mit 90% Konfidenz.";
+				+ "die Bilder dann gegen ein Bild mit 100%, wobei er stoppt, sobald er die Zielkonfidenz erreicht.";
 	}
 
 	/**

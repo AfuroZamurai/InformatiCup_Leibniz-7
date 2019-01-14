@@ -20,7 +20,7 @@ import main.generate.EvoEncoderGenerator;
 import main.generate.IGenerator;
 import main.generate.NoChange;
 import main.generate.RecursiveSquareGenerator;
-import main.generate.SimpleGenerator;
+import main.generate.RandomCircleGenerator;
 import main.io.ImageSaver;
 
 public class CmdLineStart {
@@ -121,7 +121,7 @@ public class CmdLineStart {
 			}
 			else if(params.get("-g").get(0).equals("circlesearch")) {
 				
-				generator = new SimpleGenerator();
+				generator = new RandomCircleGenerator();
 			}
 			else if(params.get("-g").get(0).equals("evoencoding")) {
 				generator = new EvoEncoderGenerator(new CircleEncoding());

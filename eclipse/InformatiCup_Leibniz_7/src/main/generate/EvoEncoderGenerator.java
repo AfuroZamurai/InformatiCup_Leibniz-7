@@ -172,10 +172,10 @@ public class EvoEncoderGenerator implements IGenerator {
 
 	@Override
 	public String getModuleDescription() {
-		return "Dieses Verfahren verwendet einen genetischen Algorithmus, um Irrbilder"
+		return "Genetischer Algorithmus: \n\n" + "Dieses Verfahren verwendet einen genetischen Algorithmus, um Irrbilder"
 				+ " auf Basis eines Gridencodings zu optimieren. Dabei wird über das Originalbild ein Gitter gelegt"
 				+ ", dessen Zellen unterschiedliche Farben zugeordnet haben. Die Genome repräsentieren eine "
-				+ "Konfiguration dieses Gitters.";
+				+ "Konfiguration dieses Gitters. \n \nHinweis: Dieser Generator benötigt viel Zeit, um Zwischenergebnisse zu erzeugen, dadurch enstehen lange Wartezeiten bis ein neues Bild angezeigt wird.";
 	}
 
 	@Override

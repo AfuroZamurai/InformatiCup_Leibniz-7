@@ -29,7 +29,7 @@ import main.generate.EvoEncoderGenerator;
 import main.generate.IGenerator;
 import main.generate.NoChange;
 import main.generate.RecursiveSquareGenerator;
-import main.generate.SimpleGenerator;
+import main.generate.RandomCircleGenerator;
 import main.io.ImageSaver;
 
 /**
@@ -130,7 +130,7 @@ public class AllAlgorithmTester {
 	}
 
 	public void testSimpleGenerator() throws Exception {
-		iterateClasses(new SimpleGenerator(), "SimpleGenerator", "simple");
+		iterateClasses(new RandomCircleGenerator(), "SimpleGenerator", "simple");
 	}
 
 	public void testBoxEncodingGenerator() throws Exception {

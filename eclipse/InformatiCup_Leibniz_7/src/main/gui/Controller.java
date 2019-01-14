@@ -58,7 +58,7 @@ import main.generate.GeneratorFramework;
 import main.generate.NoChange;
 import main.generate.Parameter;
 import main.generate.RecursiveSquareGenerator;
-import main.generate.SimpleGenerator;
+import main.generate.RandomCircleGenerator;
 import main.generate.Parameter.ParameterType;
 import main.io.ImageLoader;
 import main.io.ImageSaver;
@@ -243,7 +243,7 @@ public class Controller implements Initializable {
 			enableButton(generateButton);
 		}
 
-		module = new SimpleGenerator();
+		module = new RandomCircleGenerator();
 		explanationArea.setText(module.getModuleDescription());
 		parameterTextFieldList.clear();
 		parameterRadioButtonList.clear();

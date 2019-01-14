@@ -213,9 +213,12 @@ public class CheckerGenerator implements IGenerator {
 
 	@Override
 	public String getModuleDescription() {
-		return "Checker Search:\n\nEs gibt eine Gruppe von Pixel, die auf schwarz gesetzt wird."
-				+ "Steigt die Konfidenz, wird die Gruppe im Ausgabebild auf schwarz gesetzt, sonst weiﬂ. "
-				+ "Das wird mit allen Gruppen gemacht. Die Grˆﬂe der Gruppe gibt der Filter an.\n\n";
+		return "Checker Search:\n\nDas Bild wird in rechteckige Pixelgruppen aufgeteilt. "
+				+ "Die Gruppen werden einzeln im Bild schwarz gef‰rbt. "
+				+ "Steigt dadurch die Konfidenz des Bildes, wird die Gruppe im Ausgabebild auf schwarz gesetzt. "
+				+ "Sinkt oder bleibt die Konfidenz gleich, wird sie auf weiﬂ gesetzt. "
+				+ "Das wird mit allen Gruppen gemacht. So entsteht ein Ausgabebild aus schwarzen und weiﬂen Rechtecken. "
+				+ "Die Katenl‰nge eines Rechtecks gibt der Parameter Filtergrˆﬂe an.\n\n";
 	}
 
 	@Override
