@@ -5,8 +5,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import main.evaluate.EvaluationResult;
-import main.evaluate.EvaluationResult.Sign;
+import main.evaluate.IClassification;
 import main.evaluate.IEvaluator;
+import main.evaluate.Sign;
 import main.evaluate.TrasiWebEvaluator;
 import main.io.ImageLoader;
 
@@ -39,9 +40,9 @@ public class EvaluationTester {
 		for (int i = 0; i < Sign.values().length; i++) {
 			System.out.println("Testing Class: " + Sign.values()[i]);
 			
-			BufferedImage img = EvaluationResult.getExampleImage(Sign.values()[i]);
+			BufferedImage img = Sign.values()[i].getExampleImage();
 			
-			EvaluationResult result = evaluator.evaluateImage(img);
+			EvaluationResult<IClassification> result = evaluator.evaluateImage(img);
 			
 			for (float f : result.scores) {
 
@@ -50,7 +51,7 @@ public class EvaluationTester {
 			}
 			System.out.print("\n");
 			
-			System.out.println("Confidence for this class: " + result.getConfidenceForSign(Sign.values()[i]));
+			System.out.println("Confidence for this class: " + result.getConfidenceForClass(Sign.values()[i]));
 			
 			System.out.print("\n");
 			System.out.print("\n");

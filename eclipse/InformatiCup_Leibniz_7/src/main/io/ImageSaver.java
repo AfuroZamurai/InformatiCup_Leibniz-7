@@ -17,9 +17,12 @@ import javax.imageio.ImageIO;
 public class ImageSaver {
 
 	// Constants for the supported Image formats
-	public static final String PNG = "png";
-	public static final String GIF = "gif";
-	public static final String JPG = "jpg";
+	public enum FileExtension {
+		PNG,
+		GIF,
+		JPG,
+	}
+	
 
 	/**
 	 *
@@ -29,21 +32,20 @@ public class ImageSaver {
 	 *            The Image to be saved
 	 * @param savePath
 	 *            Path where it will be saved(including filename but no extension!)
-	 * @param format
-	 *            The format in which the file will be saved(use the constants of
-	 *            this class)
+	 * @param ext
+	 *            The FileExtension used for the image
 	 * @return File handle for the newly created file
 	 * @throws IOException
 	 *             When image could not be saved(path does not exist, no write
 	 *             permissions)
 	 *
 	 */
-	public static File saveImage(BufferedImage img, String savePath, String format) throws IOException {
+	public static File saveImage(BufferedImage img, String savePath, FileExtension ext) throws IOException {
 
-		File outputfile = new File(savePath + "." + format);
+		File outputfile = new File(savePath + "." + ext.toString().toLowerCase());
 
 		// ImageIO write returns false when image could not be saved
-		boolean success = ImageIO.write(img, format, outputfile);
+		boolean success = ImageIO.write(img, ext.toString().toLowerCase(), outputfile);
 
 		if (!success) {
 			throw new IOException("Could not save Image!");
@@ -67,10 +69,10 @@ public class ImageSaver {
 	 */
 	public static File saveImage(BufferedImage img, String savePath) throws IOException {
 
-		File outputFile = new File(savePath + "." + PNG);
+		File outputFile = new File(savePath + "." + FileExtension.PNG.toString().toLowerCase());
 
 		// ImageIO write returns false when image could not be saved
-		boolean success = ImageIO.write(img, PNG, outputFile);
+		boolean success = ImageIO.write(img, FileExtension.PNG.toString().toLowerCase(), outputFile);
 
 		if (!success) {
 			throw new IOException("Could not save Image!");
